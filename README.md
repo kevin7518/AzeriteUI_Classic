@@ -2,7 +2,18 @@
 
 This is a Classic port of our custom user interface originally made for World of Warcraft: Battle For Azeroth! Designed by Daniel "Blakmane" Troko & coded by Lars "Goldpaw" Norberg. 
 
-It's a work in progress as we never was in the Classic beta. I'll update it as much as I can during the pre-launch, and continue work the instant Classic goes live! Uploads will be tagged with Alpha or Beta for the time being, so those must be enabled in your twitch client for this UI to keep it updated!
+It's a work in progress as we never was in the Classic beta. I'll update it as much as I can during the pre-launch, and continue work the instant Classic goes live! Uploads will be tagged with Alpha or Beta for the time being, so those must be enabled in your twitch client for this UI to keep it updated! Also, I want be answering requests or questions at Discord or accept bug reports at GitHub at this point. Too early in the process, it'd be reporting a bug with something I haven't written yet. Which isn't a bug, it's just "we're not there yet"! ;) 
+
+## **Elements that more or less work:**  
+* Player-, pet-, target- and tot unit frames
+* Minimap, clock, latency, xp
+* The primary actionbar
+* Game menu (Esc)
+
+## **Elements that aren't there yet:**  
+* Options menu
+* Micro menu
+* Castbars
 
 ## **Pledge to our work:**  
 * Patreon: [www.patreon.com/AzeriteUI](https://www.patreon.com/azeriteui)  
