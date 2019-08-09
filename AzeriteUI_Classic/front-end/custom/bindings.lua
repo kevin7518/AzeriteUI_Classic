@@ -25,7 +25,7 @@ local IsAltKeyDown = IsAltKeyDown
 local IsControlKeyDown = IsControlKeyDown
 local IsShiftKeyDown = IsShiftKeyDown
 local LoadBindings = LoadBindings
-local AttemptToSaveBindings = AttemptToAttemptToSaveBindings
+local AttemptToSaveBindings = AttemptToSaveBindings
 local SetBinding = SetBinding
 
 -- Copies of WoW constants (the originals are loaded through an addon, so not reliable as globals)

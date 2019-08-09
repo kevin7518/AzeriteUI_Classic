@@ -1,8 +1,3 @@
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "UnitCast requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild:IsClassic()
-
 -- Lua API
 local _G = _G
 local math_floor = math.floor
@@ -13,8 +8,8 @@ local tostring = tostring
 local GetCVar = _G.GetCVar
 local GetNetStats = _G.GetNetStats
 local GetTime = _G.GetTime
-local UnitCastingInfo = _G.UnitCastingInfo
-local UnitChannelInfo = _G.UnitChannelInfo
+local UnitCastingInfo = _G.CastingInfo
+local UnitChannelInfo = _G.ChannelInfo
 local UnitClass = _G.UnitClass
 local UnitExists = _G.UnitExists
 local UnitIsPlayer = _G.UnitIsPlayer
@@ -594,11 +589,6 @@ end
 local Enable = function(self)
 	local element = self.Cast
 	if element then
-		if IS_CLASSIC then 
-			element:Hide()
-			return
-		end 
-
 		element._owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -608,18 +598,12 @@ local Enable = function(self)
 		if (not (unit and unit:match("%wtarget$"))) then
 			self:RegisterEvent("UNIT_SPELLCAST_START", Proxy)
 			self:RegisterEvent("UNIT_SPELLCAST_FAILED", Proxy)
-			--self:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET", Proxy)
 			self:RegisterEvent("UNIT_SPELLCAST_STOP", Proxy)
 			self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", Proxy)
 			self:RegisterEvent("UNIT_SPELLCAST_DELAYED", Proxy)
 			self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", Proxy)
 			self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", Proxy)
 			self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", Proxy)
-
-			if (not IS_CLASSIC) then 
-				self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE", Proxy)
-				self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", Proxy)
-			end 
 		end 
 
 		element.UpdateColor = UpdateColor
@@ -635,28 +619,18 @@ local Disable = function(self)
 		element:SetScript("OnUpdate", nil)
 		element:Hide()
 
-		if IS_CLASSIC then 
-			return
-		end 
-
 		self:UnregisterEvent("UNIT_SPELLCAST_START", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_FAILED", Proxy)
-		--self:UnregisterEvent("UNIT_SPELLCAST_FAILED_QUIET", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_STOP", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_DELAYED", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", Proxy)
-
-		if (not IS_CLASSIC) then 
-			self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED", Proxy)
-			self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE", Proxy)
-		end
 	end
 end 
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("Cast", Enable, Disable, Proxy, 24)
+	Lib:RegisterElement("Cast", Enable, Disable, Proxy, 25)
 end 
