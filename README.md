@@ -9,7 +9,8 @@ It's a work in progress as we never was in the Classic beta. I'll update it as m
 * Minimap, clock, latency, xp
 * The primary actionbar
 * Game menu (Esc)
-* `/bind` hover keybind system (from 1.0.2-Alpha)
+* Castbars (from 1.0.3-Alpha)
+* `/bind` hover keybind system (from 1.0.3-Alpha)
 
 ### **Elements that feel fairly "off":**  
 * Chat window buttons
@@ -18,7 +19,6 @@ It's a work in progress as we never was in the Classic beta. I'll update it as m
 ### **Elements that aren't there yet:**  
 * Options menu
 * Micro menu
-* Castbars
 * Reputation bar
 
 ### **Pledge to our work:**  
