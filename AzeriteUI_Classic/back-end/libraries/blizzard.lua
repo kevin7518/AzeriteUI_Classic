@@ -1,4 +1,4 @@
-local LibBlizzard = CogWheel:Set("LibBlizzard", 22)
+local LibBlizzard = CogWheel:Set("LibBlizzard", 23)
 if (not LibBlizzard) then 
 	return
 end
@@ -210,7 +210,6 @@ UIWidgets["ActionBarsMainBar"] = function(self)
 	UIPARENT_MANAGED_FRAME_POSITIONS["PossessBarFrame"] = nil
 	UIPARENT_MANAGED_FRAME_POSITIONS["PETACTIONBAR_YPOS"] = nil
 
-
 	StanceBarFrame:UnregisterAllEvents()
 	StanceBarFrame:Hide()
 	StanceBarFrame:SetParent(UIHider)
@@ -224,23 +223,6 @@ UIWidgets["ActionBarsMainBar"] = function(self)
 	PetActionBarFrame:SetParent(UIHider)
 	PetActionBarFrame:Hide()
 
-
-	-- If I'm not hiding this, it will become visible (though transparent)
-	-- and cover our own custom vehicle/possess action bar. 
-	if OverrideActionBar then 
-		OverrideActionBar:SetParent(UIHider)
-		OverrideActionBar:EnableMouse(false)
-		OverrideActionBar:UnregisterAllEvents()
-		OverrideActionBar:Hide()
-		OverrideActionBar:SetAlpha(0)
-
-		for i = 1,6 do
-			_G["OverrideActionBarButton"..i]:UnregisterAllEvents()
-			_G["OverrideActionBarButton"..i]:SetAttribute("statehidden", true)
-			_G["OverrideActionBarButton"..i]:EnableMouse(false) -- just in case it's still there
-		end
-	end 
-	
 	MainMenuBarVehicleLeaveButton:UnregisterAllEvents()
 	MainMenuBarVehicleLeaveButton:SetParent(UIHider)
 

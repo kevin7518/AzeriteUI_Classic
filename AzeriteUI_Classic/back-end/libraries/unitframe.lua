@@ -1,4 +1,4 @@
-local LibUnitFrame = CogWheel:Set("LibUnitFrame", 65)
+local LibUnitFrame = CogWheel:Set("LibUnitFrame", 66)
 if (not LibUnitFrame) then	
 	return
 end
@@ -368,11 +368,7 @@ end
 LibUnitFrame.GetUnitFrameVisibilityDriver = function(self, unit)
 	local visDriver
 	if (unit == "player") then 
-		-- Might seem stupid, but I want the player frame to disappear along with the actionbars 
-		-- when we've blown the flight master's whistle and are getting picked up.
-		visDriver = "[@player,exists][vehicleui][possessbar][overridebar][mounted]show;hide"
-	elseif (unit == "pet") then 
-		visDriver = "[@pet,exists][nooverridebar,vehicleui]show;hide"
+		visDriver = "[@player,exists][mounted]show;hide"
 	else
 		visDriver = string_format("[@%s,exists]show;hide", unit)
 	end
