@@ -23,7 +23,6 @@ local UnitFramePlayerHUD = Core:NewModule("UnitFramePlayerHUD", "LibEvent", "Lib
 local UnitFrameTarget = Core:NewModule("UnitFrameTarget", "LibEvent", "LibUnitFrame", "LibSound")
 
 -- Secondary Units
-local UnitFrameFocus = Core:NewModule("UnitFrameFocus", "LibUnitFrame")
 local UnitFramePet = Core:NewModule("UnitFramePet", "LibUnitFrame", "LibFrame")
 local UnitFrameToT = Core:NewModule("UnitFrameToT", "LibUnitFrame")
 
@@ -843,7 +842,7 @@ local positionHeaderFrame = function(self, unit, id, Layout)
 	end
 end
 
--- Boss, Arena, Pet, Focus, ToT
+-- Boss, Pet, ToT
 local StyleSmallFrame = function(self, unit, id, Layout, ...)
 
 	-- Frame
@@ -1043,8 +1042,6 @@ local StyleSmallFrame = function(self, unit, id, Layout, ...)
 		targetHighlight:SetSize(unpack(Layout.TargetHighlightSize))
 		targetHighlight:SetPoint(unpack(Layout.TargetHighlightPlace))
 		targetHighlight:SetTexture(Layout.TargetHighlightTexture)
-		targetHighlight.showFocus = Layout.TargetHighlightShowFocus
-		targetHighlight.colorFocus = Layout.TargetHighlightFocusColor
 		targetHighlight.showTarget = Layout.TargetHighlightShowTarget
 		targetHighlight.colorTarget = Layout.TargetHighlightTargetColor
 
@@ -1802,8 +1799,6 @@ local StylePartyFrame = function(self, unit, id, Layout, ...)
 		targetHighlight:SetSize(unpack(Layout.TargetHighlightSize))
 		targetHighlight:SetPoint(unpack(Layout.TargetHighlightPlace))
 		targetHighlight:SetTexture(Layout.TargetHighlightTexture)
-		targetHighlight.showFocus = Layout.TargetHighlightShowFocus
-		targetHighlight.colorFocus = Layout.TargetHighlightFocusColor
 		targetHighlight.showTarget = Layout.TargetHighlightShowTarget
 		targetHighlight.colorTarget = Layout.TargetHighlightTargetColor
 
@@ -2167,8 +2162,6 @@ local StyleRaidFrame = function(self, unit, id, Layout, ...)
 		targetHighlight:SetSize(unpack(Layout.TargetHighlightSize))
 		targetHighlight:SetPoint(unpack(Layout.TargetHighlightPlace))
 		targetHighlight:SetTexture(Layout.TargetHighlightTexture)
-		targetHighlight.showFocus = Layout.TargetHighlightShowFocus
-		targetHighlight.colorFocus = Layout.TargetHighlightFocusColor
 		targetHighlight.showTarget = Layout.TargetHighlightShowTarget
 		targetHighlight.colorTarget = Layout.TargetHighlightTargetColor
 
@@ -3646,10 +3639,6 @@ UnitStyles.StyleToTFrame = function(self, unit, id, Layout, ...)
 	return StyleSmallFrame(self, unit, id, Layout, ...)
 end
 
-UnitStyles.StyleFocusFrame = function(self, unit, id, Layout, ...)
-	return StyleSmallFrame(self, unit, id, Layout, ...)
-end
-
 UnitStyles.StylePetFrame = function(self, unit, id, Layout, ...)
 	return StyleSmallFrame(self, unit, id, Layout, ...)
 end
@@ -3658,15 +3647,7 @@ end
 -- Grouped Unit Styling
 -----------------------------------------------------------
 -- Dummy counters for testing purposes only
-local fakeArenaId, fakeBossId, fakePartyId, fakeRaidId = 0, 0, 0, 0
-
-UnitStyles.StyleArenaFrames = function(self, unit, id, Layout, ...)
-	if (not id) then 
-		fakeArenaId = fakeArenaId + 1
-		id = fakeArenaId
-	end 
-	return StyleSmallFrame(self, unit, id, Layout, ...)
-end
+local fakeBossId, fakePartyId, fakeRaidId = 0, 0, 0, 0
 
 UnitStyles.StyleBossFrames = function(self, unit, id, Layout, ...)
 	if (not id) then 
@@ -3807,16 +3788,6 @@ UnitFrameTarget.OnEvent = function(self, event, ...)
 end
 
 -----------------------------------------------------------
--- Focus
------------------------------------------------------------
-UnitFrameFocus.OnInit = function(self)
-	self.layout = CogWheel("LibDB"):GetDatabase(Core:GetPrefix()..":[UnitFrameFocus]", true)
-	self.frame = self:SpawnUnitFrame("focus", "UICenter", function(frame, unit, id, _, ...)
-		return UnitStyles.StyleFocusFrame(frame, unit, id, self.layout, ...)
-	end)
-end 
-
------------------------------------------------------------
 -- Pet
 -----------------------------------------------------------
 UnitFramePet.OnInit = function(self)
@@ -3835,6 +3806,9 @@ UnitFrameToT.OnInit = function(self)
 		return UnitStyles.StyleToTFrame(frame, unit, id, self.layout, ...)
 	end)
 end 
+
+-- Don't load the rest until we can fix it
+do return end 
 
 -----------------------------------------------------------
 -- Boss
