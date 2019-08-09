@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.5-Alpha] 2019-08-09
+### Fixed
+- Fixed Rogue combo points. Cannot test Druids as they get them at level 20, and level cap here in the pre-launch is 15.
+
+## [1.0.5-Alpha] 2019-08-09
+### Fixed
+- Fixed micro menu.
+- Fixed option menu.
+- Fixed aura updates on unit changes. 
+
 ## [1.0.3-Alpha] 2019-08-09
 ### Fixed
 - Fixed typos in bindings module.
