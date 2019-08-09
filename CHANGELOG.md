@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.8-Alpha] 2019-08-09
+### Changed
+- Removed more vehicle, override and possess stuff from the unitframe library. 
+
 ## [1.0.7-Alpha] 2019-08-09
 ### Changed
 - Removed more petbattle and vehicle stuff from actionbutton library. 
