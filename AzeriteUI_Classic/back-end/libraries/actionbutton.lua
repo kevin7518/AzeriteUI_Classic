@@ -99,24 +99,12 @@ local BUTTON_NAME_TEMPLATE_FULL = "%sActionButton%.0f"
 local DAY, HOUR, MINUTE = 86400, 3600, 60
 
 local SECURE = {
-	Page_OnAttributeChanged = ([=[ 
+	Page_OnAttributeChanged = [=[ 
 		if (name == "state-page") then 
 			local page; 
 
-			if (value == "overridebar") then 
-				page = %.0f; 
-			elseif (value == "possessbar") then 
-				page = %.0f; 
-			elseif (value == "shapeshift") then 
-				page = %.0f; 
-			elseif (value == "vehicleui") then 
-				page = %.0f; 
-			elseif (value == "11") then 
-				if HasBonusActionBar() and (GetActionBarPage() == 1) then  
-					page = GetBonusBarIndex(); 
-				else 
-					page = 12; 
-				end 
+			if (value == "11") then 
+				page = 12; 
 			end
 
 			if page then 
@@ -135,25 +123,13 @@ local SECURE = {
 			button:SetAttribute("action", slot); 
 			button:CallMethod("UpdateAction"); 
 		end 
-	]=]):format(GetOverrideBarIndex(), GetVehicleBarIndex(), GetTempShapeshiftBarIndex(), GetVehicleBarIndex()), 
-	Page_OnAttributeChanged_Debug = ([=[ 
+	]=], 
+	Page_OnAttributeChanged_Debug = [=[ 
 		if (name == "state-page") then 
 			local page; 
 
-			if (value == "overridebar") then 
-				page = %.0f; 
-			elseif (value == "possessbar") then 
-				page = %.0f; 
-			elseif (value == "shapeshift") then 
-				page = %.0f; 
-			elseif (value == "vehicleui") then 
-				page = %.0f; 
-			elseif (value == "11") then 
-				if HasBonusActionBar() and (GetActionBarPage() == 1) then  
-					page = GetBonusBarIndex(); 
-				else 
-					page = 12; 
-				end 
+			if (value == "11") then 
+				page = 12; 
 			end
 
 			local driverResult; 
@@ -189,7 +165,7 @@ local SECURE = {
 				end
 			end
 		end 
-	]=]):format(GetOverrideBarIndex(), GetVehicleBarIndex(), GetTempShapeshiftBarIndex(), GetVehicleBarIndex())
+	]=]
 
 }
 
@@ -1320,14 +1296,11 @@ LibSecureButton.SpawnActionButton = function(self, buttonType, parent, buttonTem
 
 		-- Moving vehicles farther back in the queue, as some overridebars like the ones 
 		-- found in the new 8.1.5 world quest "Cycle of Life" returns positive for both vehicleui and overridebar. 
-		driver = ("[overridebar]%.0f; [possessbar]%.0f; [shapeshift]%.0f; [vehicleui]%.0f; [form,noform] 0; [bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6"):format(GetOverrideBarIndex(), GetVehicleBarIndex(), GetTempShapeshiftBarIndex(), GetVehicleBarIndex())
+		driver = "[form,noform] 0; [bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6"
 
 		local _, playerClass = UnitClass("player")
 		if (playerClass == "DRUID") then
 			driver = driver .. "; [bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10"
-
-		elseif (playerClass == "MONK") then
-			driver = driver .. "; [bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9"
 
 		elseif (playerClass == "PRIEST") then
 			driver = driver .. "; [bonusbar:1] 7"
@@ -1346,9 +1319,9 @@ LibSecureButton.SpawnActionButton = function(self, buttonType, parent, buttonTem
 
 	local visibilityDriver
 	if (barID == 1) then 
-		visibilityDriver = "[@player,exists][overridebar][possessbar][shapeshift][vehicleui]show;hide"
+		visibilityDriver = "[@player,exists]show;hide"
 	else 
-		visibilityDriver = "[overridebar][possessbar][shapeshift][vehicleui][@player,noexists]hide;show"
+		visibilityDriver = "[@player,noexists]hide;show"
 	end 
 	
 	-- enable the visibility driver
