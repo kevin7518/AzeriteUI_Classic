@@ -1,4 +1,4 @@
-local Version = 38 -- This library's version 
+local Version = 40 -- This library's version 
 local MapVersion = Version -- Minimap library version the minimap created by this is compatible with
 local LibMinimap, OldVersion = CogWheel:Set("LibMinimap", Version)
 if (not LibMinimap) then
@@ -7,8 +7,6 @@ end
 
 local LibClientBuild = CogWheel("LibClientBuild")
 assert(LibClientBuild, "LibMinimap requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild
 
 local LibMessage = CogWheel("LibMessage")
 assert(LibMessage, "LibMinimap requires LibMessage to be loaded.")
@@ -29,13 +27,13 @@ local LibHook = CogWheel("LibHook")
 assert(LibHook, "LibMinimap requires LibHook to be loaded.")
 
 -- Embed library functionality into this
-LibClientBuild:Embed(LibMinimap)
 LibEvent:Embed(LibMinimap)
 LibMessage:Embed(LibMinimap)
 LibFrame:Embed(LibMinimap)
 LibSound:Embed(LibMinimap)
 LibTooltip:Embed(LibMinimap)
 LibHook:Embed(LibMinimap)
+LibClientBuild:Embed(LibMinimap)
 
 -- Lua API
 local _G = _G
@@ -704,83 +702,6 @@ LibMinimap.SetMinimapMaskTexture = function(self, path)
 	return self:SyncMinimap(true) and Private.MapContent:SetMaskTexture(path)
 end 
 
--- These "alpha" values range from 0 to 255, for some obscure reason,
--- so a value of 127 would be 127/255 ≃ 0.5ish in the normal API.
-LibMinimap.SetMinimapQuestBlobAlpha = function(self, blobInside, blobOutside, ringOutside, ringInside)
-	if IS_CLASSIC then 
-		return 
-	end 
-
-	check(blobInside, 1, "number")
-	check(blobOutside, 2, "number")
-	check(ringOutside, 3, "number")
-	check(ringInside, 4, "number")
-
-	self:SyncMinimap(true)
-
-	Private.OldMinimap:SetQuestBlobInsideAlpha(blobInside) -- "blue" areas with quest mobs/items in them
-	Private.OldMinimap:SetQuestBlobOutsideAlpha(blobOutside) -- borders around the "blue" areas 
-	Private.OldMinimap:SetQuestBlobRingAlpha(ringOutside) -- the big fugly edge ring texture!
-	Private.OldMinimap:SetQuestBlobRingScalar(ringInside) -- ring texture inside quest areas?
-end 
-
-LibMinimap.SetMinimapArchBlobAlpha = function(self, blobInside, blobOutside, ringOutside, ringInside)
-	check(blobInside, 1, "number")
-	check(blobOutside, 2, "number")
-	check(ringOutside, 3, "number")
-	check(ringInside, 4, "number")
-
-	self:SyncMinimap(true)
-
-	Private.OldMinimap:SetArchBlobInsideAlpha(blobInside) -- "blue" areas with quest mobs/items in them
-	Private.OldMinimap:SetArchBlobOutsideAlpha(blobOutside) -- borders around the "blue" areas 
-	Private.OldMinimap:SetArchBlobRingAlpha(ringOutside) -- the big fugly edge ring texture!
-	Private.OldMinimap:SetArchBlobRingScalar(ringInside) -- ring texture inside quest areas?
-end 
-
-LibMinimap.SetMinimapTaskBlobAlpha = function(self, blobInside, blobOutside, ringOutside, ringInside)
-	check(blobInside, 1, "number")
-	check(blobOutside, 2, "number")
-	check(ringOutside, 3, "number")
-	check(ringInside, 4, "number")
-
-	self:SyncMinimap(true)
-
-	Private.OldMinimap:SetTaskBlobInsideAlpha(blobInside) -- "blue" areas with quest mobs/items in them
-	Private.OldMinimap:SetTaskBlobOutsideAlpha(blobOutside) -- borders around the "blue" areas 
-	Private.OldMinimap:SetTaskBlobRingAlpha(ringOutside) -- the big fugly edge ring texture!
-	Private.OldMinimap:SetTaskBlobRingScalar(ringInside) -- ring texture inside quest areas?
-end 
-
--- Set all blob values at once
-LibMinimap.SetMinimapBlobAlpha = function(self, blobInside, blobOutside, ringOutside, ringInside)
-	if IS_CLASSIC then 
-		return 
-	end 
-	
-	check(blobInside, 1, "number")
-	check(blobOutside, 2, "number")
-	check(ringOutside, 3, "number")
-	check(ringInside, 4, "number")
-
-	self:SyncMinimap(true)
-
-	Private.OldMinimap:SetQuestBlobInsideAlpha(blobInside) -- "blue" areas with quest mobs/items in them
-	Private.OldMinimap:SetQuestBlobOutsideAlpha(blobOutside) -- borders around the "blue" areas 
-	Private.OldMinimap:SetQuestBlobRingAlpha(ringOutside) -- the big fugly edge ring texture!
-	Private.OldMinimap:SetQuestBlobRingScalar(ringInside) -- ring texture inside quest areas?
-
-	Private.OldMinimap:SetArchBlobInsideAlpha(blobInside) -- "blue" areas with quest mobs/items in them
-	Private.OldMinimap:SetArchBlobOutsideAlpha(blobOutside) -- borders around the "blue" areas 
-	Private.OldMinimap:SetArchBlobRingAlpha(ringOutside) -- the big fugly edge ring texture!
-	Private.OldMinimap:SetArchBlobRingScalar(ringInside) -- ring texture inside quest areas?
-
-	Private.OldMinimap:SetTaskBlobInsideAlpha(blobInside) -- "blue" areas with quest mobs/items in them
-	Private.OldMinimap:SetTaskBlobOutsideAlpha(blobOutside) -- borders around the "blue" areas 
-	Private.OldMinimap:SetTaskBlobRingAlpha(ringOutside) -- the big fugly edge ring texture!
-	Private.OldMinimap:SetTaskBlobRingScalar(ringInside) -- ring texture inside quest areas?
-end 
-
 -- Return or create the library default tooltip
 LibMinimap.GetMinimapTooltip = function(self)
 	return self:GetTooltip("CG_MinimapTooltip") or self:CreateTooltip("CG_MinimapTooltip")
@@ -1256,10 +1177,8 @@ local embedMethods = {
 	EnableMinimapElement = true, 
 	DisableMinimapElement = true,
 	GetMinimapTooltip = true, 
-	SetMinimapArchBlobAlpha = true, 
 	SetMinimapAllowAddonButtons = true,
 	SetMinimapBlips = true, 
-	SetMinimapBlobAlpha = true,
 	SetMinimapCompassEnabled = true,  
 	SetMinimapCompassRadius = true,
 	SetMinimapCompassRadiusInset = true,
@@ -1269,11 +1188,9 @@ local embedMethods = {
 	GetMinimapHandler = true,
 	SetMinimapMaskTexture = true, 
 	SetMinimapPosition = true, 
-	SetMinimapQuestBlobAlpha = true, 
 	SetMinimapBlipScale = true, 
 	SetMinimapScale = true, 
 	SetMinimapSize = true, 
-	SetMinimapTaskBlobAlpha = true, 
 	SyncMinimap = true, 
 	UpdateAllMinimapElements = true
 }

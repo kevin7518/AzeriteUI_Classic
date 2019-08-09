@@ -5,7 +5,7 @@ if (not Core) then
 	return 
 end
 
-local Module = Core:NewModule("BlizzardObjectivesTracker", "LibEvent", "LibFrame", "LibClientBuild")
+local Module = Core:NewModule("BlizzardObjectivesTracker", "LibEvent", "LibFrame")
 Module:SetIncompatible("!KalielsTracker")
 
 local L, Layout

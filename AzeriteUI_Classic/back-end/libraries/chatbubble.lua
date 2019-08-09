@@ -1,11 +1,7 @@
-local LibChatBubble = CogWheel:Set("LibChatBubble", 14)
+local LibChatBubble = CogWheel:Set("LibChatBubble", 15)
 if (not LibChatBubble) then	
 	return
 end
-
--- We require this library to properly handle startup events
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibChatBubble requires LibClientBuild to be loaded.")
 
 local LibEvent = CogWheel("LibEvent")
 assert(LibEvent, "LibChatBubble requires LibEvent to be loaded.")

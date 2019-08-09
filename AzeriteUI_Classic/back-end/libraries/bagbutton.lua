@@ -1,10 +1,7 @@
-local LibBagButton = CogWheel:Set("LibBagButton", 4)
+local LibBagButton = CogWheel:Set("LibBagButton", 5)
 if (not LibBagButton) then	
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibBagButton requires LibClientBuild to be loaded.")
 
 -- Lua API
 local _G = _G

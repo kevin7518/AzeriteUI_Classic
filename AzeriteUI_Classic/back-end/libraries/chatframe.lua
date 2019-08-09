@@ -1,10 +1,7 @@
-local LibChatWindow, version = CogWheel:Set("LibChatWindow", 24)
+local LibChatWindow, version = CogWheel:Set("LibChatWindow", 25)
 if (not LibChatWindow) then	
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibChatWindow requires LibClientBuild to be loaded.")
 
 local LibMessage = CogWheel("LibMessage")
 assert(LibMessage, "LibChatWindow requires LibMessage to be loaded.")

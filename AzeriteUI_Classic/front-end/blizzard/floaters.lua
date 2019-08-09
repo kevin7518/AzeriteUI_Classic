@@ -3,7 +3,7 @@ local Core = CogWheel("LibModule"):GetModule(ADDON)
 if (not Core) then 
 	return 
 end
-local Module = Core:NewModule("BlizzardFloaterHUD", "LibEvent", "LibFrame", "LibTooltip", "LibDB", "LibBlizzard", "LibClientBuild")
+local Module = Core:NewModule("BlizzardFloaterHUD", "LibEvent", "LibFrame", "LibTooltip", "LibDB", "LibBlizzard")
 
 -- Lua API
 local _G = _G
@@ -70,9 +70,7 @@ Module.DisableMappy = function(object)
 end
 
 Module.StyleDurabilityFrame = function(self)
-	-- This still breaks in 8.2.0, regardless of our frame library updates. 
-	-- So until further changes have been made, we need it disabled. 
-	if (not Layout.StyleDurabilityFrame) or (self:IsBuild("8.2.0")) then 
+	if (not Layout.StyleDurabilityFrame) or true then 
 		return 
 	end
 
@@ -82,7 +80,6 @@ Module.StyleDurabilityFrame = function(self)
 
 	-- This will prevent the durability frame size from affecting other blizzard anchors
 	DurabilityFrame.IsShown = function() return false end
-
 end 
 
 Module.StyleErrorFrame = function(self)

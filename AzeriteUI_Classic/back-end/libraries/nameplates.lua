@@ -1,4 +1,4 @@
-local LibNamePlate = CogWheel:Set("LibNamePlate", 37)
+local LibNamePlate = CogWheel:Set("LibNamePlate", 38)
 if (not LibNamePlate) then	
 	return
 end
@@ -757,21 +757,8 @@ LibNamePlate.CreateNamePlate = function(self, baseFrame, name)
 	-- Create the sizer frame that handles nameplate positioning
 	-- *Blizzard changed nameplate format and also anchoring points in Legion,
 	--  so naturally we're using a different function for this too. Speed!
-	if (LibNamePlate:IsBuild("8.2.0")) then 
-		plate:SetPoint("CENTER", baseFrame, "CENTER", 0, 0)
-		plate:Show()	
-	else
-		local sizer = plate:CreateFrame()
-		sizer.plate = plate
-		sizer:SetPoint("BOTTOMLEFT", WorldFrame, "BOTTOMLEFT", 0, 0)
-		sizer:SetPoint("TOPRIGHT", baseFrame, "CENTER", 0, 0)
-		sizer:SetScript("OnSizeChanged", function(sizer, width, height)
-			local plate = sizer.plate
-			plate:Hide() -- hiding when moving is still faster
-			plate:SetPoint("TOP", WorldFrame, "BOTTOMLEFT", width, height)
-			plate:Show()
-		end)
-	end
+	plate:SetPoint("CENTER", baseFrame, "CENTER", 0, 0)
+	plate:Show()
 
 	-- Make sure our nameplate fades out when the blizzard one is hidden.
 	baseFrame:HookScript("OnHide", function(baseFrame) plate:OnHide() end)

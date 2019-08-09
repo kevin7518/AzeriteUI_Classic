@@ -1240,7 +1240,6 @@ local Minimap = {
 	Size = { 213, 213 }, 
 	Place = { "BOTTOMRIGHT", "UICenter", "BOTTOMRIGHT", -58, 59 }, 
 	MaskTexture = GetMedia("minimap_mask_circle_transparent"),
-	BlobAlpha = { 0, 96, 0, 0 }, -- blobInside, blobOutside, ringOutside, ringInside 
 
 	UseBlipTextures = true, 
 		BlipScale = 1.15, 

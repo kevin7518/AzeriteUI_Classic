@@ -1,16 +1,12 @@
-local LibStatusBar = CogWheel:Set("LibStatusBar", 51)
-if (not LibStatusBar) then	
+local LibStatusBar = CogWheel:Set("LibStatusBar", 52)
+if (not LibStatusBar) then
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibStatusBar requires LibClientBuild to be loaded.")
 
 local LibFrame = CogWheel("LibFrame")
 assert(LibFrame, "LibStatusBar requires LibFrame to be loaded.")
 
 LibFrame:Embed(LibStatusBar)
-LibClientBuild:Embed(LibStatusBar)
 
 -- Lua API
 local _G = _G
@@ -735,56 +731,16 @@ StatusBar.SetHeight = function(self, ...)
 	end 
 end
 
-StatusBar.GetHeight = LibStatusBar:IsBuild("8.2.0") and 
-function(self, ...)
+StatusBar.GetHeight = function(self, ...)
 	return Bars[self].scaffold:GetHeight()
 end
-or
-function(self, ...)
-	local top = self:GetTop()
-	local bottom = self:GetBottom()
-	if top and bottom then
-		return top - bottom
-	else
-		return Bars[self].scaffold:GetHeight(...)
-	end
-end
 
-StatusBar.GetWidth = LibStatusBar:IsBuild("8.2.0") and 
-function(self, ...)
+StatusBar.GetWidth = function(self, ...)
 	return Bars[self].scaffold:GetWidth()
 end
-or
-function(self, ...)
-	local left = self:GetLeft()
-	local right = self:GetRight()
-	if left and right then
-		return right - left
-	else
-		return Bars[self].scaffold:GetWidth(...)
-	end
-end
 
-StatusBar.GetSize = LibStatusBar:IsBuild("8.2.0") and 
-function(self, ...)
+StatusBar.GetSize = function(self, ...)
 	return Bars[self].scaffold:GetWidth(), Bars[self].scaffold:GetHeight()
-end
-or 
-function(self, ...)
-	local top = self:GetTop()
-	local bottom = self:GetBottom()
-	local left = self:GetLeft()
-	local right = self:GetRight()
-
-	local width, height
-	if left and right then
-		width = right - left
-	end
-	if top and bottom then
-		height = top - bottom
-	end
-
-	return width or Bars[self].scaffold:GetWidth(), height or Bars[self].scaffold:GetHeight()
 end
 
 StatusBar.SetFrameLevel = function(self, ...)

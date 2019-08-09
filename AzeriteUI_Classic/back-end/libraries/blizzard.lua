@@ -1,10 +1,7 @@
-local LibBlizzard = CogWheel:Set("LibBlizzard", 23)
+local LibBlizzard = CogWheel:Set("LibBlizzard", 24)
 if (not LibBlizzard) then 
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibBlizzard requires LibClientBuild to be loaded.")
 
 local LibEvent = CogWheel("LibEvent")
 assert(LibEvent, "LibBlizzard requires LibEvent to be loaded.")

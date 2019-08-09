@@ -1,10 +1,7 @@
-local LibDB = CogWheel:Set("LibDB", 14)
+local LibDB = CogWheel:Set("LibDB", 16)
 if (not LibDB) then	
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibEvent requires LibDB to be loaded.")
 
 -- Lua API
 local _G = _G
@@ -15,6 +12,7 @@ local pairs = pairs
 local select = select
 local string_join = string.join
 local string_match = string.match
+local tostring = tostring
 local type = type
 
 -- WoW API

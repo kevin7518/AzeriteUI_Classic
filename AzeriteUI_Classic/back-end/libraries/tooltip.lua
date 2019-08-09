@@ -1,10 +1,7 @@
-local LibTooltip = CogWheel:Set("LibTooltip", 52)
+local LibTooltip = CogWheel:Set("LibTooltip", 53)
 if (not LibTooltip) then	
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibTooltip requires LibClientBuild to be loaded.")
 
 local LibEvent = CogWheel("LibEvent")
 assert(LibEvent, "LibTooltip requires LibEvent to be loaded.")
@@ -1966,11 +1963,6 @@ Tooltip.OnShow = function(self)
 	-- Get rid of the Blizzard GameTooltip if possible
 	if (not GameTooltip:IsForbidden()) and (GameTooltip:IsShown()) then 
 		GameTooltip:Hide()
-	end 
-
-	-- Is the battle pet tip forbidden too? Batter safe than sorry!
-	if BattlePetTooltip and ((not BattlePetTooltip:IsForbidden() and BattlePetTooltip:IsShown())) then 
-		BattlePetTooltip:Hide()
 	end 
 
 end 
