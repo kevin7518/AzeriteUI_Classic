@@ -19,14 +19,14 @@ local string_format = string.format
 local string_gsub = string.gsub
 
 -- WoW API
-local GetCurrentBindingSet = _G.GetCurrentBindingSet
-local InCombatLockdown = _G.InCombatLockdown
-local IsAltKeyDown = _G.IsAltKeyDown
-local IsControlKeyDown = _G.IsControlKeyDown
-local IsShiftKeyDown = _G.IsShiftKeyDown
-local LoadBindings = _G.LoadBindings
-local SaveBindings = _G.SaveBindings
-local SetBinding = _G.SetBinding
+local GetCurrentBindingSet = GetCurrentBindingSet
+local InCombatLockdown = InCombatLockdown
+local IsAltKeyDown = IsAltKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local IsShiftKeyDown = IsShiftKeyDown
+local LoadBindings = LoadBindings
+local AttemptToSaveBindings = AttemptToAttemptToSaveBindings
+local SetBinding = SetBinding
 
 -- Copies of WoW constants (the originals are loaded through an addon, so not reliable as globals)
 local ACCOUNT_BINDINGS = 1
@@ -258,7 +258,7 @@ Module.ProcessInput = function(self, key)
 	-- Leaving it here for my own reference. 
 	--SetBinding("BUTTON1", "CAMERAORSELECTORMOVE")
 	--SetBinding("BUTTON2", "TURNORACTION")
-	--SaveBindings(GetCurrentBindingSet())
+	--AttemptToSaveBindings(GetCurrentBindingSet())
 
 	-- Don't allow people to bind these, let's follow blizz standards here. 
 	if (keybind == "BUTTON1") or (keybind == "BUTTON2") then 
@@ -355,7 +355,7 @@ Module.DisableBindMode = function(self)
 end
 
 Module.ApplyBindings = function(self)
-	SaveBindings(GetCurrentBindingSet())
+	AttemptToSaveBindings(GetCurrentBindingSet())
 	if self.bindingsChanged then 
 		self:Print(.1, 1, .1, L["Keybind changes were saved."])
 	else 
@@ -401,10 +401,10 @@ Module.ChangeBindingSet = function(self)
 		-- Load the appropriate binding set
 		if (self:GetBindingFrame().perCharacter:GetChecked()) then
 			LoadBindings(CHARACTER_BINDINGS)
-			SaveBindings(CHARACTER_BINDINGS)
+			AttemptToSaveBindings(CHARACTER_BINDINGS)
 		else
 			LoadBindings(ACCOUNT_BINDINGS)
-			SaveBindings(ACCOUNT_BINDINGS)
+			AttemptToSaveBindings(ACCOUNT_BINDINGS)
 		end
 
 		-- Update the local bindings cache
