@@ -1,6 +1,3 @@
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "UnitAuras requires LibClientBuild to be loaded.")
-
 local LibFrame = CogWheel("LibFrame")
 assert(LibFrame, "UnitAuras requires LibFrame to be loaded.")
 
@@ -22,6 +19,7 @@ local InCombatLockdown = _G.InCombatLockdown
 local UnitBuff = _G.UnitBuff
 local UnitDebuff = _G.UnitDebuff
 local UnitExists = _G.UnitExists
+local UnitGUID = _G.UnitGUID
 local UnitHasVehicleUI = _G.UnitHasVehicleUI
 
 -- Blizzard Textures
@@ -56,28 +54,6 @@ local formatTime = function(time)
 		return ""
 	end	
 end
-
-local formatTime2 = function(time)
-	if time > DAY then -- more than a day
-		time = time + DAY/2
-		return "%.0f%s", time/DAY - time/DAY%1, "d"
-	elseif time > HOUR then -- more than an hour
-		time = time + HOUR/2
-		return "%.0f%s", time/HOUR - time/HOUR%1, "h"
-	elseif time > MINUTE then -- more than a minute
-		time = time + MINUTE/2
-		return "%.0f%s", time/MINUTE - time/MINUTE%1, "m"
-	elseif time > 10 then -- more than 10 seconds
-		return "%.0f", time - time%1
-	elseif time >= 1 then -- more than 5 seconds
-		return "|cffff8800%.0f|r", time - time%1
-	elseif time > 0 then
-		return "|cffff0000%.0f|r", time*10 - time*10%1
-	else
-		return ""
-	end	
-end
-
 
 -- Aura Button Template
 -----------------------------------------------------
@@ -592,10 +568,15 @@ end
 local UpdateElement = function(self, event, unit)
 end
 
-local Update = function(self, event, unit)
+local Update = function(self, event, unit, ...)
 	if (not unit) or (unit ~= self.unit) then 
 		return 
 	end 
+
+	-- Different GUID means a different player or NPC,
+	-- so we want updates to be instant, not smoothed. 
+	local guid = UnitGUID(unit)
+	local forced = event == "Forced"
 
 	-- All three elements can actually contain both buffs and debuffs,
 	-- their element names are only indicating their default behavior. 
@@ -608,6 +589,10 @@ local Update = function(self, event, unit)
 			Auras:PreUpdate(unit)
 		end
 
+		-- Store some basic values on the health element
+		local forced = forced or guid ~= Auras.guid
+		Auras.guid = guid
+	
 		-- Filter strings
 		local buffFilter = Auras.filter or Auras.filterBuffs 
 		local debuffFilter = Auras.filter or Auras.filterDebuffs
@@ -618,7 +603,7 @@ local Update = function(self, event, unit)
 
 		-- Forcefully register cache the auras for the relevant filters
 		-- This is to ensure force updates actually have the right filters and fully updated caches
-		if (event == "Forced") then 
+		if forced then 
 			LibAura:CacheUnitBuffsByFilter(unit, buffFilter)
 			LibAura:CacheUnitDebuffsByFilter(unit, debuffFilter)
 		end 
@@ -639,12 +624,15 @@ local Update = function(self, event, unit)
 		end 
 	end 
 
-	local Buffs = self.Buffs
 	if Buffs then 
 		if Buffs.PreUpdate then
 			Buffs:PreUpdate(unit)
 		end
 
+		-- Store some basic values on the health element
+		local forced = forced or guid ~= Buffs.guid
+		Buffs.guid = guid
+		
 		local buffFilter = Buffs.buffFilterString or Buffs.auraFilterString or Buffs.filter
 		local buffFilterFunc = Buffs.buffFilterFunc or Buffs.auraFilterFunc
 
@@ -653,7 +641,7 @@ local Update = function(self, event, unit)
 
 		-- Forcefully register aura watches for the relevant filters
 		-- This is to ensure force updates actually have the right filters and fully updated caches
-		if (event == "Forced") then 
+		if forced then 
 			LibAura:CacheUnitBuffsByFilter(unit, buffFilter)
 		end 
 		
@@ -666,18 +654,21 @@ local Update = function(self, event, unit)
 		end 
 	end 
 
-	local Debuffs = self.Debuffs
 	if Debuffs then 
 		if Debuffs.PreUpdate then
 			Debuffs:PreUpdate(unit)
 		end
 
+		-- Store some basic values on the health element
+		local forced = forced or guid ~= Debuffs.guid
+		Debuffs.guid = guid
+		
 		local debuffFilter = Debuffs.debuffFilterString or Debuffs.auraFilterString or Debuffs.filter
 		local debuffFilterFunc = Debuffs.debuffFilterFunc or Debuffs.auraFilterFunc
 
 		-- Forcefully register aura watches for the relevant filters
 		-- This is to ensure force updates actually have the right filters and fully updated caches
-		if (event == "Forced") then 
+		if forced then 
 			LibAura:CacheUnitDebuffsByFilter(unit, debuffFilter)
 		end 
 
@@ -694,7 +685,6 @@ end
 
 local Proxy = function(self, ...)
 	return Update(self, ...)
-	--return (self.Auras.Override or Update)(self, ...)
 end 
 
 local ForceUpdate = function(element)
@@ -740,14 +730,6 @@ local Enable = function(self)
 			if (unit == "target") or (unit == "targettarget") then
 				self:RegisterEvent("PLAYER_TARGET_CHANGED", Proxy, true)
 			end
-
-			if (not LibClientBuild:IsClassic()) then 
-				self:RegisterEvent("UNIT_ENTERED_VEHICLE", Proxy)
-				self:RegisterEvent("UNIT_ENTERING_VEHICLE", Proxy)
-				self:RegisterEvent("UNIT_EXITING_VEHICLE", Proxy)
-				self:RegisterEvent("UNIT_EXITED_VEHICLE", Proxy)
-				self:RegisterEvent("VEHICLE_UPDATE", Proxy, true)
-			end 
 		end
 
 		return true
@@ -794,19 +776,11 @@ local Disable = function(self)
 			if (unit == "target") or (unit == "targettarget") then
 				self:UnregisterEvent("PLAYER_TARGET_CHANGED", Proxy)
 			end
-
-			if (not LibClientBuild:IsClassic()) then 
-				self:UnregisterEvent("UNIT_ENTERED_VEHICLE", Proxy)
-				self:UnregisterEvent("UNIT_ENTERING_VEHICLE", Proxy)
-				self:UnregisterEvent("UNIT_EXITING_VEHICLE", Proxy)
-				self:UnregisterEvent("UNIT_EXITED_VEHICLE", Proxy)
-				self:UnregisterEvent("VEHICLE_UPDATE", Proxy)
-			end 
 		end
 	end
 end 
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("Auras", Enable, Disable, Proxy, 42)
+	Lib:RegisterElement("Auras", Enable, Disable, Proxy, 44)
 end 
