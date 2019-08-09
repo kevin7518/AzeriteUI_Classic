@@ -1,0 +1,46 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+
+<!-- Generic library plugins -->
+<Script file='plugins\generic_artifactpower.lua'/>
+<Script file='plugins\generic_clock.lua'/>
+<Script file='plugins\generic_coordinates.lua'/>
+<Script file='plugins\generic_difficulty.lua'/>
+<Script file='plugins\generic_framerate.lua'/>
+<Script file='plugins\generic_groupfinder.lua'/>
+<Script file='plugins\generic_honor.lua'/>
+<Script file='plugins\generic_latency.lua'/>
+<Script file='plugins\generic_mail.lua'/>
+<Script file='plugins\generic_reputation.lua'/>
+<Script file='plugins\generic_xp.lua'/>
+<Script file='plugins\generic_zone.lua'/>
+
+<!-- Unit dependant library plugins -->
+<Script file='plugins\unit_altpower.lua'/>
+<Script file='plugins\unit_auras.lua'/>
+<Script file='plugins\unit_cast.lua'/>
+<Script file='plugins\unit_classification.lua'/>
+<Script file='plugins\unit_classpower.lua'/>
+<Script file='plugins\unit_combat.lua'/>
+<Script file='plugins\unit_crowdcontrol.lua'/>
+<Script file='plugins\unit_extrapower.lua'/>
+<Script file='plugins\unit_groupdebuff.lua'/>
+<Script file='plugins\unit_grouprole.lua'/>
+<Script file='plugins\unit_health.lua'/>
+<Script file='plugins\unit_level.lua'/>
+<Script file='plugins\unit_manatext.lua'/>
+<Script file='plugins\unit_name.lua'/>
+<Script file='plugins\unit_portrait.lua'/>
+<Script file='plugins\unit_power.lua'/>
+<Script file='plugins\unit_range.lua'/>
+<Script file='plugins\unit_raidrole.lua'/>
+<Script file='plugins\unit_raidtarget.lua'/>
+<Script file='plugins\unit_readycheck.lua'/>
+<Script file='plugins\unit_resurrectindicator.lua'/>
+<Script file='plugins\unit_spec.lua'/>
+<Script file='plugins\unit_status.lua'/>
+<Script file='plugins\unit_targeted.lua'/>
+<Script file='plugins\unit_targethighlight.lua'/>
+<Script file='plugins\unit_totem.lua'/>
+<Script file='plugins\unit_threat.lua'/>
+
+</Ui>

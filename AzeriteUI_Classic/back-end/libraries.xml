@@ -1,0 +1,40 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+
+<Script file='libraries\clientbuild.lua'/>
+<Script file='libraries\locale.lua'/>
+<Script file='libraries\hook.lua'/>
+<Script file='libraries\securehook.lua'/>
+<Script file='libraries\message.lua'/>
+<Script file='libraries\event.lua'/>
+<Script file='libraries\scale.lua'/>
+<Script file='libraries\db.lua'/>
+<Script file='libraries\module.lua'/>
+<Script file='libraries\frame.lua'/>
+<Script file='libraries\orb.lua'/>
+<Script file='libraries\statusbar.lua'/>
+<Script file='libraries\spinbar.lua'/>
+<Script file='libraries\sound.lua'/>
+<Script file='libraries\time.lua'/>
+<Script file='libraries\tooltipscanner.lua'/>
+<Script file='libraries\tooltip.lua'/>
+<Script file='libraries\fader.lua'/>
+<Script file='libraries\mover.lua'/>
+<Script file='libraries\shine.lua'/>
+<Script file='libraries\bagbutton.lua'/>
+<Script file='libraries\actionbutton.lua'/>
+<Script file='libraries\widgetcontainer.lua'/>
+<Script file='libraries\unitframe.lua'/>
+<Script file='libraries\blizzard.lua'/>
+<Script file='libraries\slash.lua'/>
+<Script file='libraries\aura.lua'/>
+<Script file='libraries\playerdata.lua'/>
+<Script file='libraries\menu.lua'/>
+<Script file='libraries\quest.lua'/>
+<Script file='libraries\bonusquest.lua'/>
+<Script file='libraries\chatbubble.lua'/>
+<Script file='libraries\chatframe.lua'/>
+<Script file='libraries\minimap.lua'/>
+<Script file='libraries\nameplates.lua'/>
+<Script file='libraries\taint.lua'/> 
+
+</Ui>

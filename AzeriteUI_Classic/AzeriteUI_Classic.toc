@@ -1,0 +1,77 @@
+## Interface: 11302
+## Name: AzeriteUI_Classic
+## Title: |cff7284abAzerite|r|cffffffffUI|r
+## Author: Daniel Troko, Lars Norberg
+## Notes: Custom user graphical interface.|n|nDesign by Daniel Troko.|nCode by Lars Norberg.|n|n|cff4488ffPayPal|r|cffffffff:|r |n|cffffffffwww.paypal.me/AzeriteUI|r|n|n|cff4488ffPatreon|r|cffffffff:|r |n|cffffffffwww.patreon.com/AzeriteUI|r
+## Version: 1.0-Alpha
+## DefaultState: Enabled
+## SavedVariables: AzeriteUI_Classic_DB
+## OptionalDeps: Clique
+## X-Category: Interface Enhancements
+## X-Discord: https://discord.gg/MUSfWXd
+## X-Donate: https://www.paypal.me/azeriteui
+## X-Website: https://www.patreon.com/azeriteui
+## X-Facebook: https://www.facebook.com/azeriteui/
+## X-Instagram: https://instagram.com/azeriteui/
+## X-Reddit: https://www.reddit.com/r/azeriteui/
+## X-Twitter: https://twitter.com/azeriteui
+## X-YouTube: https://www.youtube.com/azeriteui
+## X-License: Custom
+
+# Unique global addon font objects
+FontStyles.xml
+
+# Addon libraries & plugins, the main engine of it all
+back-end\wheel.lua
+back-end\libraries.xml
+back-end\plugins.xml
+
+# Addon localization
+locale\enUS.lua
+locale\deDE.lua
+locale\esES.lua
+locale\esMX.lua
+locale\esMX.lua
+locale\frFR.lua
+locale\itIT.lua
+locale\koKR.lua
+locale\ptBR.lua
+locale\ptPT.lua
+locale\ruRU.lua
+locale\zhCN.lua
+locale\zhTW.lua
+
+# Addon specific data tables and methods. 
+front-end\private.lua
+
+# Addon specific layout and design. 
+front-end\stylesheet.lua
+
+# Main addon module, 
+# all others are children of this one. 
+front-end\root.lua
+
+# Modules which mostly modify Blizzard elements
+front-end\blizzard\chatbubbles.lua
+front-end\blizzard\chatwindows.lua
+front-end\blizzard\floaters.lua
+front-end\blizzard\fonts.lua
+front-end\blizzard\gamemenu.lua
+front-end\blizzard\micromenu.lua
+front-end\blizzard\minimap.lua
+front-end\blizzard\objectivestracker.lua
+front-end\blizzard\popups.lua
+front-end\blizzard\timers.lua
+front-end\blizzard\tooltips.lua
+front-end\blizzard\tradeskillframe.lua
+
+# Modules that mostly create new custom elements
+front-end\custom\actionbars.lua
+front-end\custom\bindings.lua
+front-end\custom\chatfilters.lua
+front-end\custom\explorer.lua
+front-end\custom\grouptools.lua
+front-end\custom\menu.lua
+front-end\custom\nameplates.lua
+front-end\custom\tooltips.lua
+front-end\custom\unitframes.lua

@@ -1,0 +1,19 @@
+package-as: AzeriteUI_Classic
+enable-nolib-creation: no
+
+move-folders:
+    AzeriteUI_Classic/AzeriteUI_Classic: AzeriteUI_Classic
+
+manual-changelog:
+    filename: CHANGELOG.md
+    markup-type: markdown
+
+license-output: LICENSE.txt
+
+ignore:
+    - CHANGELOG.md
+    - CODE_OF_CONDUCT.md
+    - LICENSE.md
+    - README.md
+    - .github
+    
