@@ -8,15 +8,14 @@ It's a work in progress as we never was in the Classic beta. I'll update it as m
 
 ### **Stuff that works:**  
 * Player-, pet-, target- and tot unit frames
-* Minimap, clock, latency, xp
+* Minimap, clock, latency, XP
 * The primary actionbar
 * Game menu (Esc)
-* Castbars (from 1.0.3-Alpha)
-* `/bind` hover keybind system (from 1.0.3-Alpha)
+* Hover Keybind _(from 1.0.3-Alpha)_
+* Micro menu _(from 1.0.4-Alpha)_
+* Options menu _(from 1.0.4-Alpha)_
 
 ### **Stuff not there yet:**  
-* Options menu
-* Micro menu
 * Reputation bar
 
 ### **Stuff that's wonky:**  
