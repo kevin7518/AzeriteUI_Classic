@@ -1,4 +1,4 @@
-local LibSecureButton = CogWheel:Set("LibSecureButton", 58)
+local LibSecureButton = CogWheel:Set("LibSecureButton", 59)
 if (not LibSecureButton) then	
 	return
 end
@@ -77,14 +77,12 @@ LibSecureButton.embeds = LibSecureButton.embeds or {}
 LibSecureButton.buttons = LibSecureButton.buttons or {} 
 LibSecureButton.allbuttons = LibSecureButton.allbuttons or {} 
 LibSecureButton.callbacks = LibSecureButton.callbacks or {} 
-LibSecureButton.controllers = LibSecureButton.controllers or {} -- controllers to return bindings to pet battles, vehicles, etc 
 LibSecureButton.numButtons = LibSecureButton.numButtons or 0 -- total number of spawned buttons 
 
 -- Shortcuts
 local AllButtons = LibSecureButton.allbuttons
 local Buttons = LibSecureButton.buttons
 local Callbacks = LibSecureButton.callbacks
-local Controllers = LibSecureButton.controllers
 
 -- Blizzard Textures
 local EDGE_LOC_TEXTURE = [[Interface\Cooldown\edge-LoC]]
@@ -1293,9 +1291,6 @@ LibSecureButton.SpawnActionButton = function(self, buttonType, parent, buttonTem
 
 	local driver 
 	if (barID == 1) then 
-
-		-- Moving vehicles farther back in the queue, as some overridebars like the ones 
-		-- found in the new 8.1.5 world quest "Cycle of Life" returns positive for both vehicleui and overridebar. 
 		driver = "[form,noform] 0; [bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6"
 
 		local _, playerClass = UnitClass("player")
@@ -1423,69 +1418,10 @@ LibSecureButton.GetActionButtonTooltip = function(self)
 	return LibSecureButton:GetTooltip("CG_ActionButtonTooltip") or LibSecureButton:CreateTooltip("CG_ActionButtonTooltip")
 end
 
-LibSecureButton.GetActionBarControllerPetBattle = function(self)
-	if ((not Controllers[self]) or (not Controllers[self].petBattle)) then 
-
-		-- Get the generic button name without the ID added
-		local name = nameHelper(self)
-
-		-- The blizzard petbattle UI gets its keybinds from the primary action bar, 
-		-- so in order for the petbattle UI keybinds to function properly, 
-		-- we need to temporarily give the primary action bar backs its keybinds.
-		local petbattle = self:CreateFrame("Frame", nil, UIParent, "SecureHandlerAttributeTemplate")
-		petbattle:SetAttribute("_onattributechanged", [[
-			if (name == "state-petbattle") then
-				if (value == "petbattle") then
-					for i = 1,6 do
-						local our_button, blizz_button = ("CLICK ]]..name..[[%.0f:LeftButton"):format(i), ("ACTIONBUTTON%.0f"):format(i)
-
-						-- Grab the keybinds from our own primary action bar,
-						-- and assign them to the default blizzard bar. 
-						-- The pet battle system will in turn get its bindings 
-						-- from the default blizzard bar, and the magic works! :)
-						
-						for k=1,select("#", GetBindingKey(our_button)) do
-							local key = select(k, GetBindingKey(our_button)) -- retrieve the binding key from our own primary bar
-							self:SetBinding(true, key, blizz_button) -- assign that key to the default bar
-						end
-						
-						-- do the same for the default UIs bindings
-						for k=1,select("#", GetBindingKey(blizz_button)) do
-							local key = select(k, GetBindingKey(blizz_button))
-							self:SetBinding(true, key, blizz_button)
-						end	
-					end
-				else
-					-- Return the key bindings to whatever buttons they were
-					-- assigned to before we so rudely grabbed them! :o
-					self:ClearBindings()
-				end
-			end
-		]])
-
-		-- Do we ever need to update his?
-		RegisterAttributeDriver(petbattle, "state-petbattle", "[petbattle]petbattle;nopetbattle")
-
-		if (not Controllers[self]) then 
-			Controllers[self] = {}
-		end
-		Controllers[self].petBattle = petbattle
-	end
-	return Controllers[self].petBattle
-end
-
-LibSecureButton.GetActionBarControllerVehicle = function(self)
-end
-
 -- Modules should call this at UPDATE_BINDINGS and the first PLAYER_ENTERING_WORLD
 LibSecureButton.UpdateActionButtonBindings = function(self)
-
 	-- "BONUSACTIONBUTTON%.0f" -- pet bar
 	-- "SHAPESHIFTBUTTON%.0f" -- stance bar
-
-	local mainBarUsed
-	local petBattleUsed, vehicleUsed
-
 	for button in self:GetAllActionButtonsByType("action") do 
 
 		local pager = button:GetPager()
@@ -1501,10 +1437,6 @@ LibSecureButton.UpdateActionButtonBindings = function(self)
 		local bindingAction
 		if (barID == 1) then 
 			bindingAction = ("ACTIONBUTTON%.0f"):format(buttonID)
-
-			-- We've used the main bar, and need to update the controllers
-			mainBarUsed = true
-
 		elseif (barID == BOTTOMLEFT_ACTIONBAR_PAGE) then 
 			bindingAction = ("MULTIACTIONBAR1BUTTON%.0f"):format(buttonID)
 
@@ -1532,14 +1464,6 @@ LibSecureButton.UpdateActionButtonBindings = function(self)
 			end	
 		end
 	end 
-
-	if (mainBarUsed and not petBattleUsed) then 
-		self:GetActionBarControllerPetBattle()
-	end 
-
-	if (mainBarUsed and not vehicleUsed) then 
-		self:GetActionBarControllerVehicle()
-	end 
 end 
 
 -- This will cause multiple updates when library is updated. Hmm....
@@ -1555,8 +1479,6 @@ local embedMethods = {
 	GetActionButtonTooltip = true, 
 	GetAllActionButtonsOrdered = true,
 	GetAllActionButtonsByType = true,
-	GetActionBarControllerPetBattle = true,
-	GetActionBarControllerVehicle = true,
 	UpdateActionButtonBindings = true,
 }
 
