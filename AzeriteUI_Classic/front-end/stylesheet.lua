@@ -913,13 +913,6 @@ local ActionBars = {
 	KeybindShadowColor = { 0, 0, 0, 1 },
 	KeybindColor = { Colors.quest.gray[1], Colors.quest.gray[2], Colors.quest.gray[3], .75 },
 
-	-- Spell Highlights
-	UseSpellHighlight = true, 
-		SpellHighlightPlace = { "CENTER", 0, 0 },
-		SpellHighlightSize = { 64/(122/256), 64/(122/256) },
-		SpellHighlightTexture = GetMedia("actionbutton-spellhighlight"),
-		SpellHighlightColor = { 255/255, 225/255, 125/255, .75 }, 
-
 	-- Spell AutoCast
 	UseSpellAutoCast = true, 
 		SpellAutoCastPlace = { "CENTER", 0, 0 },
@@ -1022,98 +1015,8 @@ local BlizzardChatFrames = {
 -- Blizzard Floaters
 local BlizzardFloaterHUD = {
 	Colors = Colors,
-
-	StyleExtraActionButton = true, 
-		ExtraActionButtonFramePlace = { "CENTER", 210 + 27, -60 },
-		ExtraActionButtonPlace = { "CENTER", 0, 0 },
-		ExtraActionButtonSize = { 64, 64 },
-
-		ExtraActionButtonIconPlace = { "CENTER", 0, 0 },
-		ExtraActionButtonIconSize = { 44, 44 },
-		ExtraActionButtonIconMaskTexture = GetMedia("actionbutton_circular_mask"),  
-
-		ExtraActionButtonCount = GetFont(18, true),
-		ExtraActionButtonCountPlace = { "BOTTOMRIGHT", -3, 3 },
-		ExtraActionButtonCountJustifyH = "CENTER",
-		ExtraActionButtonCountJustifyV = "BOTTOM",
-
-		ExtraActionButtonCooldownSize = { 44, 44 },
-		ExtraActionButtonCooldownPlace = { "CENTER", 0, 0 },
-		ExtraActionButtonCooldownSwipeTexture = GetMedia("actionbutton_circular_mask"),
-		ExtraActionButtonCooldownBlingTexture = GetMedia("blank"),
-		ExtraActionButtonCooldownSwipeColor = { 0, 0, 0, .5 },
-		ExtraActionButtonCooldownBlingColor = { 0, 0, 0 , 0 },
-		ExtraActionButtonShowCooldownSwipe = true,
-		ExtraActionButtonShowCooldownBling = true,
-
-		ExtraActionButtonKeybindPlace = { "TOPLEFT", 5, -5 },
-		ExtraActionButtonKeybindJustifyH = "CENTER",
-		ExtraActionButtonKeybindJustifyV = "BOTTOM",
-		ExtraActionButtonKeybindFont = GetFont(15, true),
-		ExtraActionButtonKeybindShadowOffset = { 0, 0 },
-		ExtraActionButtonKeybindShadowColor = { 0, 0, 0, 1 },
-		ExtraActionButtonKeybindColor = { Colors.quest.gray[1], Colors.quest.gray[2], Colors.quest.gray[3], .75 },
-	
-		UseExtraActionButtonBorderTexture = true,
-			ExtraActionButtonBorderPlace = { "CENTER", 0, 0 },
-			ExtraActionButtonBorderSize = { 64/(122/256), 64/(122/256) },
-			ExtraActionButtonBorderTexture = GetMedia("actionbutton-border"),
-			ExtraActionButtonBorderDrawLayer = { "BORDER", 1 },
-			ExtraActionButtonBorderColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3], 1 },
-
-		ExtraActionButtonKillStyleTexture = true, 
-
-	StyleZoneAbilityButton = true, 
-		ZoneAbilityButtonFramePlace = { "CENTER", 210 + 27, -60 },
-		ZoneAbilityButtonPlace = { "CENTER", 0, 0 },
-		ZoneAbilityButtonSize = { 64, 64 },
-
-		ZoneAbilityButtonIconPlace = { "CENTER", 0, 0 },
-		ZoneAbilityButtonIconSize = { 44, 44 },
-		ZoneAbilityButtonIconMaskTexture = GetMedia("actionbutton_circular_mask"),  
-
-		ZoneAbilityButtonCount = GetFont(18, true),
-		ZoneAbilityButtonCountPlace = { "BOTTOMRIGHT", -3, 3 },
-		ZoneAbilityButtonCountJustifyH = "CENTER",
-		ZoneAbilityButtonCountJustifyV = "BOTTOM",
-
-		ZoneAbilityButtonCooldownSize = { 44, 44 },
-		ZoneAbilityButtonCooldownPlace = { "CENTER", 0, 0 },
-		ZoneAbilityButtonCooldownSwipeTexture = GetMedia("actionbutton_circular_mask"),
-		ZoneAbilityButtonCooldownBlingTexture = GetMedia("blank"),
-		ZoneAbilityButtonCooldownSwipeColor = { 0, 0, 0, .5 },
-		ZoneAbilityButtonCooldownBlingColor = { 0, 0, 0 , 0 },
-		ZoneAbilityButtonShowCooldownSwipe = true,
-		ZoneAbilityButtonShowCooldownBling = true,
-
-		UseZoneAbilityButtonBorderTexture = true,
-			ZoneAbilityButtonBorderPlace = { "CENTER", 0, 0 },
-			ZoneAbilityButtonBorderSize = { 64/(122/256), 64/(122/256) },
-			ZoneAbilityButtonBorderTexture = GetMedia("actionbutton-border"),
-			ZoneAbilityButtonBorderDrawLayer = { "BORDER", 1 },
-			ZoneAbilityButtonBorderColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3], 1 },
-
-		ZoneAbilityButtonKillStyleTexture = true, 
-
-	StyleDurabilityFrame = true, 
-		DurabilityFramePlace = { "CENTER", 190, 0 },
-
-	StyleVehicleSeatIndicator = true, 
-		VehicleSeatIndicatorPlace = { "CENTER", 424, 0 }, 
-
-	StyleTalkingHeadFrame = true, 
-		StyleTalkingHeadFramePlace = { "TOP", 0, -(60 + 40) }, 
-
-	StyleAlertFrames = true, 
-		AlertFramesPlace = { "TOP", "UICenter", "TOP", 0, -40 }, 
-		AlertFramesPlaceTalkingHead = { "TOP", "UICenter", "TOP", 0, -240 }, 
-		AlertFramesSize = { 180, 20 },
-		AlertFramesPosition = "TOP",
-		AlertFramesAnchor = "BOTTOM", 
-		AlertFramesOffset = -10,
-
-	StyleErrorFrame = true, 
-		ErrorFrameStrata = "LOW"
+	StyleDurabilityFrame = true, DurabilityFramePlace = { "CENTER", 190, 0 },
+	StyleErrorFrame = true, ErrorFrameStrata = "LOW"
 }
 
 -- Blizzard Game Menu (Esc)
@@ -1538,9 +1441,6 @@ local NamePlates = {
 		HealthColorCivilian = true, -- color friendly players as civilians
 		HealthColorReaction = true,
 		HealthColorHealth = true,
-		HealthColorThreat = true,
-		HealthThreatFeedbackUnit = "player",
-		HealthThreatHideSolo = false, 
 		HealthFrequent = true,
 
 	UseHealthBackdrop = true, 
@@ -1607,14 +1507,6 @@ local NamePlates = {
 			CastShieldColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
 
 		CastPostUpdate = NamePlate_CastBar_PostUpdate,
-
-	UseThreat = true, 
-		ThreatPlace = { "CENTER", 0, 0 },
-		ThreatSize = { 84*256/(256-28), 14*64/(64-28) },
-		ThreatTexture = GetMedia("nameplate_glow"),
-		ThreatColor = { 1, 1, 1, 1 },
-		ThreatDrawLayer = { "BACKGROUND", -3 },
-		ThreatHideSolo = true, 
 
 	UseAuras = true, 
 		AuraFrameSize = { 30*3 + 4*2, 30*2 + 4  }, 
@@ -2209,37 +2101,6 @@ local UnitFramePlayer = {
 			LoveCombatIndicatorDrawLayer = {"OVERLAY", -2 },
 			LoveCombatIndicatorColor = { Colors.ui.stone[1] *.75, Colors.ui.stone[2] *.75, Colors.ui.stone[3] *.75 }, 
 		
-	UseThreat = true,
-		ThreatHideSolo = true, 
-		ThreatFadeOut = 3, 
-
-		UseHealthThreat = true, 
-			ThreatHealthPlace = { "CENTER", 1, -1 },
-			ThreatHealthSize = { 716, 188 },
-			ThreatHealthDrawLayer = { "BACKGROUND", -2 },
-			ThreatHealthAlpha = .75, 
-
-		UsePowerThreat = true, 
-			ThreatPowerPlace = { "CENTER", 0, 0 }, 
-			ThreatPowerSize = { 120/157*256, 140/183*256 },
-			ThreatPowerTexture = GetMedia("power_crystal_glow"),
-			ThreatPowerDrawLayer = { "BACKGROUND", -2 },
-			ThreatPowerAlpha = .75,
-
-		UsePowerBgThreat = true, 
-			ThreatPowerBgPlace = { "BOTTOM", 7, -51 }, 
-			ThreatPowerBgSize = { 198,98 },
-			ThreatPowerBgTexture = GetMedia("pw_crystal_case_glow"),
-			ThreatPowerBgDrawLayer = { "BACKGROUND", -3 },
-			ThreatPowerBgAlpha = .75,
-
-		UseManaThreat = true, 
-			ThreatManaPlace = { "CENTER", 0, 0 }, 
-			ThreatManaSize = { 188, 188 },
-			ThreatManaTexture = GetMedia("orb_case_glow"),
-			ThreatManaDrawLayer = { "BACKGROUND", -2 },
-			ThreatManaAlpha = .75,
-
 	UseMana = true, 
 		ManaType = "Orb",
 		ManaExclusiveResource = "MANA", 
@@ -2326,7 +2187,6 @@ local UnitFramePlayer = {
 		AuraBorderBackdropBorderColor = { Colors.ui.stone[1] *.3, Colors.ui.stone[2] *.3, Colors.ui.stone[3] *.3 },
 
 	UseProgressiveFrames = true,
-		UseProgressiveHealthThreat = true, 
 		UseProgressiveManaForeground = true, 
 
 		SeasonedHealthSize = { 385, 40 },
@@ -2342,7 +2202,6 @@ local UnitFramePlayer = {
 		},
 		SeasonedHealthBackdropTexture = GetMedia("hp_cap_case"),
 		SeasonedHealthBackdropColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
-		SeasonedHealthThreatTexture = GetMedia("hp_cap_case_glow"),
 		SeasonedPowerForegroundTexture = GetMedia("pw_crystal_case"),
 		SeasonedPowerForegroundColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
 		SeasonedCastSize = { 385, 40 },
@@ -2364,7 +2223,6 @@ local UnitFramePlayer = {
 		},
 		HardenedHealthBackdropTexture = GetMedia("hp_mid_case"),
 		HardenedHealthBackdropColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
-		HardenedHealthThreatTexture = GetMedia("hp_mid_case_glow"),
 		HardenedPowerForegroundTexture = GetMedia("pw_crystal_case"),
 		HardenedPowerForegroundColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
 		HardenedCastSize = { 385, 37 },
@@ -2385,14 +2243,12 @@ local UnitFramePlayer = {
 		},
 		NoviceHealthBackdropTexture = GetMedia("hp_low_case"),
 		NoviceHealthBackdropColor = { Colors.ui.wood[1], Colors.ui.wood[2], Colors.ui.wood[3] },
-		NoviceHealthThreatTexture = GetMedia("hp_low_case_glow"),
 		NovicePowerForegroundTexture = GetMedia("pw_crystal_case_low"),
 		NovicePowerForegroundColor = { Colors.ui.wood[1], Colors.ui.wood[2], Colors.ui.wood[3] },
 		NoviceCastSize = { 385, 37 },
 		NoviceCastTexture = GetMedia("hp_lowmid_bar"),
 		NoviceManaOrbTexture = GetMedia("orb_case_low"),
 		NoviceManaOrbColor = { Colors.ui.wood[1], Colors.ui.wood[2], Colors.ui.wood[3] },
-
 }
 
 -- PlayerHUD (combo points and castbar)
@@ -2840,51 +2696,6 @@ local UnitFramePlayerHUD = {
 				element.powerStyle = style
 			end 
 		end, 
-
-	UsePlayerAltPowerBar = true,
-		PlayerAltPowerBarPlace = { "CENTER", "UICenter", "CENTER", 0, -(133 + 56)  }, 
-		PlayerAltPowerBarSize = Constant.SmallBar,
-		PlayerAltPowerBarTexture = Constant.SmallBarTexture, 
-		PlayerAltPowerBarColor = { Colors.power.ALTERNATE[1], Colors.power.ALTERNATE[2], Colors.power.ALTERNATE[3], .69 }, 
-		PlayerAltPowerBarOrientation = "RIGHT",
-		PlayerAltPowerBarSparkMap = {
-			top = {
-				{ keyPercent =   0/128, offset = -16/32 }, 
-				{ keyPercent =  10/128, offset =   0/32 }, 
-				{ keyPercent = 119/128, offset =   0/32 }, 
-				{ keyPercent = 128/128, offset = -16/32 }
-			},
-			bottom = {
-				{ keyPercent =   0/128, offset = -16/32 }, 
-				{ keyPercent =  10/128, offset =   0/32 }, 
-				{ keyPercent = 119/128, offset =   0/32 }, 
-				{ keyPercent = 128/128, offset = -16/32 }
-			}
-		},
-
-		UsePlayerAltPowerBarBackground = true, 
-			PlayerAltPowerBarBackgroundPlace = { "CENTER", 1, -2 }, 
-			PlayerAltPowerBarBackgroundSize = { 193,93 },
-			PlayerAltPowerBarBackgroundTexture = GetMedia("cast_back"), 
-			PlayerAltPowerBarBackgroundDrawLayer = { "BACKGROUND", 1 },
-			PlayerAltPowerBarBackgroundColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
-			
-		UsePlayerAltPowerBarValue = true, 
-			PlayerAltPowerBarValuePlace = { "CENTER", 0, 0 },
-			PlayerAltPowerBarValueFont = GetFont(14, true),
-			PlayerAltPowerBarValueDrawLayer = { "OVERLAY", 1 },
-			PlayerAltPowerBarValueJustifyH = "CENTER",
-			PlayerAltPowerBarValueJustifyV = "MIDDLE",
-			PlayerAltPowerBarValueColor = { Colors.highlight[1], Colors.highlight[2], Colors.highlight[3], .5 },
-
-		UsePlayerAltPowerBarName = true, 
-			PlayerAltPowerBarNamePlace = { "TOP", 0, -(12 + 14) },
-			PlayerAltPowerBarNameFont = GetFont(15, true),
-			PlayerAltPowerBarNameDrawLayer = { "OVERLAY", 1 },
-			PlayerAltPowerBarNameJustifyH = "CENTER",
-			PlayerAltPowerBarNameJustifyV = "MIDDLE",
-			PlayerAltPowerBarNameColor = { Colors.highlight[1], Colors.highlight[2], Colors.highlight[3], .5 },
-
 }
 
 -- Target
@@ -2916,9 +2727,6 @@ local UnitFrameTarget = {
 		HealthColorDisconnected = true, -- color disconnected units
 		HealthColorClass = true, -- color players by class 
 		HealthColorReaction = true, -- color NPCs by their reaction standing with us
-		HealthColorThreat = true, 
-			HealthThreatFeedbackUnit = "player",
-			HealthThreatHideSolo = false, 
 		HealthColorHealth = false, -- color anything else in the default health color
 		HealthFrequentUpdates = true, -- listen to frequent health events for more accurate updates
 
@@ -3163,22 +2971,6 @@ local UnitFrameTarget = {
 			CastBarValueJustifyV = "MIDDLE",
 			CastBarValueFont = GetFont(18, true),
 			CastBarValueColor = { Colors.highlight[1], Colors.highlight[2], Colors.highlight[3], .5 },
-		
-	UseThreat = true,
-		ThreatHideSolo = true, 
-		ThreatFadeOut = 3, 
-
-		UseHealthThreat = true, 
-			ThreatHealthTexCoord = { 1,0,0,1 },
-			ThreatHealthDrawLayer = { "BACKGROUND", -2 },
-			ThreatHealthAlpha = .75, 
-
-		UsePortraitThreat = true, 
-			ThreatPortraitPlace = { "CENTER", 0, 0 }, 
-			ThreatPortraitSize = { 187, 187 },
-			ThreatPortraitTexture = GetMedia("portrait_frame_glow"),
-			ThreatPortraitDrawLayer = { "BACKGROUND", -2 },
-			ThreatPortraitAlpha = .75,
 
 	UseAuras = true,
 		AuraSize = 40, -- aurasize
@@ -3233,9 +3025,7 @@ local UnitFrameTarget = {
 	UseProgressiveFrames = true,
 		UseProgressiveHealth = true, 
 		UseProgressiveHealthBackdrop = true, 
-		UseProgressiveHealthThreat = true, 
 		UseProgressiveCastBar = true, 
-		UseProgressiveThreat = true, 
 		UseProgressivePortrait = true, 
 
 		BossHealthPlace = { "TOPRIGHT", -27, -27 }, 
@@ -3261,11 +3051,8 @@ local UnitFrameTarget = {
 		BossHealthPercentVisible = true, 
 		BossHealthBackdropPlace = { "CENTER", -.5, 1 }, 
 		BossHealthBackdropSize = { 694, 190 }, 
-		BossHealthThreatPlace = { "CENTER", -.5, 1 }, 
-		BossHealthThreatSize = { 694, 190 }, 
 		BossHealthBackdropTexture = GetMedia("hp_boss_case"),
 		BossHealthBackdropColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
-		BossHealthThreatTexture = GetMedia("hp_boss_case_glow"),
 		BossPowerForegroundTexture = GetMedia("pw_crystal_case"),
 		BossPowerForegroundColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
 		BossCastPlace = { "TOPRIGHT", -27, -27 }, 
@@ -3308,9 +3095,6 @@ local UnitFrameTarget = {
 		SeasonedHealthBackdropSize = { 716, 188 },
 		SeasonedHealthBackdropTexture = GetMedia("hp_cap_case"),
 		SeasonedHealthBackdropColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
-		SeasonedHealthThreatPlace = { "CENTER", -1, .5  +1 }, 
-		SeasonedHealthThreatSize = { 716, 188 }, 
-		SeasonedHealthThreatTexture = GetMedia("hp_cap_case_glow"),
 		SeasonedPowerForegroundTexture = GetMedia("pw_crystal_case"),
 		SeasonedPowerForegroundColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
 		SeasonedCastPlace = { "TOPRIGHT", -27, -27 }, 
@@ -3347,9 +3131,6 @@ local UnitFrameTarget = {
 		HardenedHealthBackdropSize = { 716, 188 }, 
 		HardenedHealthBackdropTexture = GetMedia("hp_mid_case"),
 		HardenedHealthBackdropColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
-		HardenedHealthThreatPlace = { "CENTER", -1, -.5 +1 }, 
-		HardenedHealthThreatSize = { 716, 188 }, 
-		HardenedHealthThreatTexture = GetMedia("hp_mid_case_glow"),
 		HardenedPowerForegroundTexture = GetMedia("pw_crystal_case"),
 		HardenedPowerForegroundColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] },
 		HardenedCastPlace = { "TOPRIGHT", -27, -27 }, 
@@ -3385,9 +3166,6 @@ local UnitFrameTarget = {
 		NoviceHealthBackdropSize = { 716, 188 }, 
 		NoviceHealthBackdropTexture = GetMedia("hp_low_case"),
 		NoviceHealthBackdropColor = { Colors.ui.wood[1], Colors.ui.wood[2], Colors.ui.wood[3] },
-		NoviceHealthThreatPlace = { "CENTER", -1, -.5 +1 }, 
-		NoviceHealthThreatSize = { 716, 188 }, 
-		NoviceHealthThreatTexture = GetMedia("hp_low_case_glow"),
 		NovicePowerForegroundTexture = GetMedia("pw_crystal_case_low"),
 		NovicePowerForegroundColor = { Colors.ui.wood[1], Colors.ui.wood[2], Colors.ui.wood[3] },
 		NoviceCastPlace = { "TOPRIGHT", -27, -27 }, 
@@ -3429,9 +3207,6 @@ local UnitFrameTarget = {
 		CritterHealthBackdropSize = { 98,96 }, 
 		CritterHealthBackdropTexture = GetMedia("hp_critter_case"),
 		CritterHealthBackdropColor = { Colors.ui.wood[1], Colors.ui.wood[2], Colors.ui.wood[3] },
-		CritterHealthThreatPlace = { "CENTER", 0, 1 +1 }, 
-		CritterHealthThreatSize = { 98,96 }, 
-		CritterHealthThreatTexture = GetMedia("hp_critter_case_glow"),
 		CritterPowerForegroundTexture = GetMedia("pw_crystal_case_low"),
 		CritterPowerForegroundColor = { Colors.ui.wood[1], Colors.ui.wood[2], Colors.ui.wood[3] },
 		CritterCastPlace = { "TOPRIGHT", -24, -24 },

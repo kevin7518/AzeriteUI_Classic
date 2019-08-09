@@ -1,11 +1,7 @@
-local LibSound = CogWheel:Set("LibSound", 1)
+local LibSound = CogWheel:Set("LibSound", 2)
 if (not LibSound) then	
 	return
 end
-
--- We require this library to properly handle startup events
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibSound requires LibClientBuild to be loaded.")
 
 -- Lua API
 local _G = _G
@@ -13,7 +9,7 @@ local pairs = pairs
 
 -- Blizzard API
 local PlaySoundFile = _G.PlaySoundFile
-local PlaySoundKitID = LibClientBuild:IsBuild("7.3.0") and _G.PlaySound or _G.PlaySoundKitID
+local PlaySoundKitID = _G.PlaySound -- or _G.PlaySoundKitID
 local StopSound = _G.StopSound
 
 LibSound.embeds = LibSound.embeds or {}

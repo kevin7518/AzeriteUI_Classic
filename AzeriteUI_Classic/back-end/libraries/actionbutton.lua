@@ -1,12 +1,7 @@
-local LibSecureButton = CogWheel:Set("LibSecureButton", 55)
+local LibSecureButton = CogWheel:Set("LibSecureButton", 58)
 if (not LibSecureButton) then	
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibSecureButton requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild:IsClassic()
 
 local LibEvent = CogWheel("LibEvent")
 assert(LibEvent, "LibSecureButton requires LibEvent to be loaded.")
@@ -25,7 +20,6 @@ LibEvent:Embed(LibSecureButton)
 LibFrame:Embed(LibSecureButton)
 LibSound:Embed(LibSecureButton)
 LibTooltip:Embed(LibSecureButton)
-LibClientBuild:Embed(LibSecureButton)
 
 -- Lua API
 local _G = _G
@@ -62,7 +56,6 @@ local GetMacroSpell = _G.GetMacroSpell
 local GetOverrideBarIndex = _G.GetOverrideBarIndex
 local GetTempShapeshiftBarIndex = _G.GetTempShapeshiftBarIndex
 local GetTime = _G.GetTime
-local GetVehicleBarIndex = _G.GetVehicleBarIndex
 local HasAction = _G.HasAction
 local IsActionInRange = _G.IsActionInRange
 local IsAutoCastPetAction = _G.C_ActionBar.IsAutoCastPetAction
@@ -74,12 +67,10 @@ local SetClampedTextureRotation = _G.SetClampedTextureRotation
 local UnitClass = _G.UnitClass
 
 -- TODO: remove and fix
-if LibClientBuild:IsClassic() then 
-	GetOverrideBarIndex = function() return 0 end
-	GetVehicleBarIndex = function() return 0 end
-	GetTempShapeshiftBarIndex = function() return 0 end
-	GetVehicleBarIndex = function() return 0 end
-end 
+GetOverrideBarIndex = function() return 0 end
+GetVehicleBarIndex = function() return 0 end
+GetTempShapeshiftBarIndex = function() return 0 end
+GetVehicleBarIndex = function() return 0 end
 
 -- Doing it this way to make the transition to library later on easier
 LibSecureButton.embeds = LibSecureButton.embeds or {} 
@@ -348,7 +339,7 @@ local Update = function(self, event, ...)
 			self.queuedForMacroUpdate = nil
 		end 
 
-	elseif (event == "UPDATE_SHAPESHIFT_FORM") or (event == "UPDATE_VEHICLE_ACTIONBAR") then 
+	elseif (event == "UPDATE_SHAPESHIFT_FORM") then 
 		self:Update()
 
 	elseif (event == "PLAYER_ENTER_COMBAT") or (event == "PLAYER_LEAVE_COMBAT") then
@@ -356,7 +347,6 @@ local Update = function(self, event, ...)
 
 	elseif (event == "ACTIONBAR_SLOT_CHANGED") then
 		if ((arg1 == 0) or (arg1 == self.buttonAction)) then
-			self.SpellHighlight:Hide()
 			self:Update()
 			self:UpdateAutoCastMacro()
 		end
@@ -367,9 +357,7 @@ local Update = function(self, event, ...)
 	elseif (event == "ACTIONBAR_UPDATE_USABLE") then
 		self:UpdateUsable()
 
-	elseif 	(event == "ACTIONBAR_UPDATE_STATE") or
-			((event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") and (arg1 == "player")) or
-			((event == "COMPANION_UPDATE") and (arg1 == "MOUNT")) then
+	elseif 	(event == "ACTIONBAR_UPDATE_STATE") then
 		self:UpdateCheckedState()
 
 	elseif (event == "CURSOR_UPDATE") 
@@ -389,49 +377,17 @@ local Update = function(self, event, ...)
 	elseif (event == "PLAYER_MOUNT_DISPLAY_CHANGED") then 
 		self:UpdateUsable()
 
-	elseif (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW") then
-		local spellID = self:GetSpellID()
-		if (spellID and (spellID == arg1)) then
-			self.SpellHighlight:Show()
-		else
-			local actionType, id = GetActionInfo(self.buttonAction)
-			if (actionType == "flyout") and FlyoutHasSpell(id, arg1) then
-				self.SpellHighlight:Show()
-			end
-		end
-
-	elseif (event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE") then
-		local spellID = self:GetSpellID()
-		if (spellID and (spellID == arg1)) then
-			self.SpellHighlight:Hide()
-		else
-			local actionType, id = GetActionInfo(self.buttonAction)
-			if actionType == "flyout" and FlyoutHasSpell(id, arg1) then
-				self.SpellHighlight:Hide()
-			end
-		end
-
 	elseif (event == "SPELL_UPDATE_CHARGES") then
 		self:UpdateCount()
 
 	elseif (event == "SPELL_UPDATE_ICON") then
 		self:Update() -- really? how often is this called?
 
-	elseif (event == "TRADE_SKILL_SHOW") or (event == "TRADE_SKILL_CLOSE") or (event == "ARCHAEOLOGY_CLOSED") then
+	elseif (event == "TRADE_SKILL_SHOW") or (event == "TRADE_SKILL_CLOSE") then
 		self:UpdateCheckedState()
 
 	elseif (event == "UPDATE_BINDINGS") then
 		self:UpdateBinding()
-
-	elseif (event == "UPDATE_SUMMONPETS_ACTION") then 
-		local actionType, id = GetActionInfo(self.buttonAction)
-		if (actionType == "summonpet") then
-			local texture = GetActionTexture(self.buttonAction)
-			if texture then
-				self.Icon:SetTexture(texture)
-			end
-		end
-
 	end 
 end
 
@@ -545,7 +501,6 @@ ActionButton.Update = function(self)
 	self:UpdateFlash()
 	self:UpdateUsable()
 	self:UpdateGrid()
-	self:UpdateSpellHighlight()
 	self:UpdateAutoCast()
 	self:UpdateFlyout()
 
@@ -777,13 +732,7 @@ ActionButton.UpdateGrid = function(self)
 		if HasAction(self.buttonAction) and (self:GetSpellID() ~= 0) then 
 			return self:SetAlpha(1)
 		elseif (CursorHasSpell() or CursorHasItem()) then 
-			if IS_CLASSIC then 
-				return self:SetAlpha(1)
-			else
-				if (not UnitHasVehicleUI("player")) and (not HasOverrideActionBar()) and (not HasVehicleActionBar()) and (not HasTempShapeshiftActionBar()) then
-					return self:SetAlpha(1)
-				end  
-			end 
+			return self:SetAlpha(1)
 		else 
 			local cursor = GetCursorInfo()
 			if cursor == "petaction" or cursor == "spell" or cursor == "macro" or cursor == "mount" or cursor == "item" or cursor == "battlepet" then 
@@ -792,19 +741,6 @@ ActionButton.UpdateGrid = function(self)
 		end 
 	end 
 	self:SetAlpha(0)
-end
-
-ActionButton.UpdateSpellHighlight = function(self)
-	if IS_CLASSIC then 
-		self.SpellHighlight:Hide()
-		return
-	end
-	local spellId = self:GetSpellID()
-	if (spellId and IsSpellOverlayed(spellId)) then
-		self.SpellHighlight:Show()
-	else
-		self.SpellHighlight:Hide()
-	end
 end
 
 -- Called when the usable state of the button changes
@@ -913,7 +849,6 @@ ActionButton.OnEnable = function(self)
 	self:RegisterEvent("ACTIONBAR_UPDATE_USABLE", Update)
 	self:RegisterEvent("ACTIONBAR_HIDEGRID", Update)
 	self:RegisterEvent("ACTIONBAR_SHOWGRID", Update)
-	--self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED", Update)
 	self:RegisterEvent("CURSOR_UPDATE", Update)
 	self:RegisterEvent("LOSS_OF_CONTROL_ADDED", Update)
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", Update)
@@ -924,26 +859,14 @@ ActionButton.OnEnable = function(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", Update)
 	self:RegisterEvent("PLAYER_LEAVE_COMBAT", Update)
 	self:RegisterEvent("PLAYER_MOUNT_DISPLAY_CHANGED", Update)
-	--self:RegisterEvent("PLAYER_REGEN_ENABLED", Update)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", Update)
 	self:RegisterEvent("SPELL_UPDATE_CHARGES", Update)
 	self:RegisterEvent("SPELL_UPDATE_ICON", Update)
 	self:RegisterEvent("TRADE_SKILL_CLOSE", Update)
 	self:RegisterEvent("TRADE_SKILL_SHOW", Update)
-	--self:RegisterEvent("SPELLS_CHANGED", Update)
 	self:RegisterEvent("UPDATE_BINDINGS", Update)
 	self:RegisterEvent("UPDATE_SHAPESHIFT_FORM", Update)
 
-	if (not LibClientBuild:IsClassic()) then 
-		self:RegisterEvent("ARCHAEOLOGY_CLOSED", Update)
-		self:RegisterEvent("COMPANION_UPDATE", Update)
-		self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE", Update)
-		self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW", Update)
-		self:RegisterEvent("UNIT_ENTERED_VEHICLE", Update)
-		self:RegisterEvent("UNIT_EXITED_VEHICLE", Update)
-		self:RegisterEvent("UPDATE_SUMMONPETS_ACTION", Update)
-		self:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR", Update)
-	end 
 end
 
 ActionButton.OnDisable = function(self)
@@ -953,7 +876,6 @@ ActionButton.OnDisable = function(self)
 	self:UnregisterEvent("ACTIONBAR_UPDATE_USABLE", Update)
 	self:UnregisterEvent("ACTIONBAR_HIDEGRID", Update)
 	self:UnregisterEvent("ACTIONBAR_SHOWGRID", Update)
-	--self:UnregisterEvent("CURRENT_SPELL_CAST_CHANGED", Update)
 	self:UnregisterEvent("CURSOR_UPDATE", Update)
 	self:UnregisterEvent("LOSS_OF_CONTROL_ADDED", Update)
 	self:UnregisterEvent("LOSS_OF_CONTROL_UPDATE", Update)
@@ -964,26 +886,13 @@ ActionButton.OnDisable = function(self)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD", Update)
 	self:UnregisterEvent("PLAYER_LEAVE_COMBAT", Update)
 	self:UnregisterEvent("PLAYER_MOUNT_DISPLAY_CHANGED", Update)
-	--self:UnregisterEvent("PLAYER_REGEN_ENABLED", Update)
 	self:UnregisterEvent("PLAYER_TARGET_CHANGED", Update)
 	self:UnregisterEvent("SPELL_UPDATE_CHARGES", Update)
 	self:UnregisterEvent("SPELL_UPDATE_ICON", Update)
 	self:UnregisterEvent("TRADE_SKILL_CLOSE", Update)
 	self:UnregisterEvent("TRADE_SKILL_SHOW", Update)
-	--self:UnregisterEvent("SPELLS_CHANGED", Update)
 	self:UnregisterEvent("UPDATE_BINDINGS", Update)
 	self:UnregisterEvent("UPDATE_SHAPESHIFT_FORM", Update)
-
-	if (not LibClientBuild:IsClassic()) then 
-		self:UnregisterEvent("ARCHAEOLOGY_CLOSED", Update)
-		self:UnregisterEvent("COMPANION_UPDATE", Update)
-		self:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE", Update)
-		self:UnregisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW", Update)
-		self:UnregisterEvent("UNIT_ENTERED_VEHICLE", Update)
-		self:UnregisterEvent("UNIT_EXITED_VEHICLE", Update)
-		self:UnregisterEvent("UPDATE_SUMMONPETS_ACTION", Update)
-		self:UnregisterEvent("UPDATE_VEHICLE_ACTIONBAR", Update)
-	end
 end
 
 ActionButton.OnEvent = function(button, event, ...)
@@ -1096,50 +1005,6 @@ LibSecureButton.CreateButtonCount = function(self, button)
 	count:SetTextColor(250/255, 250/255, 250/255, .85)
 	button.Count = count
 end 
-
-LibSecureButton.CreateButtonSpellHighlight = function(self, button)
-	local spellHighlight = button:CreateFrame("Frame")
-	spellHighlight:Hide()
-	spellHighlight:SetFrameLevel(button:GetFrameLevel() + 10)
-
-	local texture = spellHighlight:CreateTexture()
-	texture:SetDrawLayer("ARTWORK", 2)
-	texture:SetAllPoints()
-	texture:SetVertexColor(255/255, 225/255, 125/255, 1)
-
-	local model = spellHighlight:CreateFrame("PlayerModel")
-	model:Hide()
-	model:SetFrameLevel(button:GetFrameLevel()-1)
-	model:SetPoint("CENTER", 0, 0)
-	model:EnableMouse(false)
-	model:ClearModel()
-	model:SetDisplayInfo(26501) 
-	model:SetCamDistanceScale(3)
-	model:SetPortraitZoom(0)
-	model:SetPosition(0, 0, 0)
-
-	local sizeFactor = 2 -- 3 is huge
-	local updateSize = function()
-		local w,h = button:GetSize()
-		if (w and h) then 
-			model:SetSize(w*sizeFactor,h*sizeFactor)
-			if (not model:IsShown()) then 
-				model:Show()
-			end 
-		else 
-			model:Hide()
-		end 
-	end
-	updateSize(model)
-
-	hooksecurefunc(button, "SetSize", updateSize)
-	hooksecurefunc(button, "SetWidth", updateSize)
-	hooksecurefunc(button, "SetHeight", updateSize)
-
-	button.SpellHighlight = spellHighlight
-	button.SpellHighlight.Texture = texture
-	button.SpellHighlight.Model = model
-end
 
 LibSecureButton.CreateButtonAutoCast = function(self, button)
 	local autoCast = button:CreateFrame("Frame")
@@ -1341,7 +1206,6 @@ LibSecureButton.SpawnActionButton = function(self, buttonType, parent, buttonTem
 	LibSecureButton:CreateButtonCooldowns(button)
 	LibSecureButton:CreateButtonCount(button)
 	LibSecureButton:CreateButtonKeybind(button)
-	LibSecureButton:CreateButtonSpellHighlight(button)
 	LibSecureButton:CreateButtonAutoCast(button)
 	LibSecureButton:CreateFlyoutArrow(button)
 

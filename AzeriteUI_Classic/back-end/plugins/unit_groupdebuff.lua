@@ -1,15 +1,9 @@
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "ClassPower requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild:IsClassic()
-
 -- Lua API
 local _G = _G
 local math_ceil = math.ceil
 local select = select
 
 -- WoW API
-local GetSpecialization = _G.GetSpecialization
 local GetTime = _G.GetTime
 local UnitAura = _G.UnitAura
 local UnitClass = _G.UnitClass
@@ -17,30 +11,12 @@ local UnitClass = _G.UnitClass
 local playerClass = select(2, UnitClass("player"))
 
 -- Default aura types to parse for dispel classes
-local specFilter = ({
-	DRUID 		= { 	HARMFUL = { Boss = true, Magic = false, Curse =  true, Poison =  true, Disease = false } }, 
-	MONK 		= { 	HARMFUL = { Boss = true, Magic = false, Curse = false, Poison =  true, Disease =  true } },
-	PALADIN 	= { 	HARMFUL = { Boss = true, Magic = false, Curse = false, Poison =  true, Disease =  true } },
-	PRIEST 		= { 	HARMFUL = { Boss = true, Magic =  true, Curse = false, Poison = false, Disease =  true }, HELPFUL = { Custom = true } },
-	SHAMAN 		= { 	HARMFUL = { Boss = true, Magic = false, Curse = true } },
-})[playerClass] or { 	HARMFUL = { Boss = true } } 
-
--- Select classes healer spec IDs. 
--- The override filters require this value to exist. 
-local specOverrideID = ({
-	DRUID = 4,
-	MONK = 2, 
-	PALADIN = 1,
-	SHAMAN = 3
-})[playerClass]
-
--- Override values for select classes' healer specs.
-local specOverrideFilter = ({
-	DRUID 		= { HARMFUL = { Magic = true } },
-	MONK 		= { HARMFUL = { Magic = true } },
-	PALADIN 	= { HARMFUL = { Magic = true } },
-	SHAMAN 		= { HARMFUL = { Magic = true } },
-})[playerClass]
+local classFilter = ({
+	DRUID 		= { HARMFUL = { Boss = true, Magic = false, Curse =  true, Poison =  true, Disease = false } }, 
+	PALADIN 	= { HARMFUL = { Boss = true, Magic = false, Curse = false, Poison =  true, Disease =  true } },
+	PRIEST 		= { HARMFUL = { Boss = true, Magic =  true, Curse = false, Poison = false, Disease =  true }, HELPFUL = { Custom = true } },
+	SHAMAN 		= { HARMFUL = { Boss = true, Magic = false, Curse = true } },
+})[playerClass] or { HARMFUL = { Boss = true } } 
 
 -- SpellIDs that will have their type overridden, 
 -- to allow for specific auras to be tracked through our system. 
@@ -235,11 +211,6 @@ local Update = function(self, event, unit)
 		element:PreUpdate(unit)
 	end
 
-	if specOverrideID and ((event == "Forced") or (event == "PLAYER_SPECIALIZATION_CHANGED"))  then 
-		local spec = GetSpecialization() 
-		element.isOverrideSpec = spec and spec == specOverrideID
-	end
-
 	local newID, newPriority, newType, newDebuffType, newFilter, newSpellID
 	local newIcon, newCount, newDuration, newExpirationTime
 
@@ -248,7 +219,7 @@ local Update = function(self, event, unit)
 	local currentPrio = PRIORITY_NONE
 
 	-- Once for each filter type, as UnitAura can't list HELPFUL and HARMFUL at the same time. 
-	for filterType,allowedSchools in pairs(specFilter) do
+	for filterType,allowedSchools in pairs(classFilter) do
 
 		-- Iterate auras until no more exists, 
 		-- don't rely on values that will be different in Classic and Live. 
@@ -266,7 +237,7 @@ local Update = function(self, event, unit)
 			local auraType = isBossDebuff and "Boss" or spellTypeOverride[spellID] or debuffType
 
 			-- Do we have a priority for the current aura?
-			local prio = ((element.isOverrideSpec and specOverrideFilter[auraType]) or allowedSchools[auraType]) and priorities[auraType]
+			local prio = allowedSchools[auraType] and priorities[auraType]
 			if (prio and (prio > currentPrio)) then
 				newID = auraID
 				newPriority = prio
@@ -378,12 +349,7 @@ local Enable = function(self)
 			element:SetScript("OnEnter", Aura_OnEnter)
 			element:SetScript("OnLeave", Aura_OnLeave)
 		end
-
 		self:RegisterEvent("UNIT_AURA", Proxy)
-
-		if (not IS_CLASSIC) then 
-			self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", Proxy, true)
-		end
 
 		return true
 	end
@@ -392,18 +358,13 @@ end
 local Disable = function(self)
 	local element = self.GroupAura
 	if element then
+		self:UnregisterEvent("UNIT_AURA", Proxy)
 		element:Hide()
 		element:SetScript("OnUpdate", nil)
-
-		self:UnregisterEvent("UNIT_AURA", Proxy)
-
-		if (not IS_CLASSIC) then 
-			self:UnregisterEvent("PLAYER_SPECIALIZATION_CHANGED", UpdateSpec)
-		end
 	end
 end 
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("GroupAura", Enable, Disable, Proxy, 9)
+	Lib:RegisterElement("GroupAura", Enable, Disable, Proxy, 11)
 end 

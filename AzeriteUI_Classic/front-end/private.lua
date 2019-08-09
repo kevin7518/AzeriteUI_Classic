@@ -17,7 +17,6 @@ local GetTime = _G.GetTime
 local InCombatLockdown = _G.InCombatLockdown
 local UnitCanAttack = _G.UnitCanAttack
 local UnitIsUnit = _G.UnitIsUnit
-local UnitHasVehicleUI = _G.UnitHasVehicleUI
 local UnitPlayerControlled = _G.UnitPlayerControlled
 
 -- Addon API
@@ -168,48 +167,21 @@ local Angry = createColor(156/255, 116/255, 255/255)
 
 -- Crystal Power Colors
 colorDB.power.ENERGY_CRYSTAL = Fast -- Rogues, Druids, Monks
-colorDB.power.FURY_CRYSTAL = Angry -- Havoc Demon Hunter 
-colorDB.power.FOCUS_CRYSTAL = Fast -- Hunters and Hunter Pets
-colorDB.power.INSANITY_CRYSTAL = Angry -- Shadow Priests
-colorDB.power.LUNAR_POWER_CRYSTAL = Slow -- Balance Druid Astral Power 
-colorDB.power.MAELSTROM_CRYSTAL = Slow -- Elemental Shamans
-colorDB.power.PAIN_CRYSTAL = Angry -- Vengeance Demon Hunter 
+colorDB.power.FOCUS_CRYSTAL = Slow -- Hunters and Hunter Pets
 colorDB.power.RAGE_CRYSTAL = Angry -- Druids, Warriors
-colorDB.power.RUNIC_POWER_CRYSTAL = Slow -- Death Knights
 
 -- Orb Power Colors
 colorDB.power.MANA_ORB = createColor(135/255, 125/255, 255/255) -- Druid, Mage, Monk, Paladin, Priest, Shaman, Warlock
 
 -- Standard Power Colors
 colorDB.power.ENERGY = createColor(254/255, 245/255, 145/255) -- Rogues, Druids, Monks
-colorDB.power.FURY = createColor(255/255, 0/255, 111/255) -- Vengeance Demon Hunter
 colorDB.power.FOCUS = createColor(125/255, 168/255, 195/255) -- Hunters and Hunter Pets
-colorDB.power.INSANITY = createColor(102/255, 64/255, 204/255) -- Shadow Priests 
-colorDB.power.LUNAR_POWER = createColor(121/255, 152/255, 192/255) -- Balance Druid Astral Power 
-colorDB.power.MAELSTROM = createColor(0/255, 188/255, 255/255) -- Elemental Shamans
-colorDB.power.MANA = createColor(80/255, 116/255, 255/255) -- Druid, Mage, Monk, Paladin, Priest, Shaman, Warlock
-colorDB.power.PAIN = createColor(190 *.75/255, 255 *.75/255, 0/255) 
+colorDB.power.MANA = createColor(80/255, 116/255, 255/255) -- Druid, Mage, Paladin, Priest, Shaman, Warlock
 colorDB.power.RAGE = createColor(215/255, 7/255, 7/255) -- Druids, Warriors
-colorDB.power.RUNIC_POWER = createColor(0/255, 236/255, 255/255) -- Death Knights
 
 -- Secondary Resource Colors
-colorDB.power.ARCANE_CHARGES = createColor(121/255, 152/255, 192/255) -- Arcane Mage
-colorDB.power.CHI = createColor(126/255, 255/255, 163/255) -- Monk 
-colorDB.power.COMBO_POINTS = createColor(255/255, 0/255, 30/255) -- Rogues, Druids, Vehicles
-colorDB.power.HOLY_POWER = createColor(245/255, 254/255, 145/255) -- Retribution Paladins 
-colorDB.power.RUNES = createColor(100/255, 155/255, 225/255) -- Death Knight 
+colorDB.power.COMBO_POINTS = createColor(255/255, 0/255, 30/255) -- Rogues, Druids
 colorDB.power.SOUL_SHARDS = createColor(148/255, 130/255, 201/255) -- Warlock 
-
--- Alternate Power
-colorDB.power.ALTERNATE = createColor(70/255, 255/255, 131/255)
-
--- Vehicle Powers
-colorDB.power.AMMOSLOT = createColor(204/255, 153/255, 0/255)
-colorDB.power.FUEL = createColor(0/255, 140/255, 127/255)
-colorDB.power.STAGGER = {}
-colorDB.power.STAGGER[1] = createColor(132/255, 255/255, 132/255) 
-colorDB.power.STAGGER[2] = createColor(255/255, 250/255, 183/255) 
-colorDB.power.STAGGER[3] = createColor(255/255, 107/255, 107/255) 
 
 -- Fallback for the rare cases where an unknown type is requested.
 colorDB.power.UNUSED = createColor(195/255, 202/255, 217/255) 
@@ -220,16 +192,7 @@ colorDB.power[0] = colorDB.power.MANA
 colorDB.power[1] = colorDB.power.RAGE
 colorDB.power[2] = colorDB.power.FOCUS
 colorDB.power[3] = colorDB.power.ENERGY
-colorDB.power[4] = colorDB.power.CHI
-colorDB.power[5] = colorDB.power.RUNES
-colorDB.power[6] = colorDB.power.RUNIC_POWER
 colorDB.power[7] = colorDB.power.SOUL_SHARDS
-colorDB.power[8] = colorDB.power.LUNAR_POWER
-colorDB.power[9] = colorDB.power.HOLY_POWER
-colorDB.power[11] = colorDB.power.MAELSTROM
-colorDB.power[13] = colorDB.power.INSANITY
-colorDB.power[17] = colorDB.power.FURY
-colorDB.power[18] = colorDB.power.PAIN
 
 -- reactions
 colorDB.reaction = {}
@@ -381,13 +344,7 @@ auraFilters.player = function(element, isBuff, unit, isOwnedByPlayer, name, icon
 	if (isBossDebuff or isBossDebuff or (userFlags and (bit_band(userFlags, PrioBoss) ~= 0)) or (unitCaster == "vehicle")) then
 		return true
 
-	-- Attempting to show vehicle or possessed unit's buffs 
-	-- *This fixes style multipliers now showing in the BFA horse riding
-	elseif UnitHasVehicleUI("player") and (isCastByPlayer or unitCaster == "pet" or unitCaster == "vehicle") then 
-		return true 
-
 	elseif InCombatLockdown() then 
-
 		if userFlags then 
 			if unitIsPlayer[unit] and (bit_band(userFlags, OnPlayer) ~= 0) then 
 				return true  

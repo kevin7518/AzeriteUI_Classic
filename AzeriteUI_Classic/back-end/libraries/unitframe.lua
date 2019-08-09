@@ -1,12 +1,7 @@
-local LibUnitFrame = CogWheel:Set("LibUnitFrame", 63)
+local LibUnitFrame = CogWheel:Set("LibUnitFrame", 65)
 if (not LibUnitFrame) then	
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibUnitFrame requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild:IsClassic()
 
 local LibEvent = CogWheel("LibEvent")
 assert(LibEvent, "LibUnitFrame requires LibEvent to be loaded.")
@@ -20,7 +15,6 @@ assert(LibWidgetContainer, "LibUnitFrame requires LibWidgetContainer to be loade
 local LibTooltip = CogWheel("LibTooltip")
 assert(LibTooltip, "LibUnitFrame requires LibTooltip to be loaded.")
 
-LibClientBuild:Embed(LibUnitFrame)
 LibEvent:Embed(LibUnitFrame)
 LibFrame:Embed(LibUnitFrame)
 LibTooltip:Embed(LibUnitFrame)
@@ -126,12 +120,6 @@ local Colors = {
 	rested = prepare( 23/255, 93/255, 180/255 ),
 	restedbonus = prepare( 192/255, 111/255, 255/255 ),
 	tapped = prepare( 153/255, 153/255, 153/255 ),
-	threat = (not IS_CLASSIC) and {
-		[0] = prepare( GetThreatStatusColor(0) ),
-		[1] = prepare( GetThreatStatusColor(1) ),
-		[2] = prepare( GetThreatStatusColor(2) ),
-		[3] = prepare( GetThreatStatusColor(3) )
-	},
 	xp = prepare( 18/255, 179/255, 21/255 )
 }
 
@@ -350,20 +338,6 @@ UnitFrame.OverrideAllElementsOnChangedGUID = function(self, event, ...)
 	end
 end
 
-local UpdatePet = function(self, event, unit)
-	local petUnit
-	if (unit == "target") then
-		return
-	elseif (unit == "player") then
-		petUnit = "pet"
-	else
-		petUnit = unit.."pet"
-	end
-	if (not self:OnAttributeChanged("unit", UnitHasVehicleUI(unit) and petUnit or unit)) then
-		return self:UpdateAllElements(event, "Forced", self.unit)
-	end
-end
-
 -- Library API
 --------------------------------------------------------------------------
 -- Return or create the library default tooltip
@@ -403,22 +377,6 @@ LibUnitFrame.GetUnitFrameVisibilityDriver = function(self, unit)
 		visDriver = string_format("[@%s,exists]show;hide", unit)
 	end
 	return visDriver
-end 
-
-LibUnitFrame.GetUnitFrameVehicleDriver = function(self, unit)
-	local vehicleDriver
-	if (unit == "player") then 
-		-- Should work in all cases where the unitframe is replaced. It should always be the "pet" unit.
-		--vehicleDriver = "[vehicleui]pet;player"
-		vehicleDriver = "[nooverridebar,vehicleui]pet;[overridebar,@vehicle,exists]vehicle;player"
-	elseif (unit == "pet") then 
-		vehicleDriver = "[nooverridebar,vehicleui]player;pet"
-	elseif (unit:match("^party(%d+)")) then 
-		vehicleDriver = string_format("[unithasvehicleui,@%s]%s;%s", unit, unit.."pet", unit)
-	elseif (unit:match("^raid(%d+)")) then 
-		vehicleDriver = string_format("[unithasvehicleui,@%s]%s;%s", unit, unit.."pet", unit)
-	end
-	return vehicleDriver
 end 
 
 -- spawn and style a new unitframe
@@ -466,9 +424,7 @@ LibUnitFrame.SpawnUnitFrame = function(self, unit, parent, styleFunc, ...)
 		frame:RegisterEvent("PLAYER_TARGET_CHANGED", UnitFrame.OverrideAllElements, true)
 
 	elseif (unit == "focus") then
-		if (not IS_CLASSIC) then 
-			frame:RegisterEvent("PLAYER_FOCUS_CHANGED", UnitFrame.OverrideAllElements, true)
-		end 
+		-- No events here?
 
 	elseif (unit == "mouseover") then
 		frame:RegisterEvent("UPDATE_MOUSEOVER_UNIT", UnitFrame.OverrideAllElements, true)
@@ -481,42 +437,19 @@ LibUnitFrame.SpawnUnitFrame = function(self, unit, parent, styleFunc, ...)
 		frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT", UnitFrame.OverrideAllElements, true)
 		frame:RegisterEvent("UNIT_TARGETABLE_CHANGED", UnitFrame.OverrideAllElements, true)
 
-	elseif (unit:match("^arena(%d+)")) then
-		frame.unitGroup = "arena"
-
-		frame:SetFrameStrata("MEDIUM")
-		frame:SetFrameLevel(1000)
-		frame:RegisterEvent("ARENA_OPPONENT_UPDATE", UnitFrame.OverrideAllElements, true)
-
 	elseif (unit:match("^party(%d+)")) then 
 		frame.unitGroup = "party"
 		frame:RegisterEvent("GROUP_ROSTER_UPDATE", UnitFrame.OverrideAllElements, true)
-		frame:RegisterEvent("UNIT_PET", UpdatePet)
 
 	elseif (unit:match("^raid(%d+)")) then 
 		frame.unitGroup = "raid"
 		frame:RegisterEvent("GROUP_ROSTER_UPDATE", UnitFrame.OverrideAllElementsOnChangedGUID, true)
-		frame:RegisterEvent("UNIT_PET", UpdatePet)
 
 	elseif (unit:match("%w+target")) then
 		frame:EnableFrameFrequent(.5, "unit")
 	end
 
-	local vehicleDriver = LibUnitFrame:GetUnitFrameVehicleDriver(unit)
-	if vehicleDriver then 
-		local vehicleSwitcher = CreateFrame("Frame", nil, nil, "SecureHandlerAttributeTemplate")
-		vehicleSwitcher:SetFrameRef("UnitFrame", frame)
-		vehicleSwitcher:SetAttribute("unit", unit)
-		vehicleSwitcher:SetAttribute("_onattributechanged", [=[
-			local frame = self:GetFrameRef("UnitFrame"); 
-			frame:SetAttribute("unit", value); 
-		]=])
-		frame.realUnit = unit
-		frame:SetAttribute("unit", SecureCmdOptionParse(vehicleDriver))
-		RegisterAttributeDriver(vehicleSwitcher, "state-vehicleswitch", vehicleDriver)
-	else
-		frame:SetAttribute("unit", unit)
-	end 
+	frame:SetAttribute("unit", unit)
 
 	local visDriver = LibUnitFrame:GetUnitFrameVisibilityDriver(unit)
 	if frame.visibilityOverrideDriver then 
@@ -579,7 +512,6 @@ end
 -- Module embedding
 local embedMethods = {
 	SpawnUnitFrame = true,
-	GetUnitFrameVehicleDriver = true, 
 	GetUnitFrameVisibilityDriver = true, 
 	GetUnitFrameTooltip = true
 }

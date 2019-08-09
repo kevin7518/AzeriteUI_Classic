@@ -28,25 +28,9 @@ local UnitFramePet = Core:NewModule("UnitFramePet", "LibUnitFrame", "LibFrame")
 local UnitFrameToT = Core:NewModule("UnitFrameToT", "LibUnitFrame")
 
 -- Grouped Units
-local UnitFrameArena = Core:NewModule("UnitFrameArena", "LibDB", "LibUnitFrame", "LibFrame")
 local UnitFrameBoss = Core:NewModule("UnitFrameBoss", "LibUnitFrame")
 local UnitFrameParty = Core:NewModule("UnitFrameParty", "LibDB", "LibFrame", "LibUnitFrame")
 local UnitFrameRaid = Core:NewModule("UnitFrameRaid", "LibDB", "LibFrame", "LibUnitFrame", "LibBlizzard")
-
--- Incompatibilities
--- *Note that Arena frames can also be manually disabled from our menu!
---  The same is true for party- and raid frames, which is 
---  part of why we haven't included any auto-disabling of them. 
---  Other reason is that some like to combine, have our party frames, 
---  but use Grid for raids, or have our raid frames but another addon 
---  to rack specific groups like tanks and so on. 
-UnitFrameArena:SetIncompatible("sArena")
-UnitFrameArena:SetIncompatible("Gladius")
-UnitFrameArena:SetIncompatible("GladiusEx")
---UnitFramePlayerHUD:SetIncompatible("SimpleClassPower")
-
--- Classic incompatibilities
-UnitFrameArena:SetToRetail()
 
 -- Keep these local
 local UnitStyles = {} 
@@ -593,29 +577,6 @@ local TinyFrame_OnEvent = function(self, event, unit, ...)
 	end 
 end 
 
-local PlayerHUD_AltPower_OverrideValue = function(element, unit, current, min, max)
-	local value = element.Value or element:IsObjectType("FontString") and element 
-	if value then
-		if (current == 0 or max == 0) then
-			value:SetText(EMPTY)
-		else
-			if value.showPercent then
-				if value.showMaximum then
-					value:SetFormattedText("%s / %s - %.0f%%", short(current), short(max), math_floor(current/max * 100))
-				else
-					value:SetFormattedText("%s / %.0f%%", short(current), math_floor(current/max * 100))
-				end
-			else
-				if value.showMaximum then
-					value:SetFormattedText("%s / %s", short(current), short(max))
-				else
-					value:SetFormattedText("%s", short(current))
-				end
-			end
-		end
-	end
-end 
-
 local Player_OverridePowerColor = function(element, unit, min, max, powerType, powerID, disconnected, dead, tapped)
 	local self = element._owner
 	local Layout = self.layout
@@ -656,82 +617,6 @@ local Player_OverrideExtraPowerColor = function(element, unit, min, max, powerTy
 	element:SetStatusBarColor(r, g, b)
 end 
 
-local Player_Threat_UpdateColor = function(element, unit, status, r, g, b)
-	if (element:IsObjectType("Texture")) then 
-		element:SetVertexColor(r, g, b)
-	elseif (element:IsObjectType("FontString")) then 
-		element:SetTextColor(r, g, b)
-	else 
-		if element.health then 
-			element.health:SetVertexColor(r, g, b)
-		end
-		if element.power then 
-			element.power:SetVertexColor(r, g, b)
-		end
-		if element.powerBg then 
-			element.powerBg:SetVertexColor(r, g, b)
-		end
-		if element.mana then 
-			element.mana:SetVertexColor(r, g, b)
-		end 
-		if element.portrait then 
-			element.portrait:SetVertexColor(r, g, b)
-		end 
-	end 
-end
-
-local Player_Threat_IsShown = function(element)
-	if (element:IsObjectType("Texture") or element:IsObjectType("FontString")) then 
-		return element:IsShown()
-	else 
-		return element.health and element.health:IsShown()
-	end 
-end
-
-local Player_Threat_Show = function(element)
-	if (element:IsObjectType("Texture") or element:IsObjectType("FontString")) then 
-		element:Show()
-	else 
-		if element.health then 
-			element.health:Show()
-		end
-		if element.power then 
-			element.power:Show()
-		end
-		if element.powerBg then 
-			element.powerBg:Show()
-		end
-		if element.mana then 
-			element.mana:Show()
-		end 
-		if element.portrait then 
-			element.portrait:Show()
-		end 
-	end 
-end 
-
-local Player_Threat_Hide = function(element)
-	if (element:IsObjectType("Texture") or element:IsObjectType("FontString")) then 
-		element:Hide()
-	else 
-		if element.health then 
-			element.health:Hide()
-		end 
-		if element.power then 
-			element.power:Hide()
-		end
-		if element.powerBg then 
-			element.powerBg:Hide()
-		end
-		if element.mana then 
-			element.mana:Hide()
-		end
-		if element.portrait then 
-			element.portrait:Hide()
-		end
-	end 
-end 
-
 local Player_PostUpdateTextures = function(self, playerLevel)
 	local Layout = self.layout
 	if (not Layout.UseProgressiveFrames) then 
@@ -745,12 +630,6 @@ local Player_PostUpdateTextures = function(self, playerLevel)
 			self.Health.Bg:SetTexture(Layout.SeasonedHealthBackdropTexture)
 			self.Health.Bg:SetVertexColor(unpack(Layout.SeasonedHealthBackdropColor))
 		end 
-
-		if Layout.UseThreat then
-			if self.Threat.health and Layout.UseProgressiveHealthThreat then 
-				self.Threat.health:SetTexture(Layout.SeasonedHealthThreatTexture)
-			end 
-		end
 
 		if Layout.UsePowerBar then 
 			if Layout.UsePowerForeground then 
@@ -780,12 +659,6 @@ local Player_PostUpdateTextures = function(self, playerLevel)
 			self.Health.Bg:SetVertexColor(unpack(Layout.HardenedHealthBackdropColor))
 		end
 
-		if Layout.UseThreat then
-			if self.Threat.health and Layout.UseProgressiveHealthThreat then 
-				self.Threat.health:SetTexture(Layout.HardenedHealthThreatTexture)
-			end 
-		end 
-
 		if Layout.UsePowerBar then 
 			if Layout.UsePowerForeground then 
 				self.Power.Fg:SetTexture(Layout.HardenedPowerForegroundTexture)
@@ -814,12 +687,6 @@ local Player_PostUpdateTextures = function(self, playerLevel)
 			self.Health.Bg:SetVertexColor(unpack(Layout.NoviceHealthBackdropColor))
 		end
 
-		if Layout.UseThreat then
-			if self.Threat.health and Layout.UseProgressiveHealthThreat then 
-				self.Threat.health:SetTexture(Layout.NoviceHealthThreatTexture)
-			end 
-		end 
-
 		if Layout.UsePowerBar then 
 			if Layout.UsePowerForeground then 
 				self.Power.Fg:SetTexture(Layout.NovicePowerForegroundTexture)
@@ -840,46 +707,6 @@ local Player_PostUpdateTextures = function(self, playerLevel)
 		end 
 
 	end 
-end 
-
-local Target_Threat_UpdateColor = function(element, unit, status, r, g, b)
-	if element.health then 
-		element.health:SetVertexColor(r, g, b)
-	end
-	if element.power then 
-		element.power:SetVertexColor(r, g, b)
-	end
-	if element.portrait then 
-		element.portrait:SetVertexColor(r, g, b)
-	end 
-end
-
-local Target_Threat_IsShown = function(element)
-	return element.health and element.health:IsShown()
-end 
-
-local Target_Threat_Show = function(element)
-	if 	element.health then 
-		element.health:Show()
-	end
-	if 	element.power then 
-		element.power:Show()
-	end
-	if element.portrait then 
-		element.portrait:Show()
-	end 
-end 
-
-local Target_Threat_Hide = function(element)
-	if 	element.health then 
-		element.health:Hide()
-	end 
-	if element.power then 
-		element.power:Hide()
-	end
-	if element.portrait then 
-		element.portrait:Hide()
-	end
 end 
 
 local Target_PostUpdateTextures = function(self)
@@ -967,19 +794,6 @@ local Target_PostUpdateTextures = function(self)
 		self.ExtraPower.Border:SetVertexColor(unpack(Layout[self.currentStyle.."ManaOrbColor"])) 
 	end 
 
-	if Layout.UseThreat and Layout.UseProgressiveThreat then
-		if self.Threat.health then 
-			self.Threat.health:SetTexture(Layout[self.currentStyle.."HealthThreatTexture"])
-			if Layout[self.currentStyle.."HealthThreatPlace"] then 
-				self.Threat.health:ClearAllPoints()
-				self.Threat.health:SetPoint(unpack(Layout[self.currentStyle.."HealthThreatPlace"]))
-			end 
-			if Layout[self.currentStyle.."HealthThreatSize"] then 
-				self.Threat.health:SetSize(unpack(Layout[self.currentStyle.."HealthThreatSize"]))
-			end 
-		end 
-	end
-
 	if Layout.UseCastBar and Layout.UseProgressiveCastBar then 
 		self.Cast:Place(unpack(Layout[self.currentStyle.."CastPlace"]))
 		self.Cast:SetSize(unpack(Layout[self.currentStyle.."CastSize"]))
@@ -988,8 +802,6 @@ local Target_PostUpdateTextures = function(self)
 	end 
 
 	if Layout.UsePortrait and Layout.UseProgressivePortrait then 
-
-
 		if Layout.UsePortraitBackground then 
 		end 
 
@@ -2757,110 +2569,6 @@ UnitStyles.StylePlayerFrame = function(self, unit, id, Layout, ...)
 
 	end 
 
-	-- Threat
-	-----------------------------------------------------------	
-	if Layout.UseThreat then 
-		
-		local threat 
-		if Layout.UseSingleThreat then 
-			threat = backdrop:CreateTexture()
-		else 
-			threat = {}
-			threat.IsShown = Player_Threat_IsShown
-			threat.Show = Player_Threat_Show
-			threat.Hide = Player_Threat_Hide 
-			threat.IsObjectType = function() end
-
-			if Layout.UseHealthThreat then 
-
-				local threatHealth = backdrop:CreateTexture()
-				threatHealth:SetPoint(unpack(Layout.ThreatHealthPlace))
-				threatHealth:SetSize(unpack(Layout.ThreatHealthSize))
-				threatHealth:SetDrawLayer(unpack(Layout.ThreatHealthDrawLayer))
-				threatHealth:SetAlpha(Layout.ThreatHealthAlpha)
-
-				if (not Layout.UseProgressiveHealthThreat) then 
-					threatHealth:SetTexture(Layout.ThreatHealthTexture)
-				end 
-
-				threatHealth._owner = self.Health
-				threat.health = threatHealth
-
-			end 
-		
-			if Layout.UsePowerBar and (Layout.UsePowerThreat or Layout.UsePowerBgThreat) then 
-
-				local threatPowerFrame = backdrop:CreateFrame("Frame")
-				threatPowerFrame:SetFrameLevel(backdrop:GetFrameLevel())
-				threatPowerFrame:SetAllPoints(self.Power)
-		
-				-- Hook the power visibility to the power crystal
-				self.Power:HookScript("OnShow", function() threatPowerFrame:Show() end)
-				self.Power:HookScript("OnHide", function() threatPowerFrame:Hide() end)
-
-				if Layout.UsePowerThreat then
-					local threatPower = threatPowerFrame:CreateTexture()
-					threatPower:SetPoint(unpack(Layout.ThreatPowerPlace))
-					threatPower:SetDrawLayer(unpack(Layout.ThreatPowerDrawLayer))
-					threatPower:SetSize(unpack(Layout.ThreatPowerSize))
-					threatPower:SetAlpha(Layout.ThreatPowerAlpha)
-
-					if (not Layout.UseProgressivePowerThreat) then 
-						threatPower:SetTexture(Layout.ThreatPowerTexture)
-					end
-
-					threatPower._owner = self.Power
-					threat.power = threatPower
-				end 
-
-				if Layout.UsePowerBgThreat then 
-					local threatPowerBg = threatPowerFrame:CreateTexture()
-					threatPowerBg:SetPoint(unpack(Layout.ThreatPowerBgPlace))
-					threatPowerBg:SetDrawLayer(unpack(Layout.ThreatPowerBgDrawLayer))
-					threatPowerBg:SetSize(unpack(Layout.ThreatPowerBgSize))
-					threatPowerBg:SetAlpha(Layout.ThreatPowerBgAlpha)
-
-					if (not Layout.UseProgressivePowerBgThreat) then 
-						threatPowerBg:SetTexture(Layout.ThreatPowerBgTexture)
-					end
-
-					threatPowerBg._owner = self.Power
-					threat.powerBg = threatPowerBg
-				end 
-	
-			end 
-		
-			if Layout.UseMana and Layout.UseManaThreat and hasMana then 
-		
-				local threatManaFrame = backdrop:CreateFrame("Frame")
-				threatManaFrame:SetFrameLevel(backdrop:GetFrameLevel())
-				threatManaFrame:SetAllPoints(self.ExtraPower)
-	
-				self.ExtraPower:HookScript("OnShow", function() threatManaFrame:Show() end)
-				self.ExtraPower:HookScript("OnHide", function() threatManaFrame:Hide() end)
-
-				local threatMana = threatManaFrame:CreateTexture()
-				threatMana:SetDrawLayer(unpack(Layout.ThreatManaDrawLayer))
-				threatMana:SetPoint(unpack(Layout.ThreatManaPlace))
-				threatMana:SetSize(unpack(Layout.ThreatManaSize))
-				threatMana:SetAlpha(Layout.ThreatManaAlpha)
-
-				if (not Layout.UseProgressiveManaThreat) then 
-					threatMana:SetTexture(Layout.ThreatManaTexture)
-				end 
-
-				threatMana._owner = self.ExtraPower
-				threat.mana = threatMana
-			end 
-		end 
-
-		threat.hideSolo = Layout.ThreatHideSolo
-		threat.fadeOut = Layout.ThreatFadeOut
-	
-		self.Threat = threat
-		self.Threat.OverrideColor = Player_Threat_UpdateColor
-	end 
-
 	-- Cast Bar
 	-----------------------------------------------------------
 	if Layout.UseCastBar then
@@ -3343,63 +3051,6 @@ UnitStyles.StylePlayerHUDFrame = function(self, unit, id, Layout, ...)
 			self.ClassPower:PostUpdate()
 		end 
 	end 
-
-	-- PlayerAltPower Bar
-	if Layout.UsePlayerAltPowerBar then 
-		local cast = backdrop:CreateStatusBar()
-		cast:Place(unpack(Layout.PlayerAltPowerBarPlace))
-		cast:SetSize(unpack(Layout.PlayerAltPowerBarSize))
-		cast:SetStatusBarTexture(Layout.PlayerAltPowerBarTexture)
-		cast:SetStatusBarColor(unpack(Layout.PlayerAltPowerBarColor)) 
-		cast:SetOrientation(Layout.PlayerAltPowerBarOrientation) -- set the bar to grow towards the top.
-		--cast:DisableSmoothing(true) -- don't smoothe castbars, it'll make it inaccurate
-		cast:EnableMouse(true)
-		self.AltPower = cast
-		self.AltPower.OverrideValue = PlayerHUD_AltPower_OverrideValue
-		
-		if Layout.UsePlayerAltPowerBarBackground then 
-			local castBg = cast:CreateTexture()
-			castBg:SetPoint(unpack(Layout.PlayerAltPowerBarBackgroundPlace))
-			castBg:SetSize(unpack(Layout.PlayerAltPowerBarBackgroundSize))
-			castBg:SetTexture(Layout.PlayerAltPowerBarBackgroundTexture)
-			castBg:SetDrawLayer(unpack(Layout.PlayerAltPowerBarBackgroundDrawLayer))
-			castBg:SetVertexColor(unpack(Layout.PlayerAltPowerBarBackgroundColor))
-			self.AltPower.Bg = castBg
-		end 
-
-		if Layout.UsePlayerAltPowerBarValue then 
-			local castValue = cast:CreateFontString()
-			castValue:SetPoint(unpack(Layout.PlayerAltPowerBarValuePlace))
-			castValue:SetFontObject(Layout.PlayerAltPowerBarValueFont)
-			castValue:SetDrawLayer(unpack(Layout.PlayerAltPowerBarValueDrawLayer))
-			castValue:SetJustifyH(Layout.PlayerAltPowerBarValueJustifyH)
-			castValue:SetJustifyV(Layout.PlayerAltPowerBarValueJustifyV)
-			castValue:SetTextColor(unpack(Layout.PlayerAltPowerBarValueColor))
-			self.AltPower.Value = castValue
-		end 
-
-		if Layout.UsePlayerAltPowerBarName then 
-			local castName = cast:CreateFontString()
-			castName:SetPoint(unpack(Layout.PlayerAltPowerBarNamePlace))
-			castName:SetFontObject(Layout.PlayerAltPowerBarNameFont)
-			castName:SetDrawLayer(unpack(Layout.PlayerAltPowerBarNameDrawLayer))
-			castName:SetJustifyH(Layout.PlayerAltPowerBarNameJustifyH)
-			castName:SetJustifyV(Layout.PlayerAltPowerBarNameJustifyV)
-			castName:SetTextColor(unpack(Layout.PlayerAltPowerBarNameColor))
-			self.AltPower.Name = castName
-		end 
-
-		if Layout.UsePlayerAltPowerBarBorderFrame then 
-			local border = cast:CreateFrame("Frame", nil, cast)
-			border:SetFrameLevel(cast:GetFrameLevel() + 8)
-			border:Place(unpack(Layout.PlayerAltPowerBarBorderFramePlace))
-			border:SetSize(unpack(Layout.PlayerAltPowerBarBorderFrameSize))
-			border:SetBackdrop(Layout.PlayerAltPowerBarBorderFrameBackdrop)
-			border:SetBackdropColor(unpack(Layout.PlayerAltPowerBarBorderFrameBackdropColor))
-			border:SetBackdropBorderColor(unpack(Layout.PlayerAltPowerBarBorderFrameBackdropBorderColor))
-			self.AltPower.Border = border
-		end 
-	end 
 	
 end
 
@@ -3474,11 +3125,8 @@ UnitStyles.StyleTargetFrame = function(self, unit, id, Layout, ...)
 	health.colorDisconnected = Layout.HealthColorDisconnected -- color disconnected units
 	health.colorClass = Layout.HealthColorClass -- color players by class 
 	health.colorReaction = Layout.HealthColorReaction -- color NPCs by their reaction standing with us
-	health.colorThreat = Layout.HealthColorThreat -- color units with threat in threat color
 	health.colorHealth = Layout.HealthColorHealth -- color anything else in the default health color
 	health.frequent = Layout.HealthFrequentUpdates -- listen to frequent health events for more accurate updates
-	health.threatFeedbackUnit = Layout.HealthThreatFeedbackUnit
-	health.threatHideSolo = Layout.HealthThreatHideSolo
 	
 	self.Health = health
 	self.Health.PostUpdate = Layout.CastBarPostUpdate
@@ -3695,115 +3343,6 @@ UnitStyles.StyleTargetFrame = function(self, unit, id, Layout, ...)
 			portraitFg:SetDrawLayer(unpack(Layout.PortraitForegroundDrawLayer))
 			self.Portrait.Fg = portraitFg
 		end 
-	end 
-
-	-- Threat
-	if Layout.UseThreat then 
-		
-		local threat 
-		if Layout.UseSingleThreat then 
-			threat = backdrop:CreateTexture()
-		else 
-			threat = {}
-			threat.IsShown = Target_Threat_IsShown
-			threat.Show = Target_Threat_Show
-			threat.Hide = Target_Threat_Hide 
-			threat.IsObjectType = function() end
-
-			if Layout.UseHealthThreat then 
-
-				local healthThreatHolder = backdrop:CreateFrame("Frame")
-				healthThreatHolder:SetAllPoints(health)
-
-				local threatHealth = healthThreatHolder:CreateTexture()
-				if Layout.ThreatHealthPlace then 
-					threatHealth:SetPoint(unpack(Layout.ThreatHealthPlace))
-				end 
-				if Layout.ThreatHealthSize then 
-					threatHealth:SetSize(unpack(Layout.ThreatHealthSize))
-				end 
-				if Layout.ThreatHealthTexCoord then 
-					threatHealth:SetTexCoord(unpack(Layout.ThreatHealthTexCoord))
-				end 
-				if (not Layout.UseProgressiveHealthThreat) then 
-					threatHealth:SetTexture(Layout.ThreatHealthTexture)
-				end 
-				threatHealth:SetDrawLayer(unpack(Layout.ThreatHealthDrawLayer))
-				threatHealth:SetAlpha(Layout.ThreatHealthAlpha)
-
-				threatHealth._owner = self.Health
-				threat.health = threatHealth
-			end 
-		
-			if Layout.UsePowerBar and (Layout.UsePowerThreat or Layout.UsePowerBgThreat) then 
-
-				local threatPowerFrame = backdrop:CreateFrame("Frame")
-				threatPowerFrame:SetFrameLevel(backdrop:GetFrameLevel())
-				threatPowerFrame:SetAllPoints(self.Power)
-		
-				-- Hook the power visibility to the power crystal
-				self.Power:HookScript("OnShow", function() threatPowerFrame:Show() end)
-				self.Power:HookScript("OnHide", function() threatPowerFrame:Hide() end)
-
-				if Layout.UsePowerThreat then
-					local threatPower = threatPowerFrame:CreateTexture()
-					threatPower:SetPoint(unpack(Layout.ThreatPowerPlace))
-					threatPower:SetDrawLayer(unpack(Layout.ThreatPowerDrawLayer))
-					threatPower:SetSize(unpack(Layout.ThreatPowerSize))
-					threatPower:SetAlpha(Layout.ThreatPowerAlpha)
-
-					if (not Layout.UseProgressivePowerThreat) then 
-						threatPower:SetTexture(Layout.ThreatPowerTexture)
-					end
-
-					threatPower._owner = self.Power
-					threat.power = threatPower
-				end 
-
-				if Layout.UsePowerBgThreat then 
-					local threatPowerBg = threatPowerFrame:CreateTexture()
-					threatPowerBg:SetPoint(unpack(Layout.ThreatPowerBgPlace))
-					threatPowerBg:SetDrawLayer(unpack(Layout.ThreatPowerBgDrawLayer))
-					threatPowerBg:SetSize(unpack(Layout.ThreatPowerBgSize))
-					threatPowerBg:SetAlpha(Layout.ThreatPowerBgAlpha)
-
-					if (not Layout.UseProgressivePowerBgThreat) then 
-						threatPowerBg:SetTexture(Layout.ThreatPowerBgTexture)
-					end
-
-					threatPowerBg._owner = self.Power
-					threat.powerBg = threatPowerBg
-				end 
-	
-			end 
-		
-			if Layout.UsePortrait and Layout.UsePortraitThreat then 
-				local threatPortraitFrame = backdrop:CreateFrame("Frame")
-				threatPortraitFrame:SetFrameLevel(backdrop:GetFrameLevel())
-				threatPortraitFrame:SetAllPoints(self.Portrait)
-		
-				-- Hook the power visibility to the power crystal
-				self.Portrait:HookScript("OnShow", function() threatPortraitFrame:Show() end)
-				self.Portrait:HookScript("OnHide", function() threatPortraitFrame:Hide() end)
-
-				local threatPortrait = threatPortraitFrame:CreateTexture()
-				threatPortrait:SetPoint(unpack(Layout.ThreatPortraitPlace))
-				threatPortrait:SetSize(unpack(Layout.ThreatPortraitSize))
-				threatPortrait:SetTexture(Layout.ThreatPortraitTexture)
-				threatPortrait:SetDrawLayer(unpack(Layout.ThreatPortraitDrawLayer))
-				threatPortrait:SetAlpha(Layout.ThreatPortraitAlpha)
-
-				threatPortrait._owner = self.Power
-				threat.portrait = threatPortrait
-			end 
-		end 
-
-		threat.hideSolo = Layout.ThreatHideSolo
-		threat.fadeOut = Layout.ThreatFadeOut
-		threat.feedbackUnit = "player"
-	
-		self.Threat = threat
-		self.Threat.OverrideColor = Target_Threat_UpdateColor
 	end 
 
 	-- Unit Level
@@ -4295,38 +3834,6 @@ UnitFrameToT.OnInit = function(self)
 	self.frame = self:SpawnUnitFrame("targettarget", "UICenter", function(frame, unit, id, _, ...)
 		return UnitStyles.StyleToTFrame(frame, unit, id, self.layout, ...)
 	end)
-end 
-
------------------------------------------------------------
--- Arena Enemy Frames
------------------------------------------------------------
-UnitFrameArena.OnInit = function(self)
-
-	-- Default settings
-	local defaults = {
-		enableArenaFrames = true
-	}
-
-	self.db = self:NewConfig("UnitFrameArena", defaults, "global")
-	self.layout = CogWheel("LibDB"):GetDatabase(Core:GetPrefix()..":[UnitFrameArena]", true)
-
-	self.frame = self:CreateFrame("Frame", nil, "UICenter", "SecureHandlerAttributeTemplate")
-	self.frame:SetAttribute("_onattributechanged", SECURE.Arena_OnAttribute)
-	if self.db.enableArenaFrames then 
-		RegisterAttributeDriver(self.frame, "state-vis", "[@arena1,exists]show;hide")
-	else 
-		RegisterAttributeDriver(self.frame, "state-vis", "hide")
-	end 
-
-	local style = function(frame, unit, id, _, ...)
-		return UnitStyles.StyleArenaFrames(frame, unit, id, self.layout, ...)
-	end
-	for i = 1,5 do 
-		self.frame[tostring(i)] = self:SpawnUnitFrame("arena"..i, self.frame, style)
-	end 
-
-	-- Create a secure proxy updater for the menu system
-	CreateSecureCallbackFrame(self, self.frame, self.db, SECURE.Arena_SecureCallback:format(visDriver))
 end 
 
 -----------------------------------------------------------

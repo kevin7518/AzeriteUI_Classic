@@ -199,11 +199,8 @@ Module.PostCreateNamePlate = function(self, plate, baseFrame)
 		health.colorClass = Layout.HealthColorClass
 		health.colorCivilian = Layout.HealthColorCivilian
 		health.colorReaction = Layout.HealthColorReaction
-		health.colorThreat = Layout.HealthColorThreat -- color units with threat in threat color
 		health.colorHealth = Layout.HealthColorHealth -- color anything else in the default health color
 		health.frequent = Layout.HealthFrequent
-		health.threatFeedbackUnit = Layout.HealthThreatFeedbackUnit
-		health.threatHideSolo = Layout.HealthThreatHideSolo
 		plate.Health = health
 
 		if Layout.UseHealthBackdrop then 
@@ -269,18 +266,6 @@ Module.PostCreateNamePlate = function(self, plate, baseFrame)
 		plate.Cast.PostUpdate = Layout.CastPostUpdate
 	end 
 
-	if Layout.UseThreat then 
-		local threat = (plate.Health or plate):CreateTexture()
-		threat:SetPoint(unpack(Layout.ThreatPlace))
-		threat:SetSize(unpack(Layout.ThreatSize))
-		threat:SetTexture(Layout.ThreatTexture)
-		threat:SetDrawLayer(unpack(Layout.ThreatDrawLayer))
-		threat:SetVertexColor(unpack(Layout.ThreatColor))
-		threat.hideSolo = Layout.ThreatHideSolo
-		threat.feedbackUnit = "player"
-		plate.Threat = threat
-	end 
-
 	if Layout.UseRaidTarget then 
 		local raidTarget = baseFrame:CreateTexture()
 		raidTarget:SetPoint(unpack(Layout.RaidTargetPlace))
@@ -338,31 +323,6 @@ Module.PostCreateNamePlate = function(self, plate, baseFrame)
 		plate.Auras.PostCreateButton = PostCreateAuraButton -- post creation styling
 		plate.Auras.PostUpdateButton = PostUpdateAuraButton -- post updates when something changes (even timers)
 		plate.Auras.PostUpdate = Layout.PostUpdateAura
-
-		-- Aura misalignment debugging. 
-		-- We proved that it's the entire element, not the aura sorting that's wrong, 
-		-- so we're disabling this thing here for now. Don't need 40 invisible backdrops. 
-		--[[--
-		local owner = self:GetOwner()
-		if owner.db and owner.db.loadDebugConsole then 
-			local debugFrame = owner:GetDebugFrame()
-			if debugFrame then 
-				-- Need to figure out if the aura misalignment 
-				-- is the aura layout method in the back-end, 
-				-- or the aura element itself bein misplaced. 
-				local devHelp = auras:CreateTexture()
-				devHelp:SetColorTexture(0,0,0,.25)
-				devHelp:SetAllPoints()
-				devHelp:SetDrawLayer("BACKGROUND")
-				devHelp:SetShown(debugFrame:IsShown())
-
-				-- Should make a better system for these hooks, 
-				-- because I hate exposing the debugFrame to the outside world. 
-				debugFrame:HookScript("OnShow", function() devHelp:Show() end)
-				debugFrame:HookScript("OnHide", function() devHelp:Hide() end)
-			end 
-		end 
-		--]]--
 
 		if (not db.enableAuras) then 
 			plate:DisableElement("Auras")

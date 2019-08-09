@@ -1,9 +1,4 @@
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "UnitHealth requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild:IsClassic()
 local ADDON = ...
-
 local Core = CogWheel("LibModule"):GetModule(ADDON)
 if (not Core) then 
 	return 
@@ -343,7 +338,6 @@ local Bars_UpdateTooltip = function(self)
 
 	local tooltip = self:GetTooltip()
 	local hasXP = Module.PlayerHasXP()
-	local hasAP = (not IS_CLASSIC) and FindActiveAzeriteItem()
 	local colors = Layout.Colors
 
 	local NC = "|r"
@@ -379,22 +373,6 @@ local Bars_UpdateTooltip = function(self)
 			tooltip:AddDoubleLine(L["Rested Bonus: "], fullXPString:format(normal..short(restedLeft)..NC, normal..short(max * maxRested)..NC, highlight..math_floor(restedLeft/(max * maxRested)*100).."%"..NC), rh, gh, bh, rgg, ggg, bgg)
 		end
 		
-	end 
-
-	-- New BfA Artifact Power tooltip!
-	if hasAP then 
-		if hasXP then 
-			tooltip:AddLine(" ")
-		end 
-
-		local min, max = GetAzeriteItemXPInfo(hasAP)
-		local level = GetPowerLevel(hasAP) 
-
-		tooltip:AddDoubleLine(ARTIFACT_POWER, level, rt, gt, bt, rt, gt, bt)
-		tooltip:AddDoubleLine(L["Current Artifact Power: "], fullXPString:format(normal..short(min)..NC, normal..short(max)..NC, highlight..math_floor(min/max*100).."%"..NC), rh, gh, bh, rgg, ggg, bgg)
-	end 
-
-	if hasXP then 
 		if (restState == 1) then
 			if resting and restedTimeLeft and restedTimeLeft > 0 then
 				tooltip:AddLine(" ")
@@ -421,7 +399,6 @@ local Bars_UpdateTooltip = function(self)
 			end
 		end
 	end 
-
 	tooltip:Show()
 end 
 
@@ -604,14 +581,6 @@ ActionButton.PostCreate = function(self, ...)
 	self.Keybind:SetShadowColor(unpack(Layout.KeybindShadowColor))
 	self.Keybind:SetTextColor(unpack(Layout.KeybindColor))
 
-	if Layout.UseSpellHighlight then 
-		self.SpellHighlight:ClearAllPoints()
-		self.SpellHighlight:SetPoint(unpack(Layout.SpellHighlightPlace))
-		self.SpellHighlight:SetSize(unpack(Layout.SpellHighlightSize))
-		self.SpellHighlight.Texture:SetTexture(Layout.SpellHighlightTexture)
-		self.SpellHighlight.Texture:SetVertexColor(unpack(Layout.SpellHighlightColor))
-	end 
-
 	if Layout.UseSpellAutoCast then 
 		self.SpellAutoCast:ClearAllPoints()
 		self.SpellAutoCast:SetPoint(unpack(Layout.SpellAutoCastPlace))
@@ -712,7 +681,7 @@ Module.SpawnExitButton = function(self)
 	button:Place(unpack(Layout.ExitButtonPlace))
 	button:SetSize(unpack(Layout.ExitButtonSize))
 	button:SetAttribute("type", "macro")
-	button:SetAttribute("macrotext", "/leavevehicle [target=vehicle,exists,canexitvehicle]\n/dismount [mounted]")
+	button:SetAttribute("macrotext", "/dismount [mounted]")
 
 	-- Put our texture on the button
 	button.texture = button:CreateTexture()
@@ -752,7 +721,7 @@ Module.SpawnExitButton = function(self)
 	end)
 
 	-- Register a visibility driver
-	RegisterAttributeDriver(button, "state-visibility", "[target=vehicle,exists,canexitvehicle][mounted]show;hide")
+	RegisterAttributeDriver(button, "state-visibility", "[mounted]show;hide")
 
 	self.VehicleExitButton = button
 end

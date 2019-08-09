@@ -254,7 +254,6 @@ UIWidgets["ActionBarsMainBar"] = function(self)
 	StreamingIcon:SetParent(UIHider)
 	FramerateLabel:SetParent(UIHider)
 	FramerateText:SetParent(UIHider)
-
 end 
 
 UIWidgets["ActionBarsMicroButtons"] = function(self)
@@ -291,14 +290,6 @@ UIWidgets["ActionBarsMicroButtons"] = function(self)
 		TalentMicroButtonAlert:UnregisterAllEvents()
 		TalentMicroButtonAlert:SetParent(UIHider)
 	end 
-
-	if PlayerTalentFrame then
-		PlayerTalentFrame:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-	elseif TalentFrame_LoadUI then
-		if (not LibClientBuild:IsClassic()) then 
-			hooksecurefunc("TalentFrame_LoadUI", function() PlayerTalentFrame:UnregisterEvent("ACTIVE_TALENT_GROUP_CHANGED") end)
-		end 
-	end
 end 
 
 UIWidgets["ActionBarsBagBarAnims"] = function(self)
@@ -583,16 +574,6 @@ UIWidgets["UnitFramePlayer"] = function(self)
 	-- A lot of blizz modules relies on PlayerFrame.unit
 	-- This includes the aura frame and several others. 
 	_G.PlayerFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-	if (not LibClientBuild:IsClassic()) then 
-		_G.PlayerFrame:RegisterEvent("UNIT_ENTERING_VEHICLE")
-		_G.PlayerFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
-		_G.PlayerFrame:RegisterEvent("UNIT_EXITING_VEHICLE")
-		_G.PlayerFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
-
-		-- Disable stagger bar events
-		_G.MonkStaggerBar:UnregisterAllEvents()
-	end 
 
 	-- User placed frames don't animate
 	_G.PlayerFrame:SetUserPlaced(true)

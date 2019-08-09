@@ -63,14 +63,12 @@ front-end\blizzard\objectivestracker.lua
 front-end\blizzard\popups.lua
 front-end\blizzard\timers.lua
 front-end\blizzard\tooltips.lua
-front-end\blizzard\tradeskillframe.lua
 
 # Modules that mostly create new custom elements
 front-end\custom\actionbars.lua
 front-end\custom\bindings.lua
 front-end\custom\chatfilters.lua
 front-end\custom\explorer.lua
-front-end\custom\grouptools.lua
 front-end\custom\menu.lua
 front-end\custom\nameplates.lua
 front-end\custom\tooltips.lua

@@ -1,6 +1,3 @@
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "TargetHighlight requires LibClientBuild to be loaded.")
-
 -- Lua API
 local _G = _G
 
@@ -63,10 +60,6 @@ local Enable = function(self)
 			self:RegisterEvent("GROUP_ROSTER_UPDATE", Proxy, true)
 		end 
 
-		if (not LibClientBuild:IsClassic()) then 
-			self:RegisterEvent("PLAYER_FOCUS_CHANGED", Proxy, true)
-		end 
-
 		return true 
 	end
 end 
@@ -74,18 +67,13 @@ end
 local Disable = function(self)
 	local element = self.TargetHighlight
 	if element then
-		element:Hide()
-
 		self:UnregisterEvent("PLAYER_TARGET_CHANGED")
-		self:UnregisterEvent("RAID_ROSTER_UPDATE")
-
-		if (not LibClientBuild:IsClassic()) then 
-			self:UnregisterEvent("PLAYER_FOCUS_CHANGED")
-		end 
+		self:UnregisterEvent("GROUP_ROSTER_UPDATE")
+		element:Hide()
 	end
 end 
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("TargetHighlight", Enable, Disable, Proxy, 4)
+	Lib:RegisterElement("TargetHighlight", Enable, Disable, Proxy, 5)
 end 

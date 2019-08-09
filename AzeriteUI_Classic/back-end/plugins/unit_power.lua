@@ -1,12 +1,8 @@
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "ClassPower requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild:IsClassic()
-
 -- Lua API
 local _G = _G
 local math_floor = math.floor
 local pairs = pairs
+local string_format = string.format
 local tonumber = tonumber
 local tostring = tostring
 local unpack = unpack
@@ -131,30 +127,19 @@ local Update = function(self, event, unit)
 	end 
 
 	local element = self.Power
-	local powerID, powerType, isAlternate
-
-	if (not IS_CLASSIC) and element.showAlternate then 
-		local barType, minPower, startInset, endInset, smooth, hideFromOthers, showOnRaid, opaqueSpark, opaqueFlash, anchorTop, powerName, powerTooltip = UnitAlternatePowerInfo(unit)
-
-		if (barType and (event ~= "UNIT_POWER_BAR_HIDE")) then 
-			isAlternate = true 
-			powerID = ALTERNATE_POWER_INDEX
-		end 
-	end 
+	local powerID, powerType
 
 	if element.visibilityFilter then 
-		if (not element:visibilityFilter(unit, isAlternate)) then 
+		if (not element:visibilityFilter(unit)) then 
 			return element:Hide()
 		end
 	end
 
 	if element.PreUpdate then
-		element:PreUpdate(unit, isAlternate)
+		element:PreUpdate(unit)
 	end
 
-	if (not isAlternate) then 
-		powerID, powerType = UnitPowerType(unit)
-	end 
+	powerID, powerType = UnitPowerType(unit)
 
 	-- Check if the element is exclusive to a certain power type
 	if element.exclusiveResource then 
@@ -267,5 +252,5 @@ end
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("Power", Enable, Disable, Proxy, 13)
+	Lib:RegisterElement("Power", Enable, Disable, Proxy, 14)
 end 

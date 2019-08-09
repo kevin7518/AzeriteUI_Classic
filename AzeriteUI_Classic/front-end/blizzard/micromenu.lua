@@ -1,12 +1,9 @@
 local ADDON = ...
-
 local Core = CogWheel("LibModule"):GetModule(ADDON)
 if (not Core) then 
 	return 
 end
-
 local Module = Core:NewModule("BlizzardMicroMenu", "LibEvent", "LibDB", "LibTooltip", "LibFrame")
-Module:SetToRetail()
 
 -- Lua API
 local _G = _G
@@ -66,28 +63,22 @@ local microButtons = {
 	"CharacterMicroButton",
 	"SpellbookMicroButton",
 	"TalentMicroButton",
-	"AchievementMicroButton",
 	"QuestLogMicroButton",
-	"GuildMicroButton",
-	"LFDMicroButton",
-	"CollectionsMicroButton",
-	"EJMicroButton",
-	"StoreMicroButton",
-	"MainMenuMicroButton"
+	"SocialsMicroButton",
+	"WorldMapMicroButton",
+	"MainMenuMicroButton",
+	"HelpMicroButton"
 }
 
 local microButtonTexts = {
 	CharacterMicroButton = CHARACTER_BUTTON,
 	SpellbookMicroButton = SPELLBOOK_ABILITIES_BUTTON,
-	TalentMicroButton = TALENTS_BUTTON,
-	AchievementMicroButton = ACHIEVEMENT_BUTTON,
+	TalentMicroButton = TALENTS_BUTTON, -- check order
 	QuestLogMicroButton = QUESTLOG_BUTTON,
-	GuildMicroButton = LOOKINGFORGUILD,
-	LFDMicroButton = DUNGEONS_BUTTON,
-	CollectionsMicroButton = COLLECTIONS,
-	EJMicroButton = ADVENTURE_JOURNAL or ENCOUNTER_JOURNAL,
-	StoreMicroButton = BLIZZARD_STORE,
-	MainMenuMicroButton = MAINMENU_BUTTON	
+	SocialsMicroButton = SOCIALS,
+	WorldMapMicroButton = WORLD_MAP, 
+	MainMenuMicroButton = MAINMENU_BUTTON, 
+	HelpMicroButton = HELP_BUTTON
 }
 
 local microButtonScripts = {
@@ -114,18 +105,6 @@ local microButtonScripts = {
 		tooltip:Show()
 	end,
 	
-	CollectionsMicroButton_OnEnter = function(self)
-		self.tooltipText = getMicroButtonTooltipText(COLLECTIONS, "TOGGLECOLLECTIONS")
-		local titleColor, normalColor = Layout.MenuButtonTitleColor, Layout.MenuButtonNormalColor
-		local tooltip = Module:GetOptionsMenuTooltip()
-		tooltip:Hide()
-		tooltip:SetDefaultAnchor(self)
-		tooltip:AddLine(self.tooltipText, titleColor[1], titleColor[2], titleColor[3], true)
-		tooltip:AddLine(self.newbieText or NEWBIE_TOOLTIP_MOUNTS_AND_PETS, normalColor[1], normalColor[2], normalColor[3], true)
-		tooltip:Show()
-	end,
-
-
 	MainMenuMicroButton_OnEnter = function(self)
 		local titleColor, normalColor = Layout.MenuButtonTitleColor, Layout.MenuButtonNormalColor
 		local tooltip = Module:GetOptionsMenuTooltip()
@@ -358,9 +337,8 @@ Module.AddOptionsToMenuWindow = function(self)
 				microButton:SetScript("OnUpdate", nil)
 				microButton:SetScript("OnEnter", microButtonScripts[buttonName.."_OnEnter"] or microButtonScripts.MicroButton_OnEnter)
 				microButton:SetScript("OnLeave", microButtonScripts.MicroButton_OnLeave)
-
-
 				microButton:SetSize(Layout.MenuButtonSize[1]*Layout.MenuButtonSizeMod, Layout.MenuButtonSize[2]*Layout.MenuButtonSizeMod) 
+				microButton:SetHitRectInsets(0, 0, 0, 0)
 
 				if Layout.MenuButton_PostCreate then 
 					Layout.MenuButton_PostCreate(microButton, microButtonTexts[buttonName])

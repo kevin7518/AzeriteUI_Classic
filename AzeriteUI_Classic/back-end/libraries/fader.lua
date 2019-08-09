@@ -1,12 +1,7 @@
-local LibFader = CogWheel:Set("LibFader", 16)
+local LibFader = CogWheel:Set("LibFader", 17)
 if (not LibFader) then	
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibFader requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild:IsClassic()
 
 local LibFrame = CogWheel("LibFrame")
 assert(LibFrame, "LibFader requires LibFrame to be loaded.")
@@ -16,7 +11,6 @@ assert(LibEvent, "LibFader requires LibEvent to be loaded.")
 
 LibFrame:Embed(LibFader)
 LibEvent:Embed(LibFader)
-LibClientBuild:Embed(LibFader)
 
 -- Lua API
 local _G = _G
@@ -37,20 +31,15 @@ local type = type
 local CursorHasItem = _G.CursorHasItem
 local CursorHasSpell = _G.CursorHasSpell
 local GetCursorInfo = _G.GetCursorInfo
-local HasOverrideActionBar = _G.HasOverrideActionBar
-local HasTempShapeshiftActionBar = _G.HasTempShapeshiftActionBar
-local HasVehicleActionBar = _G.HasVehicleActionBar
 local InCombatLockdown = _G.InCombatLockdown
 local IsInGroup = _G.IsInGroup
 local IsInInstance = _G.IsInInstance
-local IsPossessBarVisible = _G.IsPossessBarVisible
 local RegisterAttributeDriver = _G.RegisterAttributeDriver
 local SpellFlyout = _G.SpellFlyout
 local UnitDebuff = _G.UnitDebuff
 local UnitExists = _G.UnitExists
 local UnitHealth = _G.UnitHealth
 local UnitHealthMax = _G.UnitHealthMax
-local UnitInVehicle = _G.UnitInVehicle
 local UnitPower = _G.UnitPower
 local UnitPowerMax = _G.UnitPowerMax
 local UnitPowerType = _G.UnitPowerType
@@ -306,30 +295,6 @@ LibFader.CheckPower = function(self)
 	Data.lowPower = nil
 end 
 
-LibFader.CheckVehicle = function(self)
-	if (not IS_CLASSIC) and (UnitInVehicle("player") or HasVehicleActionBar()) then 
-		Data.inVehicle = true
-		return 
-	end 
-	Data.inVehicle = nil
-end 
-
-LibFader.CheckOverride = function(self)
-	if (not IS_CLASSIC) and (HasOverrideActionBar() or HasTempShapeshiftActionBar()) then 
-		Data.hasOverride = true
-		return 
-	end 
-	Data.hasOverride = nil
-end 
-
-LibFader.CheckPossess = function(self)
-	if (not IS_CLASSIC) and (sPossessBarVisible()) then 
-		Data.hasPossess = true
-		return 
-	end 
-	Data.hasPossess = nil
-end 
-
 LibFader.CheckTarget = function(self)
 	if UnitExists("target") then 
 		Data.hasTarget = true
@@ -371,9 +336,6 @@ LibFader.OnEvent = function(self, event, ...)
 		self:CheckGroup()
 		self:CheckTarget()
 		self:CheckFocus()
-		self:CheckVehicle()
-		self:CheckOverride()
-		self:CheckPossess()
 		self:CheckHealth()
 		self:CheckPower()
 		self:CheckAuras()
@@ -394,23 +356,8 @@ LibFader.OnEvent = function(self, event, ...)
 	elseif (event == "PLAYER_TARGET_CHANGED") then 
 		self:CheckTarget()
 
-	elseif (event == "PLAYER_FOCUS_CHANGED") then 
-		self:CheckFocus()
-
 	elseif (event == "GROUP_ROSTER_UPDATE") then 
 		self:CheckGroup()
-
-	elseif (event == "UPDATE_POSSESS_BAR") then 
-		self:CheckPossess()
-
-	elseif (event == "UPDATE_OVERRIDE_ACTIONBAR") then 
-		self:CheckOverride()
-
-	elseif (event == "UNIT_ENTERING_VEHICLE") 
-		or (event == "UNIT_ENTERED_VEHICLE") 
-		or (event == "UNIT_EXITING_VEHICLE") 
-		or (event == "UNIT_EXITED_VEHICLE") then 
-			self:CheckVehicle()
 
 	elseif (event == "UNIT_POWER_FREQUENT") 
 		or (event == "UNIT_DISPLAYPOWER") then
@@ -460,9 +407,6 @@ LibFader.OnUpdate = function(self, elapsed)
 	or Data.hasTarget 
 	or Data.hasFocus 
 	or Data.inGroup 
-	or Data.hasOverride 
-	or Data.hasPossess 
-	or Data.inVehicle 
 	or (Data.inInstance and Data.disableInstanceFade)
 	or Data.lowHealth 
 	or Data.lowPower 
@@ -538,13 +482,3 @@ LibFader:RegisterUnitEvent("UNIT_AURA", "OnEvent", "player")
 LibFader:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "OnEvent", "player") 
 LibFader:RegisterUnitEvent("UNIT_POWER_FREQUENT", "OnEvent", "player") 
 LibFader:RegisterUnitEvent("UNIT_DISPLAYPOWER", "OnEvent", "player") 
-
-if (not IS_CLASSIC) then 
-	LibFader:RegisterEvent("PLAYER_FOCUS_CHANGED", "OnEvent") 
-	LibFader:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR", "OnEvent") 
-	LibFader:RegisterEvent("UPDATE_POSSESS_BAR", "OnEvent") 
-	LibFader:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "OnEvent", "player") 
-	LibFader:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "OnEvent", "player") 
-	LibFader:RegisterUnitEvent("UNIT_EXITING_VEHICLE", "OnEvent", "player") 
-	LibFader:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "OnEvent", "player") 
-end 

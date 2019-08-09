@@ -5,7 +5,6 @@ local _G = _G
 -- WoW API
 local GetLootMethod = _G.GetLootMethod
 local GetPartyAssignment = _G.GetPartyAssignment
-local UnitHasVehicleUI = _G.UnitHasVehicleUI
 local UnitInParty = _G.UnitInParty
 local UnitInRaid = _G.UnitInRaid
 local UnitIsGroupAssistant = _G.UnitIsGroupAssistant
@@ -48,7 +47,7 @@ local Update = function(self, event, unit)
 					role = "MASTERLOOTER"
 				end
 			end
-			if (not role) and (UnitInRaid(unit) and (not UnitHasVehicleUI(unit))) then
+			if (not role) and (UnitInRaid(unit)) then
 				if (GetPartyAssignment("MAINTANK", unit)) then
 					role = "MAINTANK"
 				elseif (GetPartyAssignment("MAINASSIST", unit)) then
@@ -127,5 +126,5 @@ end
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("RaidRole", Enable, Disable, Proxy, 8)
+	Lib:RegisterElement("RaidRole", Enable, Disable, Proxy, 9)
 end 

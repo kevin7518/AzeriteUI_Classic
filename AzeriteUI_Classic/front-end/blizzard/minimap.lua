@@ -1,8 +1,3 @@
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "UnitHealth requires LibClientBuild to be loaded.")
-
-local IS_CLASSIC = LibClientBuild:IsClassic()
-
 local ADDON = ...
 local Core = CogWheel("LibModule"):GetModule(ADDON)
 if (not Core) then 
@@ -172,10 +167,7 @@ end
 local Toggle_UpdateTooltip = function(toggle)
 
 	local tooltip = Module:GetMinimapTooltip()
-
 	local hasXP = Module.PlayerHasXP()
-	local hasRep = Module.PlayerHasRep()
-	local hasAP = (not IS_CLASSIC) and FindActiveAzeriteItem()
 
 	local NC = "|r"
 	local colors = toggle._owner.colors 
@@ -192,7 +184,7 @@ local Toggle_UpdateTooltip = function(toggle)
 	local resting, restState, restedName, mult
 	local restedLeft, restedTimeLeft
 
-	if hasXP or hasAP or hasRep then 
+	if hasXP then 
 		tooltip:SetDefaultAnchor(toggle)
 		tooltip:SetMaximumWidth(360)
 	end
@@ -214,86 +206,6 @@ local Toggle_UpdateTooltip = function(toggle)
 			tooltip:AddDoubleLine(L["Rested Bonus: "], fullXPString:format(normal..short(restedLeft)..NC, normal..short(max * maxRested)..NC, highlight..math_floor(restedLeft/(max * maxRested)*100).."%"..NC), rh, gh, bh, rgg, ggg, bgg)
 		end
 		
-	end 
-
-	-- Rep tooltip
-	if hasRep then 
-
-		local name, reaction, min, max, current, factionID = GetWatchedFactionInfo()
-		if (factionID and IsFactionParagon(factionID)) then
-			local currentValue, threshold, _, hasRewardPending = GetFactionParagonInfo(factionID)
-			if (currentValue and threshold) then
-				min, max = 0, threshold
-				current = currentValue % threshold
-				if hasRewardPending then
-					current = current + threshold
-				end
-			end
-		end
-	
-		local standingID, isFriend, friendText
-		local standingLabel, standingDescription
-		for i = 1, GetNumFactions() do
-			local factionName, description, standingId, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus = GetFactionInfo(i)
-			
-			local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
-			
-			if (factionName == name) then
-				if friendID then
-					isFriend = true
-					if nextFriendThreshold then 
-						min = friendThreshold
-						max = nextFriendThreshold
-					else
-						min = 0
-						max = friendMaxRep
-						current = friendRep
-					end 
-					standingLabel = friendTextLevel
-					standingDescription = friendText
-				end
-				standingID = standingId
-				break
-			end
-		end
-
-		if standingID then 
-			if hasXP then 
-				tooltip:AddLine(" ")
-			end 
-			if (not isFriend) then 
-				standingLabel = _G["FACTION_STANDING_LABEL"..standingID]
-			end 
-
-			tooltip:AddDoubleLine(name, standingLabel, rt, gt, bt, rt, gt, bt)
-
-			local barMax = max - min 
-			local barValue = current - min
-			if (barMax > 0) then 
-				tooltip:AddDoubleLine(L["Current Standing: "], fullXPString:format(normal..short(current-min)..NC, normal..short(max-min)..NC, highlight..math_floor((current-min)/(max-min)*100).."%"..NC), rh, gh, bh, rgg, ggg, bgg)
-			else 
-				tooltip:AddDoubleLine(L["Current Standing: "], "100%", rh, gh, bh, r, g, b)
-			end 
-		else 
-			-- Don't add additional spaces if we can't display the information
-			hasRep = nil
-		end
-	end
-
-	-- New BfA Artifact Power tooltip!
-	if hasAP then 
-		if hasXP or hasRep then 
-			tooltip:AddLine(" ")
-		end 
-
-		local min, max = GetAzeriteItemXPInfo(hasAP)
-		local level = GetPowerLevel(hasAP) 
-
-		tooltip:AddDoubleLine(ARTIFACT_POWER, level, rt, gt, bt, rt, gt, bt)
-		tooltip:AddDoubleLine(L["Current Artifact Power: "], fullXPString:format(normal..short(min)..NC, normal..short(max)..NC, highlight..math_floor(min/max*100).."%"..NC), rh, gh, bh, rgg, ggg, bgg)
-	end 
-
-	if hasXP then 
 		if (restState == 1) then
 			if resting and restedTimeLeft and restedTimeLeft > 0 then
 				tooltip:AddLine(" ")
@@ -592,10 +504,6 @@ local Time_UpdateTooltip = function(self)
 	tooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_LOCALTIME, string_format(getTimeStrings(lh, lm, lsuffix, useStandardTime)), rh, gh, bh, r, g, b)
 	tooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_REALMTIME, string_format(getTimeStrings(sh, sm, ssuffix, useStandardTime)), rh, gh, bh, r, g, b)
 	tooltip:AddLine(" ")
-
-	if (not IS_CLASSIC) then 
-		tooltip:AddLine(L["%s to toggle calendar."]:format(green..L["<Left-Click>"]..NC), rh, gh, bh)
-	end
 
 	if useServerTime then 
 		tooltip:AddLine(L["%s to use local computer time."]:format(green..L["<Middle-Click>"]..NC), rh, gh, bh)
@@ -1199,56 +1107,7 @@ Module.SetUpMinimap = function(self)
 		-- Store the bars locally
 		Spinner[1] = ring1
 		Spinner[2] = ring2
-		
 	end 
-
-	if Layout.UseGroupFinderEye then 
-		local queueButton = QueueStatusMinimapButton
-		if queueButton then 
-			local button = Handler:CreateOverlayFrame()
-			button:SetFrameLevel(button:GetFrameLevel() + 10) 
-			button:Place(unpack(Layout.GroupFinderEyePlace))
-			button:SetSize(unpack(Layout.GroupFinderEyeSize))
-
-			queueButton:SetParent(button)
-			queueButton:ClearAllPoints()
-			queueButton:SetPoint("CENTER", 0, 0)
-			queueButton:SetSize(unpack(Layout.GroupFinderEyeSize))
-
-			if Layout.UseGroupFinderEyeBackdrop then 
-				local backdrop = queueButton:CreateTexture()
-				backdrop:SetDrawLayer("BACKGROUND", -6)
-				backdrop:SetPoint("CENTER", 0, 0)
-				backdrop:SetSize(unpack(Layout.GroupFinderEyeBackdropSize))
-				backdrop:SetTexture(Layout.GroupFinderEyeBackdropTexture)
-				backdrop:SetVertexColor(unpack(Layout.GroupFinderEyeBackdropColor))
-			end 
-
-			if Layout.GroupFinderEyeTexture then 
-				local UIHider = CreateFrame("Frame")
-				UIHider:Hide()
-				queueButton.Eye.texture:SetParent(UIHider)
-				queueButton.Eye.texture:SetAlpha(0)
-
-				--local iconTexture = button:CreateTexture()
-				local iconTexture = queueButton:CreateTexture()
-				iconTexture:SetDrawLayer("ARTWORK", 1)
-				iconTexture:SetPoint("CENTER", 0, 0)
-				iconTexture:SetSize(unpack(Layout.GroupFinderEyeSize))
-				iconTexture:SetTexture(Layout.GroupFinderEyeTexture)
-				iconTexture:SetVertexColor(unpack(Layout.GroupFinderEyeColor))
-			else
-				queueButton.Eye:SetSize(unpack(Layout.GroupFinderEyeSize)) 
-				queueButton.Eye.texture:SetSize(unpack(Layout.GroupFinderEyeSize))
-			end 
-
-			if Layout.GroupFinderQueueStatusPlace then 
-				QueueStatusFrame:ClearAllPoints()
-				QueueStatusFrame:SetPoint(unpack(Layout.GroupFinderQueueStatusPlace))
-			end 
-		end 
-	end 
-
 end 
 
 -- Set up the MBB (MinimapButtonBag) integration
@@ -1360,171 +1219,67 @@ Module.UpdateBars = function(self, event, ...)
 	end 
 
 	local Handler = self:GetMinimapHandler()
-
-	-- Figure out what should be shown. 
-	-- Priority us currently xp > rep > ap
-	local hasRep = Module.PlayerHasRep()
 	local hasXP = Module.PlayerHasXP()
-	local hasAP = (not IS_CLASSIC) and FindActiveAzeriteItem()
+	local first = hasXP and "XP"
 
-	-- Will include choices later on
-	local first, second 
 	if hasXP then 
-		first = "XP"
-	elseif hasRep then 
-		first = "Reputation"
-	elseif hasAP then 
-		first = "ArtifactPower"
-	end 
-	if first then 
-		if hasRep and (first ~= "Reputation") then 
-			second = "Reputation"
-		elseif hasAP and (first ~= "ArtifactPower") then 
-			second = "ArtifactPower"
-		end
-	end 
-
-	if (first or second) then
 		if (not Handler.Toggle:IsShown()) then  
 			Handler.Toggle:Show()
 		end
 
-		-- Dual bars
-		if (first and second) then
+		-- Setup the bars and backdrops for single bar mode
+		if (self.spinnerMode ~= "Single") then 
 
-			-- Setup the bars and backdrops for dual bar mode
-			if self.spinnerMode ~= "Dual" then 
+			-- Set the backdrop to the single thick bar backdrop
+			Handler.Toggle.Frame.Bg:SetTexture(Layout.RingFrameBackdropTexture)
 
-				-- Set the backdrop to the two bar backdrop
-				Handler.Toggle.Frame.Bg:SetTexture(Layout.RingFrameBackdropDoubleTexture)
+			-- Update the look of the outer spinner to the big single bar look
+			Spinner[1]:SetStatusBarTexture(Layout.RingFrameSingleRingTexture)
+			Spinner[1]:SetSparkSize(unpack(Layout.RingFrameSingleRingSparkSize))
+			Spinner[1]:SetSparkInset(unpack(Layout.RingFrameSingleRingSparkInset))
 
-				-- Update the look of the outer spinner
-				Spinner[1]:SetStatusBarTexture(Layout.RingFrameOuterRingTexture)
-				Spinner[1]:SetSparkSize(unpack(Layout.RingFrameOuterRingSparkSize))
-				Spinner[1]:SetSparkInset(unpack(Layout.RingFrameOuterRingSparkInset))
-
-				if Layout.RingFrameOuterRingValueFunc then 
-					Layout.RingFrameOuterRingValueFunc(Spinner[1].Value, Handler)
-				end 
-
-				Spinner[1].PostUpdate = nil
-			end
-
-			-- Assign the spinners to the elements
-			if (self.spinner1 ~= first) then 
-
-				-- Disable the old element 
-				self:DisableMinimapElement(first)
-
-				-- Link the correct spinner
-				Handler[first] = Spinner[1]
-
-				-- Assign the correct post updates
-				if (first == "XP") then 
-					Handler[first].OverrideValue = XP_OverrideValue
-	
-				elseif (first == "Reputation") then 
-					Handler[first].OverrideValue = Rep_OverrideValue
-	
-				elseif (first == "ArtifactPower") then 
-					Handler[first].OverrideValue = AP_OverrideValue
-				end 
-
-				-- Enable the updated element 
-				self:EnableMinimapElement(first)
-
-				-- Run an update
-				Handler[first]:ForceUpdate()
-			end
-
-			if (self.spinner2 ~= second) then 
-
-				-- Disable the old element 
-				self:DisableMinimapElement(second)
-
-				-- Link the correct spinner
-				Handler[second] = Spinner[2]
-
-				-- Assign the correct post updates
-				if (second == "XP") then 
-					Handler[second].OverrideValue = XP_OverrideValue
-	
-				elseif (second == "Reputation") then 
-					Handler[second].OverrideValue = Rep_OverrideValue
-	
-				elseif (second == "ArtifactPower") then 
-					Handler[second].OverrideValue = AP_OverrideValue
-				end 
-
-				-- Enable the updated element 
-				self:EnableMinimapElement(second)
-
-				-- Run an update
-				Handler[second]:ForceUpdate()
-			end
-
-			-- Store the current modes
-			self.spinnerMode = "Dual"
-			self.spinner1 = first
-			self.spinner2 = second
-
-		-- Single bar
-		else
-
-			-- Setup the bars and backdrops for single bar mode
-			if (self.spinnerMode ~= "Single") then 
-
-				-- Set the backdrop to the single thick bar backdrop
-				Handler.Toggle.Frame.Bg:SetTexture(Layout.RingFrameBackdropTexture)
-
-				-- Update the look of the outer spinner to the big single bar look
-				Spinner[1]:SetStatusBarTexture(Layout.RingFrameSingleRingTexture)
-				Spinner[1]:SetSparkSize(unpack(Layout.RingFrameSingleRingSparkSize))
-				Spinner[1]:SetSparkInset(unpack(Layout.RingFrameSingleRingSparkInset))
-
-				if Layout.RingFrameSingleRingValueFunc then 
-					Layout.RingFrameSingleRingValueFunc(Spinner[1].Value, Handler)
-				end 
-
-				-- Hide 2nd spinner values
-				Spinner[2].Value:SetText("")
-				Spinner[2].Value.Percent:SetText("")
-			end 		
-
-			-- Disable any previously active secondary element
-			if self.spinner2 and Handler[self.spinner2] then 
-				self:DisableMinimapElement(self.spinner2)
-				Handler[self.spinner2] = nil
+			if Layout.RingFrameSingleRingValueFunc then 
+				Layout.RingFrameSingleRingValueFunc(Spinner[1].Value, Handler)
 			end 
 
-			-- Update the element if needed
-			if (self.spinner1 ~= first) then 
+			-- Hide 2nd spinner values
+			Spinner[2].Value:SetText("")
+			Spinner[2].Value.Percent:SetText("")
+		end 		
 
-				-- Update pointers and callbacks to the active element
-				Handler[first] = Spinner[1]
-				Handler[first].OverrideValue = hasXP and XP_OverrideValue or hasRep and Rep_OverrideValue or AP_OverrideValue
-				Handler[first].PostUpdate = hasXP and PostUpdate_XP or hasRep and PostUpdate_Rep or PostUpdate_AP
-
-				-- Enable the active element
-				self:EnableMinimapElement(first)
-
-				-- Make sure descriptions are updated
-				Handler[first].Value.Description:Show()
-
-				-- Update the visible element
-				Handler[first]:ForceUpdate()
-			end 
-
-			-- If the second spinner is still shown, hide it!
-			if (Spinner[2]:IsShown()) then 
-				Spinner[2]:Hide()
-			end 
-
-			-- Store the current modes
-			self.spinnerMode = "Single"
-			self.spinner1 = first
-			self.spinner2 = nil
+		-- Disable any previously active secondary element
+		if self.spinner2 and Handler[self.spinner2] then 
+			self:DisableMinimapElement(self.spinner2)
+			Handler[self.spinner2] = nil
 		end 
+
+		-- Update the element if needed
+		if (self.spinner1 ~= first) then 
+
+			-- Update pointers and callbacks to the active element
+			Handler[first] = Spinner[1]
+			Handler[first].OverrideValue = hasXP and XP_OverrideValue
+			Handler[first].PostUpdate = hasXP and PostUpdate_XP
+
+			-- Enable the active element
+			self:EnableMinimapElement(first)
+
+			-- Make sure descriptions are updated
+			Handler[first].Value.Description:Show()
+
+			-- Update the visible element
+			Handler[first]:ForceUpdate()
+		end 
+
+		-- If the second spinner is still shown, hide it!
+		if (Spinner[2]:IsShown()) then 
+			Spinner[2]:Hide()
+		end 
+
+		-- Store the current modes
+		self.spinnerMode = "Single"
+		self.spinner1 = first
+		self.spinner2 = nil
 
 		-- Post update the frame, could be sticky
 		Toggle_UpdateFrame(Handler.Toggle)
@@ -1533,7 +1288,6 @@ Module.UpdateBars = function(self, event, ...)
 		Handler.Toggle:Hide()
 		Handler.Toggle.Frame:Hide()
 	end 
-
 end
 
 Module.OnEvent = function(self, event, ...)
@@ -1583,9 +1337,7 @@ end
 Module.OnInit = function(self)
 	self.db = self:NewConfig("Minimap", defaults, "global")
 	self.MBB = Layout.UseMBB and self:IsAddOnEnabled("MBB")
-
 	self:SetUpMinimap()
-
 	if self.MBB then 
 		if IsAddOnLoaded("MBB") then 
 			self:SetUpMBB()
@@ -1593,30 +1345,20 @@ Module.OnInit = function(self)
 			self:RegisterEvent("ADDON_LOADED", "OnEvent")
 		end 
 	end 
-
 	if Layout.UseStatusRings then 
 		self:UpdateBars()
 	end
 end 
 
 Module.OnEnable = function(self)
-
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "OnEvent")
 	self:RegisterEvent("VARIABLES_LOADED", "OnEvent") -- size and mask must be updated after this
-
 	if Layout.UseStatusRings then 
-		if (not IS_CLASSIC) then 
-			self:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED", "OnEvent") -- Bar count updates
-			self:RegisterEvent("DISABLE_XP_GAIN", "OnEvent")
-			self:RegisterEvent("ENABLE_XP_GAIN", "OnEvent")
-		end 
 		self:RegisterEvent("PLAYER_ALIVE", "OnEvent")
 		self:RegisterEvent("PLAYER_FLAGS_CHANGED", "OnEvent")
 		self:RegisterEvent("PLAYER_LEVEL_UP", "OnEvent")
 		self:RegisterEvent("PLAYER_XP_UPDATE", "OnEvent")
 		self:RegisterEvent("UPDATE_FACTION", "OnEvent")
 	end 
-
-	-- Enable all minimap elements
 	self:EnableAllElements()
 end 

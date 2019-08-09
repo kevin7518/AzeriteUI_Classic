@@ -1,11 +1,7 @@
-local LibModule = CogWheel:Set("LibModule", 30)
+local LibModule = CogWheel:Set("LibModule", 31)
 if (not LibModule) then	
 	return
 end
-
--- We require this library to properly handle startup events
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibModule requires LibClientBuild to be loaded.")
 
 local LibMessage = CogWheel("LibMessage")
 assert(LibMessage, "LibModule requires LibMessage to be loaded.")
@@ -48,8 +44,6 @@ local IsShiftKeyDown = _G.IsShiftKeyDown
 local UnitName = _G.UnitName
 
 -- Library registries
-LibModule.classicEnableList = LibModule.classicEnableList or {} -- table holding modules only compatible with Classic
-LibModule.classicDisableList = LibModule.classicDisableList or {} -- table holding modules incompatible with Classic
 LibModule.addonDependencies = LibModule.addonDependencies or {} -- table holding module/widget/handler dependencies
 LibModule.addonIncompatibilities = LibModule.addonIncompatibilities or {} -- table holding module/widget/handler incompatibilities
 LibModule.addonIsLoaded = LibModule.addonIsLoaded or {}
@@ -70,8 +64,6 @@ local PRIORITY_INDEX = { "HIGH", "NORMAL", "LOW", "PLUGIN" } -- indexed/ordered 
 local DEFAULT_MODULE_PRIORITY = "NORMAL" -- default load priority for new modules
 
 -- Speed shortcuts
-local classicEnableList = LibModule.classicEnableList
-local classicDisableList = LibModule.classicDisableList
 local addonDependencies = LibModule.addonDependencies
 local addonIncompatibilities = LibModule.addonIncompatibilities
 local addonIsLoaded = LibModule.addonIsLoaded
@@ -297,19 +289,7 @@ local ModuleProtoType = {
 		end
 	end,
 
-	SetToRetail = function(self)
-		classicDisableList[self] = true
-	end,
-
-	SetToClassic = function(self)
-		classicEnableList[self] = true
-	end,
-
 	IsIncompatible = function(self)
-		local isClassic = LibClientBuild:IsClassic()
-		if (isClassic and classicDisableList[self]) or ((not isClassic) and classicEnableList[self]) then 
-			return true 
-		end
 		if (not addonIncompatibilities[self]) then
 			return false
 		end

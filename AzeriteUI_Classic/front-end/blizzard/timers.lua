@@ -1,13 +1,9 @@
 local ADDON = ...
-
 local Core = CogWheel("LibModule"):GetModule(ADDON)
 if (not Core) then 
 	return 
 end
-
 local Module = Core:NewModule("BlizzardMirrorTimers", "LibMessage", "LibEvent", "LibSecureHook", "LibFrame", "LibStatusBar")
-Module:SetToRetail()
-
 local Layout
 
 -- Lua API
@@ -35,17 +31,6 @@ local sort = function(a, b)
 	else
 		return a.type < b.type -- different type, order by type
 	end
-end
-
-local updateBuffTimer = function(self, elapsed)
-	local timeLeft = self.timerExpiration - GetTime()
-	if (timeLeft <= 0) then
-		timeLeft = 0
-		self:Hide()
-		self:SetScript("OnUpdate", nil)
-	end
-	self.bar:SetValue(timeLeft)
-	self.msg:SetText(timeLeft - timeLeft%1)
 end
 
 Module.StyleTimer = function(self, frame, ignoreTextureFix)
@@ -207,172 +192,8 @@ Module.UpdateMirrorTimers = function(self)
 	end 
 end
 
-Module.UpdateTimerTrackers = function(self, event, ...)
-	local timers = self.timers
-	for i,frame in pairs(TimerTracker.timerList) do 
-		if (frame and (not frame.bar or not timers[frame.bar])) then 
-			local name = frame:GetName()
-
-			timers[frame.bar] = {}
-			timers[frame.bar].frame = frame
-			timers[frame.bar].name = name
-			timers[frame.bar].bar = frame.bar
-			timers[frame.bar].msg = _G[name.."TimeText"] or _G[name.."StatusBarTimeText"] or frame.timeText
-			timers[frame.bar].border = _G[name.."Border"] or _G[name.."StatusBarBorder"]
-			timers[frame.bar].type = 2
-			timers[frame.bar].id = i
-
-			self:StyleTimer(frame)
-		end
-	end
-	if (event ~= "ForceUpdate") then 
-		self:UpdateAnchors()
-	end 
-end 
-
-Module.GetBuffTimer = function(self, auraID)
-
-	-- Attempt to retrieve the existing timer
-	local timer = self.buffTimersByAuraID[auraID]
-	if (timer and timer.frame:IsShown()) then 
-		return timer, false 
-	end
-
-	-- Iterate the timer pool for available timers
-	for i = 1, #self.buffTimers do
-		local frame = self.buffTimers[i]
-
-		-- First hidden one will be used
-		if (not frame:IsShown()) then
-
-			-- Retrieve the timer object
-			local timer = self.timers[frame.bar]
-
-			-- Store the timer object as an active bufftimer
-			self.buffTimersByAuraID[auraID] = timer
-
-			-- Return the timer object, report it's a new one
-			return timer, true
-		end
-	end
-
-	-- Create a timer if none was available
-	local frame = self:CreateFrame("Frame", nil, Layout.Anchor)
-	frame:Hide()
-
-	local bar = frame:CreateStatusBar()
-	if Layout.BarSparkMap then 
-		bar:SetSparkMap(Layout.BarSparkMap)
-	end 
-	if Layout.BarColor then 
-		bar:SetStatusBarColor(unpack(Layout.BarColor))
-	end 
-	frame.bar = bar 
-
-	local msg = bar:CreateFontString()
-	frame.msg = msg
-
-	-- Create the timer object
-	local timer = {}
-	timer.frame = frame
-	timer.bar = bar
-	timer.msg = msg
-	timer.type = 1000
-	timer.id = #self.buffTimers + 1
-	
-	-- Store the timer object
-	self.timers[frame.bar] = timer
-
-	-- Store the buffTimer frame
-	self.buffTimers[#self.buffTimers + 1] = frame
-
-	-- Store this as an active bufftimer
-	self.buffTimersByAuraID[auraID] = timer
-
-	-- Style the new timer before returning it
-	self:StyleTimer(frame, true)
-
-	-- Return the timer object, report it's a new one
-	return timer, true
-end
-
-Module.UpdateBuffTimers = function(self, event, unit)
-	if ((event == "UNIT_POWER_BAR_TIMER_UPDATE") and (unit ~= "player")) then 
-		return
-	end 
-
-	-- Flag all active bars for hiding
-	for auraID,timer in pairs(self.buffTimersByAuraID) do 
-		timer.flagForHide = true
-	end
-
-	-- Iterate available bars
-	local id = 1
-	local duration, expiration, barID, auraID = UnitPowerBarTimerInfo("player", id)
-	while barID do
-
-		-- Counters are just numeral representation of player alt power, 
-		-- and we have an alt power bar for this already. 
-		local barType = GetAlternatePowerInfoByID(barID)
-		if (barType ~= ALT_POWER_TYPE_COUNTER) then 
-
-			-- Retrieve or create the timer frame
-			local timer, needsReset = self:GetBuffTimer(auraID)
-
-			-- Unflag the bar for hiding
-			timer.flagForHide = nil 
-
-			-- update bar values, make it an instant update
-			timer.bar:SetMinMaxValues(0, duration, true)
-			timer.bar:SetValue(duration, true) 
-
-			-- update expiration value
-			timer.frame.timerExpiration = expiration 
-
-			if needsReset then 
-				timer.frame:SetScript("OnUpdate", updateBuffTimer)
-				timer.frame:Show()
-			end 
-		end
-
-		id = id + 1
-		duration, expiration, barID, auraID = UnitPowerBarTimerInfo("player", id)
-	end
-
-	-- Hide all active but flagged bars
-	for auraID,timer in pairs(self.buffTimersByAuraID) do 
-		if timer.flagForHide then 
-			timer.frame:Hide()
-			timer.frame:SetScript("OnUpdate", nil)
-
-			-- Remove the reference from the list of active timers
-			self.buffTimersByAuraID[auraID] = nil
-		end
-	end	
-
-	if (event ~= "ForceUpdate") then 
-		self:UpdateAnchors()
-	end 
-end
-
 Module.ForceUpdate = function(self)
-	self:UpdateBuffTimers("ForceUpdate")
 	self:UpdateMirrorTimers("ForceUpdate")
-	self:UpdateTimerTrackers("ForceUpdate")
-	self:UpdateAnchors()
-end
-
-Module.OnCaptureBarVisible = function(self, event, ...)
-	self.captureBarVisible = true
-
-	-- update timer anchors
-	self:UpdateAnchors()
-end
-
-Module.OnCaptureBarHidden = function(self, event, ...)
-	self.captureBarVisible = nil
-
-	-- update timer anchors
 	self:UpdateAnchors()
 end
 
@@ -382,7 +203,6 @@ Module.PreInit = function(self)
 end 
 
 Module.OnInit = function(self)
-
 	self.timers = {} -- all timer data, hashed by bar objects
 	self.buffTimers = {} -- all buff timer frames, indexed
 	self.buffTimersByAuraID = {} -- all active buff timers, hashed by auraID
@@ -390,20 +210,6 @@ Module.OnInit = function(self)
 	-- Update mirror timers (breath/fatigue)
 	self:SetSecureHook("MirrorTimer_Show", "UpdateMirrorTimers")
 
-	-- Update timer trackers (instance/bg countdowns)
-	self:RegisterEvent("START_TIMER", "UpdateTimerTrackers")
-
-	-- Update buff timers (timers and counts related to the alt power)
-	self:RegisterEvent("UNIT_POWER_BAR_TIMER_UPDATE", "UpdateBuffTimers")
-
-	-- Update anchors to keep the parenting correct
-	self:SetSecureHook("FreeTimerTrackerTimer", "UpdateAnchors")
-
 	-- Update all on world entering
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ForceUpdate")
-
-	-- PvP capture bars (not yet implemented)
-	--self:RegisterMessage("CG_CAPTUREBAR_VISIBLE", "OnCaptureBarVisible")
-	--self:RegisterMessage("CG_CAPTUREBAR_HIDDEN", "OnCaptureBarHidden")
-
 end

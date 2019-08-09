@@ -1,22 +1,9 @@
---[[--
-
-*Note that this file is currently in a slow transition
-towards becoming a cleaner generic library, so we advice 
-against manually manipulating it as it'll change frequently.
--Lars
-
---]]--
-
 local ADDON, Private = ...
-
 local Core = CogWheel("LibModule"):GetModule(ADDON)
 if (not Core) then 
 	return 
 end
-
 local Module = Core:NewModule("OptionsMenu", "HIGH", "LibMessage", "LibEvent", "LibDB", "LibFrame", "LibSound", "LibTooltip")
-Module:SetToRetail()
-
 local Layout, L, MenuTable
 
 -- Registries
@@ -875,19 +862,6 @@ Module.CreateMenuTable = function(self)
 		})
 	end
 
-	local UnitFrameArena = Core:GetModule("UnitFrameArena", true)
-	if UnitFrameArena and not (UnitFrameArena:IsIncompatible() or UnitFrameArena:DependencyFailed()) then 
-		table_insert(UnitFrameMenu.buttons, {
-			enabledTitle = L_ENABLED:format(L["PvP Frames"]),
-			disabledTitle = L_DISABLED:format(L["PvP Frames"]),
-			type = "TOGGLE_VALUE", 
-			configDB = "UnitFrameArena", configKey = "enableArenaFrames", 
-			proxyModule = "UnitFrameArena"
-		})
-	end
-	table_insert(MenuTable, UnitFrameMenu)
-		
-
 	-- Nameplates
 	local NamePlates = Core:GetModule("NamePlates", true)
 	if NamePlates and not (NamePlates:IsIncompatible() or NamePlates:DependencyFailed()) then 
@@ -933,32 +907,6 @@ Module.CreateMenuTable = function(self)
 		})
 	end 
 
-	-- Blizzard HUD elements
-	table_insert(MenuTable,	{
-		title = L["HUD"], type = nil, hasWindow = true, 
-		buttons = {
-			-- Talking Head
-			{
-				enabledTitle = L_ENABLED:format(L["TalkingHead"]),
-				disabledTitle = L_DISABLED:format(L["TalkingHead"]),
-				type = "TOGGLE_VALUE", 
-				configDB = "FloaterHUD", configKey = "enableTalkingHead", 
-				proxyModule = "BlizzardFloaterHUD"
-			},
-
-			-- Alerts 
-			{
-				enabledTitle = L_ENABLED:format(L["Alerts"]),
-				disabledTitle = L_DISABLED:format(L["Alerts"]),
-				type = "TOGGLE_VALUE", 
-				configDB = "FloaterHUD", configKey = "enableAlerts", 
-				proxyModule = "BlizzardFloaterHUD"
-			}
-
-			
-		}
-	})
-	
 	-- Explorer Mode
 	local ExplorerMode = Core:GetModule("ExplorerMode", true)
 	if ExplorerMode and not (ExplorerMode:IsIncompatible() or ExplorerMode:DependencyFailed()) then 
