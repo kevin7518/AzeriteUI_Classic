@@ -431,27 +431,6 @@ Update = function(self, event, unit, ...)
 			end
 		end 
 
-		
-	elseif (event == "UNIT_SPELLCAST_INTERRUPTIBLE") then 
-		element.notInterruptible = nil
-		if element.Shield then 
-			if element.notInterruptible and (not UnitIsUnit(unit ,"player")) then
-				element.Shield:Show()
-			else
-				element.Shield:Hide()
-			end
-		end
-
-	elseif (event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE") then
-		element.notInterruptible = true
-		if element.Shield then 
-			if element.notInterruptible and (not UnitIsUnit(unit ,"player")) then
-				element.Shield:Show()
-			else
-				element.Shield:Hide()
-			end
-		end
-	
 	elseif (event == "UNIT_SPELLCAST_DELAYED") then
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo(unit)
 		if (not startTime) or (not element.duration) then 
@@ -632,5 +611,5 @@ end
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("Cast", Enable, Disable, Proxy, 25)
+	Lib:RegisterElement("Cast", Enable, Disable, Proxy, 26)
 end 
