@@ -1,10 +1,7 @@
-local LibNamePlate = CogWheel:Set("LibNamePlate", 36)
+local LibNamePlate = CogWheel:Set("LibNamePlate", 37)
 if (not LibNamePlate) then	
 	return
 end
-
-local LibClientBuild = CogWheel("LibClientBuild")
-assert(LibClientBuild, "LibNamePlate requires LibClientBuild to be loaded.")
 
 local LibMessage = CogWheel("LibMessage")
 assert(LibMessage, "LibNamePlate requires LibMessage to be loaded.")
@@ -27,7 +24,6 @@ LibEvent:Embed(LibNamePlate)
 LibFrame:Embed(LibNamePlate)
 LibSecureHook:Embed(LibNamePlate)
 LibStatusBar:Embed(LibNamePlate)
-LibClientBuild:Embed(LibNamePlate)
 
 -- Lua API
 local _G = _G
@@ -226,14 +222,10 @@ local Colors = {
 	tapped = prepare(161/255, 141/255, 120/255),
 
 	class = {
-		DEATHKNIGHT 	= prepare( 176/255,  31/255,  79/255 ), -- slightly more blue, less red, to stand out from angry mobs better
-		DEMONHUNTER 	= prepare( 163/255,  48/255, 201/255 ),
 		DRUID 			= prepare( 255/255, 125/255,  10/255 ),
 		HUNTER 			= prepare( 191/255, 232/255, 115/255 ), -- slightly more green and yellow, to stand more out from friendly players/npcs
 		MAGE 			= prepare( 105/255, 204/255, 240/255 ),
-		MONK 			= prepare(   0/255, 255/255, 150/255 ),
 		PALADIN 		= prepare( 255/255, 130/255, 226/255 ), -- less pink, more purple
-		--PALADIN 		= prepare( 245/255, 140/255, 186/255 ), -- original 
 		PRIEST 			= prepare( 220/255, 235/255, 250/255 ), -- tilted slightly towards blue, and somewhat toned down. chilly.
 		ROGUE 			= prepare( 255/255, 225/255,  95/255 ), -- slightly more orange than Blizz, to avoid the green effect when shaded with black
 		SHAMAN 			= prepare(  32/255, 122/255, 222/255 ), -- brighter, to move it a bit away from the mana color
@@ -266,12 +258,6 @@ local Colors = {
 		[7] 			= prepare(  64/255, 131/255, 104/255 ), -- revered
 		[8] 			= prepare(  64/255, 131/255, 131/255 ), -- exalted
 		civilian 		= prepare(  64/255, 131/255,  38/255 )  -- used for friendly player nameplates
-	},
-	threat = {
-		[0] 			= prepare( 175/255, 165/255, 155/255 ), -- gray, low on threat
-		[1] 			= prepare( 255/255, 128/255,  64/255 ), -- light yellow, you are overnuking 
-		[2] 			= prepare( 255/255,  64/255,  12/255 ), -- orange, tanks that are losing threat
-		[3] 			= prepare( 255/255,   0/255,   0/255 )  -- red, you're securely tanking, or totally fucked :) 
 	}
 }
 
