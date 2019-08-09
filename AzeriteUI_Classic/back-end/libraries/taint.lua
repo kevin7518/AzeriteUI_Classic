@@ -1,4 +1,4 @@
-local LibTaint = CogWheel:Set("LibTaint", 6)
+local LibTaint = CogWheel:Set("LibTaint", 7)
 if (not LibTaint) then	
 	return
 end
@@ -15,7 +15,6 @@ LibTaint.fixes = LibTaint.fixes or {} -- tracking applied fixes and version numb
 local fixes = {
 	dropdownTaint = 1,
 	germanOneLetterDay = 1,
-	tradeSkillRows = 1,
 	namePlateMotionDropdown = 1,
 	nonEnglishShipyardMap = 1,
 	openToAddonCategory = 2,
@@ -69,32 +68,6 @@ local fixes = {
 			end 
 		end
 	
-		-- Fix error when shift-clicking header rows in the tradeskill UI.
-		-- This is caused by the TradeSkillRowButtonTemplate's OnClick script
-		-- failing to account for some rows being headers. Fix by ignoring
-		-- modifiers when clicking header rows.
-		-- New in 7.0
-		if (not LibTaint.fixes.tradeSkillRows) or (LibTaint.fixes.tradeSkillRows < fixes.tradeSkillRows) then 
-			local frame = CreateFrame("Frame")
-			frame:RegisterEvent("ADDON_LOADED")
-			frame:SetScript("OnEvent", function(self, event, name)
-				if name == "Blizzard_TradeSkillUI" then
-					local old_OnClick = TradeSkillFrame.RecipeList.buttons[1]:GetScript("OnClick")
-					local new_OnClick = function(self, button)
-						if IsModifiedClick() and self.isHeader then
-							return self:GetParent():GetParent():OnHeaderButtonClicked(self, self.tradeSkillInfo, button)
-						end
-						old_OnClick(self, button)
-					end
-					for i = 1, #TradeSkillFrame.RecipeList.buttons do
-						TradeSkillFrame.RecipeList.buttons[i]:SetScript("OnClick", new_OnClick)
-					end
-					self:UnregisterAllEvents()
-				end
-			end)
-			LibTaint.fixes.tradeSkillRows = fixes.tradeSkillRows
-		end 
-
 		-- Fix error when mousing over the Nameplate Motion Type dropdown in
 		-- Interface Options > Names panel if the current setting isn't listed.
 		-- Happens if the user had previously selected the Spreading Nameplates
