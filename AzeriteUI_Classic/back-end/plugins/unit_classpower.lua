@@ -223,9 +223,6 @@ ClassPower.ComboPoints = setmetatable({
 			element.isEnabled = element.ShouldEnable(self)
 			self:RegisterEvent("SPELLS_CHANGED", Proxy, true)
 		else 
-			if (PLAYERCLASS == "ROGUE") then 
-				self:RegisterEvent("PLAYER_TALENT_UPDATE", Proxy, true)
-			end 
 			element.isEnabled = true
 		end 
 
@@ -236,7 +233,6 @@ ClassPower.ComboPoints = setmetatable({
 	end,
 	DisablePower = function(self)
 		self:UnregisterEvent("SPELLS_CHANGED", Proxy)
-		self:UnregisterEvent("PLAYER_TALENT_UPDATE", Proxy)
 		self:UnregisterEvent("UNIT_POWER_FREQUENT", Proxy)
 		self:UnregisterEvent("UNIT_MAXPOWER", Proxy)
 
@@ -246,23 +242,14 @@ ClassPower.ComboPoints = setmetatable({
 		local element = self.ClassPower
 		local min, max
 
-		-- Vehicles first
-		if (not IS_CLASSIC) then 
-			element.isEnabled = true
-			element.max = MAX_COMBO_POINTS
+		if (PLAYERCLASS == "DRUID") then
+			if (event == "SPELLS_CHANGED") or (event == "UNIT_DISPLAYPOWER") then 
+				element.isEnabled = element.ShouldEnable(self)
+			end 
+		end
+		min = UnitPower("player", element.powerID) or 0
+		max = UnitPowerMax("player", element.powerID) or 0
 
-			-- BUG: UnitPower always returns 0 combo points for vehicles
-			min = GetComboPoints(unit) or 0
-			max = MAX_COMBO_POINTS
-		else
-			if (PLAYERCLASS == "DRUID") then
-				if (event == "SPELLS_CHANGED") or (event == "UNIT_DISPLAYPOWER") then 
-					element.isEnabled = element.ShouldEnable(self)
-				end 
-			end
-			min = UnitPower("player", element.powerID) or 0
-			max = UnitPowerMax("player", element.powerID) or 0
-		end 
 		if (not element.isEnabled) then 
 			element:Hide()
 			return 
@@ -422,5 +409,5 @@ end
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("ClassPower", Enable, Disable, Proxy, 31)
+	Lib:RegisterElement("ClassPower", Enable, Disable, Proxy, 32)
 end 
