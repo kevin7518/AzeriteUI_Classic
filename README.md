@@ -9,6 +9,7 @@ It's a work in progress as we never was in the Classic beta. I'll update it as m
 * Minimap, clock, latency, xp
 * The primary actionbar
 * Game menu (Esc)
+* `/bind` hover keybind system (from 1.0.2-Alpha)
 
 ### **Elements that feel fairly "off":**  
 * Chat window buttons
@@ -19,7 +20,6 @@ It's a work in progress as we never was in the Classic beta. I'll update it as m
 * Micro menu
 * Castbars
 * Reputation bar
-* /bind keybind system (bug when actually trying to save binds)
 
 ### **Pledge to our work:**  
 * Patreon: [www.patreon.com/AzeriteUI](https://www.patreon.com/azeriteui)  
