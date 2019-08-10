@@ -1,4 +1,4 @@
-local LibBlizzard = CogWheel:Set("LibBlizzard", 24)
+local LibBlizzard = CogWheel:Set("LibBlizzard", 25)
 if (not LibBlizzard) then 
 	return
 end
@@ -387,6 +387,7 @@ UIWidgets["Minimap"] = function(self)
 	MinimapNorthTag:SetParent(UIHider)
 	if MiniMapTracking then MiniMapTracking:SetParent(UIHider) end
 	if MiniMapTrackingButton then MiniMapTrackingButton:SetParent(UIHider) end
+	if MiniMapTrackingFrame then MiniMapTrackingFrame:SetParent(UIHider) end
 	MiniMapWorldMapButton:SetParent(UIHider)
 	MinimapZoomIn:SetParent(UIHider)
 	MinimapZoomOut:SetParent(UIHider)
