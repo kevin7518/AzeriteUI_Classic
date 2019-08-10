@@ -2128,7 +2128,7 @@ local UnitFramePlayer = {
 			ManaShadeSize = { 127, 127 }, 
 			ManaShadeTexture = GetMedia("shade_circle"), 
 			ManaShadeDrawLayer = { "BORDER", -1 }, 
-			ManaShadeColor = { 0, 0, 1, 1 }, 
+			ManaShadeColor = { 1, 1, 1, 1 }, 
 
 		UseManaForeground = true, 
 			ManaForegroundPlace = { "CENTER", 0, 0 }, 
