@@ -1016,7 +1016,8 @@ local BlizzardChatFrames = {
 local BlizzardFloaterHUD = {
 	Colors = Colors,
 	StyleDurabilityFrame = true, DurabilityFramePlace = { "CENTER", 190, 0 },
-	StyleErrorFrame = true, ErrorFrameStrata = "LOW"
+	StyleErrorFrame = true, ErrorFrameStrata = "LOW",
+	StyleQuestTimerFrame = true, QuestTimerFramePlace = { "CENTER", UIParent, "CENTER", 0, 160 }
 }
 
 -- Blizzard Game Menu (Esc)

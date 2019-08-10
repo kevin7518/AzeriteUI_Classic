@@ -94,6 +94,14 @@ Module.StyleErrorFrame = function(self)
 	end 
 end 
 
+Module.StyleQuestTimerFrame = function(self)
+	if (not Layout.StyleQuestTimerFrame) then 
+		return 
+	end 
+	self:CreateHolder(QuestTimerFrame, unpack(Layout.QuestTimerFramePlace))
+	self:CreatePointHook(QuestTimerFrame)
+end
+
 Module.GetFloaterTooltip = function(self)
 	return self:GetTooltip("CG_FloaterTooltip") or self:CreateTooltip("CG_FloaterTooltip")
 end
@@ -110,8 +118,5 @@ end
 Module.OnEnable = function(self)
 	self:StyleDurabilityFrame()
 	self:StyleErrorFrame()
-end
-
-Module.GetSecureUpdater = function(self)
-	return self.proxyUpdater
+	self:StyleQuestTimerFrame()
 end
