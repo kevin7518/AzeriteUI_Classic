@@ -1,4 +1,4 @@
-local Version = 40 -- This library's version 
+local Version = 41 -- This library's version 
 local MapVersion = Version -- Minimap library version the minimap created by this is compatible with
 local LibMinimap, OldVersion = CogWheel:Set("LibMinimap", Version)
 if (not LibMinimap) then
@@ -590,8 +590,8 @@ LibMinimap.SyncMinimap = function(self, onlyQuery)
 
 	Private.MapContent:SetScript("OnMouseUp", function(self, button)
 		if (button == "RightButton") then
-			ToggleDropDownMenu(1, nil,  _G.MiniMapTrackingDropDown, self)
-			LibMinimap:PlaySoundKitID(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON, "SFX")
+			--ToggleDropDownMenu(1, nil,  _G.MiniMapTrackingDropDown, self)
+			--LibMinimap:PlaySoundKitID(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON, "SFX")
 		else
 			local effectiveScale = self:GetEffectiveScale()
 	
