@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.10-Alpha] 2019-08-10
+### Added
+- Hunters now get a mana orb too! 
+
 ## [1.0.9-Alpha] 2019-08-09
 ### Changed
 - Removed all API calls related to internal minimap quest area rings and blobs.
