@@ -2484,9 +2484,9 @@ UnitStyles.StylePlayerFrame = function(self, unit, id, Layout, ...)
 	-- Mana Orb
 	-----------------------------------------------------------
 	-- Only create this for actual mana classes
-	local hasMana = (PlayerClass == "DRUID") or (PlayerClass == "MONK")  or (PlayerClass == "PALADIN")
-				 or (PlayerClass == "SHAMAN") or (PlayerClass == "PRIEST")
-				 or (PlayerClass == "MAGE") or (PlayerClass == "WARLOCK") 
+	local hasMana = (PlayerClass == "DRUID") or (PlayerClass == "HUNTER") 
+				 or (PlayerClass == "PALADIN") or (PlayerClass == "SHAMAN")
+				 or (PlayerClass == "MAGE") or (PlayerClass == "PRIEST") or (PlayerClass == "WARLOCK") 
 
 	if Layout.UseMana then 
 		if hasMana then 
