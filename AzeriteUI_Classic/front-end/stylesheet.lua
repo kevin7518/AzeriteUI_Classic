@@ -857,6 +857,13 @@ local ActionBars = {
 	PushedDrawLayer = { "ARTWORK", 1 },
 	PushedBlendMode = "ADD",
 
+	-- Checked (abilities waiting to happen)
+	CheckedSize = { 44, 44 },
+	CheckedPlace = { "CENTER", 0, 0 },
+	CheckedColor = { .9, .8, .1, .3 },
+	CheckedDrawLayer = { "ARTWORK", 2 },
+	CheckedBlendMode = "ADD",
+
 	-- Auto-Attack Flash
 	FlashSize = { 44, 44 },
 	FlashPlace = { "CENTER", 0, 0 },

@@ -520,6 +520,19 @@ ActionButton.PostCreate = function(self, ...)
 	-- to it randomly being drawn behind the icon texture. 
 	self:GetPushedTexture():SetDrawLayer(unpack(Layout.PushedDrawLayer)) 
 
+	-- Add a simpler checked texture
+	if self.SetCheckedTexture then
+		self.Checked = self.Checked or self:CreateTexture()
+		self.Checked:SetDrawLayer(unpack(Layout.CheckedDrawLayer))
+		self.Checked:SetSize(unpack(Layout.CheckedSize))
+		self.Checked:ClearAllPoints()
+		self.Checked:SetPoint(unpack(Layout.CheckedPlace))
+		self.Checked:SetMask(Layout.MaskTexture)
+		self.Checked:SetColorTexture(unpack(Layout.CheckedColor))
+		self:SetCheckedTexture(self.Checked)
+		self:GetCheckedTexture():SetBlendMode(Layout.CheckedBlendMode)
+	end
+	
 	self.Flash:SetDrawLayer(unpack(Layout.FlashDrawLayer))
 	self.Flash:SetSize(unpack(Layout.FlashSize))
 	self.Flash:ClearAllPoints()
