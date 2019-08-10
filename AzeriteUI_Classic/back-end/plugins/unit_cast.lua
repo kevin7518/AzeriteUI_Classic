@@ -1,6 +1,7 @@
 -- Lua API
 local _G = _G
 local math_floor = math.floor
+local string_find = string.find
 local tonumber = tonumber
 local tostring = tostring
 
@@ -571,9 +572,16 @@ local Enable = function(self)
 		element._owner = self
 		element.ForceUpdate = ForceUpdate
 
+		-- Events don't fire for nameplate units in Classic, 
+		-- so we're disabling for now. Will add combatlog system later. 
+		local unit = self.unit
+		if (string_find(unit, "nameplate")) then 
+			element:Hide()
+			return 
+		end 
+
 		-- Events doesn't fire for (unit)target units, 
 		-- so we're relying on the unitframe library's global update handler for that.
-		local unit = self.unit
 		if (not (unit and unit:match("%wtarget$"))) then
 			self:RegisterEvent("UNIT_SPELLCAST_START", Proxy)
 			self:RegisterEvent("UNIT_SPELLCAST_FAILED", Proxy)
@@ -595,9 +603,6 @@ end
 local Disable = function(self)
 	local element = self.Cast
 	if element then
-		element:SetScript("OnUpdate", nil)
-		element:Hide()
-
 		self:UnregisterEvent("UNIT_SPELLCAST_START", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_FAILED", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_STOP", Proxy)
@@ -606,10 +611,12 @@ local Disable = function(self)
 		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_START", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", Proxy)
 		self:UnregisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", Proxy)
+		element:SetScript("OnUpdate", nil)
+		element:Hide()
 	end
 end 
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("Cast", Enable, Disable, Proxy, 26)
+	Lib:RegisterElement("Cast", Enable, Disable, Proxy, 28)
 end 
