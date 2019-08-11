@@ -252,15 +252,35 @@ Core.ApplyExperimentalFeatures = function(self)
 
 		local strata = backpack:GetFrameStrata()
 		local level = backpack:GetFrameLevel()
+		local slotSize = 30
+		local previous
 
 		for i = 0,3 do 
 			-- Always check for existence, 
 			-- because nothing is ever guaranteed. 
 			local slot = _G["CharacterBag"..i.."Slot"]
+			local tex = _G["CharacterBag"..i.."SlotNormalTexture"]
 			if slot then 
 				slot:SetParent(backpack)
+				slot:SetSize(slotSize,slotSize) 
 				slot:SetFrameStrata(strata)
 				slot:SetFrameLevel(level)
+
+				-- Remove that fugly outer border
+				if tex then 
+					tex:SetTexture("")
+					tex:SetAlpha(0)
+				end
+				
+				-- Re-anchor the slots to remove space
+				if (i == 0) then
+					slot:ClearAllPoints()
+					slot:SetPoint("TOPRIGHT", backpack, "BOTTOMRIGHT", -6, 4)
+				else 
+					slot:ClearAllPoints()
+					slot:SetPoint("RIGHT", previous, "LEFT", 0, 0)
+				end
+				previous = slot
 			end 
 		end 
 	end 
