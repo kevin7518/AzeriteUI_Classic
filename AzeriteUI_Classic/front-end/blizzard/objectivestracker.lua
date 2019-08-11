@@ -22,6 +22,8 @@ local GetScreenHeight = _G.GetScreenHeight
 local IN_COMBAT, IN_BOSS_FIGHT, IN_ARENA
 
 Module.StyleTracker = function(self)
+
+	--[[
 	hooksecurefunc("ObjectiveTracker_Update", function()
 		local frame = ObjectiveTrackerFrame.MODULES
 		if frame then
@@ -38,9 +40,11 @@ Module.StyleTracker = function(self)
 			end
 		end
 	end)
+	]]
 end 
 
 Module.PositionTracker = function(self)
+	local ObjectiveTrackerFrame = ObjectiveTrackerFrame or QuestWatchFrame
 	if (not ObjectiveTrackerFrame) then 
 		return self:RegisterEvent("ADDON_LOADED", "OnEvent")
 	end 
@@ -117,8 +121,6 @@ Module.CreateDriver = function(self)
 			if _G.ObjectiveTrackerFrame then 
 				_G.ObjectiveTrackerFrame:SetAlpha(.9)
 				self.frame.cover:Hide()
-				-- This taints. 
-				--_G.ObjectiveTracker_Expand()
 			end
 		end)
 
@@ -127,8 +129,6 @@ Module.CreateDriver = function(self)
 			if _G.ObjectiveTrackerFrame then 
 				_G.ObjectiveTrackerFrame:SetAlpha(0)
 				self.frame.cover:Show()
-				-- This taints. 
-				--_G.ObjectiveTracker_Collapse()
 			end
 		end)
 
@@ -147,9 +147,6 @@ Module.CreateDriver = function(self)
 		]=])
 
 		local driver = "hide;show"
-		if Layout.HideInArena then 
-			driver = "[@arena1,exists][@arena2,exists][@arena3,exists][@arena4,exists][@arena5,exists]" .. driver
-		end 
 		if Layout.HideInBossFights then 
 			driver = "[@boss1,exists][@boss2,exists][@boss3,exists][@boss4,exists]" .. driver
 		end 

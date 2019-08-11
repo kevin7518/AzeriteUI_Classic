@@ -756,7 +756,6 @@ local Core = {
 
 	DisableUIWidgets = {
 		ActionBars = true, 
-		--Alerts = true,
 		Auras = true,
 		BuffTimer = true, 
 		CaptureBar = true,
@@ -764,10 +763,9 @@ local Core = {
 		Chat = true,
 		LevelUpDisplay = true,
 		Minimap = true,
-		--ObjectiveTracker = true, 
 		OrderHall = true,
 		PlayerPowerBarAlt = true, 
-		QuestWatchFrame = true, 
+		--QuestWatchFrame = true, 
 		TotemFrame = true, 
 		Tutorials = true,
 		
@@ -779,10 +777,6 @@ local Core = {
 		UnitFrameFocus = true,
 		UnitFrameParty = true,
 		UnitFrameBoss = true,
-		UnitFrameArena = not(	CogWheel("LibModule"):IsAddOnEnabled("sArena") 
-							or	CogWheel("LibModule"):IsAddOnEnabled("Gladius") 
-							or 	CogWheel("LibModule"):IsAddOnEnabled("GladiusEx") ),
-
 		--Warnings = true,
 		WorldMap = true,
 		WorldState = true,
