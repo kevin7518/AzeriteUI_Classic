@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.15-RC] 2019-08-11
+### Changed
+- The quest watcher is now visible again. We might write a prettier one later, this old one is kind of boring. 
+- Improved the size and anchoring of the bag slot buttons beneath the backpack. 
+
 ## [1.0.14-RC] 2019-08-11
 ### Changed
 - The durability frame is now placed more wisely. 
