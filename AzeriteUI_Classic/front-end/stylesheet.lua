@@ -1241,6 +1241,14 @@ local GroupTools = {
 	OnButtonEnable = GroupTools_Button_OnEnable
 }
 
+-- Little trick to see the layout and dimensions of the blib icons
+--local f = UIParent:CreateTexture()
+--f:SetTexture([[Interface\MiniMap\ObjectIconsAtlas.blp]]) 
+--f:SetPoint("CENTER")
+--local g = UIParent:CreateTexture()
+--g:SetColorTexture(0,.7,0,.25)
+--g:SetAllPoints(f)
+
 -- Minimap
 local Minimap = {
 	Colors = Colors,
@@ -1252,12 +1260,8 @@ local Minimap = {
 	UseBlipTextures = true, 
 		BlipScale = 1.15, 
 		BlipTextures = {
-			["8.1.0"] = GetMedia("Blip-Nandini-New-810"),
-			["8.1.5"] = GetMedia("Blip-Nandini-New-815"),
-			["8.2.0"] = GetMedia("Blip-Nandini-New-820"),
-
-			-- Blizzard Fallback
-			["8.2.5"] = [[Interface\MiniMap\ObjectIconsAtlas]]
+			["1.13.2"] = GetMedia("Blip-Nandini-New-113_2"),
+			["1.13.3"] = [[Interface\Minimap\ObjectIconsAtlas.blp]] -- Blizzard Fallback
 		},
 
 	UseCompass = true, 
@@ -1625,7 +1629,8 @@ local NamePlates = {
 		nameplateSelectedScale = 1, -- default 1
 
 		-- The max distance to show nameplates.
-		nameplateMaxDistance = 30, -- 20 is classic default(?), 60 is BfA default
+		-- *DOES NOT GO BEYOND 20 IN CLASSIC!
+		nameplateMaxDistance = 20, -- 20 is classic limit (tested), 60 is BfA default
 
 		-- The max distance to show the target nameplate when the target is behind the camera.
 		nameplateTargetBehindMaxDistance = 15, -- default 15
