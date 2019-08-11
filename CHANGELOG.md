@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.12-Alpha] 2019-08-11
+### Added
+- Added minimap blip icons for 1.13.2! 
+- Added styling to the up, down and to bottom chat window buttons. 
+
+### Changed
+- The GameTooltip now follows the same scaling as our own tooltips, regardless of the actual uiScale. 
+
 ## [1.0.11-Alpha] 2019-08-10
 ### Changed
 - Disabled the coloring of the orb glass overlay, as this looked strange when dead or empty. None of those things seem to happen in retail. They do here, however. So now I noticed. 
