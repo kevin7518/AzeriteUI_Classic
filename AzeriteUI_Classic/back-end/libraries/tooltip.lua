@@ -1,4 +1,4 @@
-local LibTooltip = CogWheel:Set("LibTooltip", 53)
+local LibTooltip = CogWheel:Set("LibTooltip", 54)
 if (not LibTooltip) then	
 	return
 end
@@ -2163,7 +2163,12 @@ local SetDefaultAnchor = function(tooltip, parent)
 	if tooltip:IsForbidden() then 
 		return 
 	end
-	
+
+	-- Set the tooltip to the same scale as our own. 
+	local targetScale = LibTooltip:GetFrame("UICenter"):GetEffectiveScale()
+	local tooltipParentScale = (tooltip:GetParent() or WorldFrame):GetEffectiveScale()
+	tooltip:SetScale(targetScale/tooltipParentScale)
+
 	-- We're only repositioning from the default position, 
 	-- and we shouldn't interfere with tooltips placed next to their owners.  
 	if (tooltip:GetAnchorType() ~= "ANCHOR_NONE") then 
@@ -2175,18 +2180,15 @@ local SetDefaultAnchor = function(tooltip, parent)
 	tooltip:SetOwner(LibTooltip:GetFrame(parent), "ANCHOR_NONE")
 
 	-- Attempt to find our own defaults, or just go with normal blizzard defaults otherwise. 
-
 	-- Retrieve default anchor for this tooltip
 	local defaultAnchor = LibTooltip:GetDefaultCValue("defaultAnchor")
-
-	local position
-	if (type(defaultAnchor) == "function") then 
-		position = { defaultAnchor(tooltip, parent) }
-	else 
-		position = { unpack(defaultAnchor) }
-	end 
-
 	if defaultAnchor then 
+		local position
+		if (type(defaultAnchor) == "function") then 
+			position = { defaultAnchor(tooltip, parent) }
+		else 
+			position = { unpack(defaultAnchor) }
+		end
 		Tooltip.Place(tooltip, unpack(position))
 	else 
 		Tooltip.Place(tooltip, "BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -_G.CONTAINER_OFFSET_X - 13, _G.CONTAINER_OFFSET_Y)
