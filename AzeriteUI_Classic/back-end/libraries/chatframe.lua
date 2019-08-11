@@ -1,4 +1,4 @@
-local LibChatWindow, version = CogWheel:Set("LibChatWindow", 25)
+local LibChatWindow, version = CogWheel:Set("LibChatWindow", 28)
 if (not LibChatWindow) then	
 	return
 end
@@ -357,8 +357,16 @@ LibChatWindow.GetChatWindowCurrentEditBox = function(self, frame)
 	end
 end 
 
+LibChatWindow.GetChatWindowScrollUpButton = function(self, frame)
+	return _G[frame:GetName().."ButtonFrameUpButton"]
+end 
+
+LibChatWindow.GetChatWindowScrollDownButton = function(self, frame)
+	return _G[frame:GetName().."ButtonFrameDownButton"]
+end 
+
 LibChatWindow.GetChatWindowScrollToBottomButton = function(self, frame)
-	return frame.ScrollToBottomButton
+	return _G[frame:GetName().."ButtonFrameBottomButton"]
 end 
 
 LibChatWindow.GetChatWindowScrollBar = function(self, frame)
@@ -488,6 +496,8 @@ local embedMethods = {
 	GetChatWindowEditBox = true, 
 	GetChatWindowMenuButton = true,
 	GetChatWindowMinimizeButton = true, 
+	GetChatWindowScrollUpButton = true, 
+	GetChatWindowScrollDownButton = true, 
 	GetChatWindowScrollToBottomButton = true, 
 	GetChatWindowScrollBar = true, 
 	GetChatWindowScrollBarThumbTexture = true, 
