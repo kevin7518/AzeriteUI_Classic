@@ -239,35 +239,31 @@ end
 Core.ApplyExperimentalFeatures = function(self)
 
 	-- Attempt to hook the bag bar to the bags
-	local MicroBagBar = _G.MicroButtonAndBagsBar and _G.MicroButtonAndBagsBar.MicroBagBar
-	if MicroBagBar then 
+	-- Retrieve the first slot button and the backpack
+	local firstSlot = _G.CharacterBag0Slot
+	local backpack = _G.ContainerFrame1
 
-		-- Retrieve the first slot button and the backpack
-		local firstSlot = _G.CharacterBag0Slot
-		local backpack = _G.ContainerFrame1
+	-- These should always exist, but Blizz do have a way of changing things,
+	-- and I prefer having functionality not be applied in a future update 
+	-- rather than having the UI break from nil bugs. 
+	if firstSlot and backpack then 
+		firstSlot:ClearAllPoints()
+		firstSlot:SetPoint("TOPRIGHT", backpack, "BOTTOMRIGHT", -6, 0)
 
-		-- These should always exist, but Blizz do have a way of changing things,
-		-- and I prefer having functionality not be applied in a future update 
-		-- rather than having the UI break from nil bugs. 
-		if firstSlot and backpack then 
-			firstSlot:ClearAllPoints()
-			firstSlot:SetPoint("TOPRIGHT", backpack, "BOTTOMRIGHT", -6, 0)
+		local strata = backpack:GetFrameStrata()
+		local level = backpack:GetFrameLevel()
 
-			local strata = backpack:GetFrameStrata()
-			local level = backpack:GetFrameLevel()
-
-			for i = 0,3 do 
-				-- Always check for existence, 
-				-- because nothing is ever guaranteed. 
-				local slot = _G["CharacterBag"..i.."Slot"]
-				if slot then 
-					slot:SetParent(backpack)
-					slot:SetFrameStrata(strata)
-					slot:SetFrameLevel(level)
-				end 
+		for i = 0,3 do 
+			-- Always check for existence, 
+			-- because nothing is ever guaranteed. 
+			local slot = _G["CharacterBag"..i.."Slot"]
+			if slot then 
+				slot:SetParent(backpack)
+				slot:SetFrameStrata(strata)
+				slot:SetFrameLevel(level)
 			end 
 		end 
-	end
+	end 
 
 	-- Register addon specific aura filters.
 	-- These can be accessed by the other modules by calling 
