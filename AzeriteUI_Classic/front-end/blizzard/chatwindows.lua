@@ -50,123 +50,12 @@ Module.UpdateChatWindowAlpha = function(self, frame)
 	end
 end 
 
-Module.UpdateChatWindowButtons = function(self, frame)
-
-	local buttonSide = FCF_GetButtonSide(frame)
-
-	local buttonFrame = self:GetChatWindowButtonFrame(frame)
-	local minimizeButton = self:GetChatWindowMinimizeButton(frame)
-	local channelButton = self:GetChatWindowChannelButton()
-	local deafenButton = self:GetChatWindowVoiceDeafenButton()
-	local muteButton =self:GetChatWindowVoiceMuteButton()
-	local menuButton = self:GetChatWindowMenuButton()
-	local scrollBar = self:GetChatWindowScrollBar(frame)
-	local scrollToBottomButton = self:GetChatWindowScrollToBottomButton(frame)
-
-	local frameHeight = frame:GetHeight()
-	local buttonCount, spaceNeeded = 0, 0
-	local anchorTop, anchorBottom
-
-	-- Calculate available space based on visible buttons
-	if frame.isDocked then 
-		if (channelButton and channelButton:IsShown()) then 
-			buttonCount = buttonCount + 1
-			spaceNeeded = spaceNeeded + channelButton:GetHeight()
-			anchorTop = channelButton
-		end 
-		if (deafenButton and deafenButton:IsShown()) then 
-			buttonCount = buttonCount + 1
-			spaceNeeded = spaceNeeded + deafenButton:GetHeight()
-			anchorTop = deafenButton
-		end 
-		if (muteButton and muteButton:IsShown()) then 
-			buttonCount = buttonCount + 1
-			spaceNeeded = spaceNeeded + muteButton:GetHeight()
-			anchorTop = muteButton
-		end 
-		if (menuButton and menuButton:IsShown()) then 
-			buttonCount = buttonCount + 1
-			spaceNeeded = spaceNeeded + menuButton:GetHeight()
-			anchorBottom = menuButton
-		end 
-	else
-		if (minimizeButton and minimizeButton:IsShown()) then 
-			buttonCount = buttonCount + 1
-			spaceNeeded = spaceNeeded + minimizeButton:GetHeight()
-			anchorTop = minimizeButton
-		end 
-	end 
-
-	-- Isn't the bar always here...?
-	if scrollBar then
-
-		-- Cram it in with the other buttons when there is room enough
-		if (frameHeight >= spaceNeeded) then 
-			scrollBar:ClearAllPoints()
-			if anchorTop then 
-				scrollBar:SetPoint("TOP", anchorTop, "BOTTOM", 0, -4)
-			else 
-				scrollBar:SetPoint("TOP", buttonFrame, "TOP", 0, -4)
-			end 
-			if (scrollToBottomButton and scrollToBottomButton:IsShown()) then
-				scrollToBottomButton:ClearAllPoints()
-				if anchorBottom then 
-					scrollToBottomButton:SetPoint("BOTTOM", anchorBottom, "TOP", 0, 9)
-				else 
-					scrollToBottomButton:SetPoint("BOTTOM", buttonFrame, "BOTTOM", 0, 4)
-				end 
-				scrollBar:SetPoint("BOTTOM", scrollToBottomButton, "TOP", 0, 5)
-			else
-				if anchorBottom then 
-					scrollBar:SetPoint("BOTTOM", anchorBottom, "TOP", 0, 9)
-				else 
-					scrollBar:SetPoint("BOTTOM", buttonFrame, "BOTTOM", 0, 4)
-				end 
-			end 
-		else 
-
-			-- Put it back on the opposite side when there's not enough room
-			if (buttonSide == "left") then 
-				scrollBar:ClearAllPoints()
-				scrollBar:SetPoint("TOPLEFT", frame, "TOPRIGHT", -13, -4)
-				if (scrollToBottomButton and scrollToBottomButton:IsShown()) then
-					scrollToBottomButton:SetPoint("BOTTOMRIGHT", frame.ResizeButton, "TOPRIGHT", -9, -11)
-					scrollBar:SetPoint("BOTTOM", scrollToBottomButton, "TOP", -13, 5)
-				elseif (frame.ResizeButton and frame.ResizeButton:IsShown()) then
-					scrollBar:SetPoint("BOTTOM", frame.ResizeButton, "TOP", -13, 5)
-				else
-					scrollBar:SetPoint("BOTTOMLEFT", frame, "BOTTOMRIGHT", -13, 5)
-				end
-
-			elseif (buttonSide == "right") then 
-				scrollBar:ClearAllPoints()
-				scrollBar:SetPoint("TOPRIGHT", frame, "TOPLEFT", 13, -4)
-				if (scrollToBottomButton and scrollToBottomButton:IsShown()) then
-					scrollToBottomButton:SetPoint("BOTTOMLEFT", frame.ResizeButton, "TOPLEFT", 9, -11)
-					scrollBar:SetPoint("BOTTOM", scrollToBottomButton, "TOP", 13, 5)
-				elseif (frame.ResizeButton and frame.ResizeButton:IsShown()) then
-					scrollBar:SetPoint("BOTTOM", frame.ResizeButton, "TOP", 13, 5)
-				else
-					scrollBar:SetPoint("BOTTOMRIGHT", frame, "BOTTOMLEFT", 13, 5)
-				end
-			end 
-		end 
-	end
-end 
-
 Module.UpdateChatWindowScale = function(self, frame)
 	local targetScale = self:GetFrame("UICenter"):GetEffectiveScale()
 	local parentScale = frame:GetParent():GetScale()
 	local scale = targetScale / parentScale
 
 	frame:SetScale(scale)
-
-	local buttonFrame = self:GetChatWindowButtonFrame(frame)
-	local scrollToBottomButton = self:GetChatWindowScrollToBottomButton(frame)
-	if buttonFrame then 
-		buttonFrame:SetWidth(Layout.ButtonFrameWidth/scale)
-		buttonFrame:SetScale(scale)
-	end 
 
 	-- Chat tabs are direct descendants of the general dock manager, 
 	-- which in turn is a direct descendant of UIParent
@@ -178,15 +67,8 @@ Module.UpdateChatWindowScale = function(self, frame)
 	-- The editbox is a child of the chat frame
 	local editBox = self:GetChatWindowEditBox(frame)
 	if editBox then 
-		editBox:SetScale(1)
+		editBox:SetScale(scale)
 	end 
-
-	local scrollBar = self:GetChatWindowScrollBar(frame)
-	local scrollThumb = self:GetChatWindowScrollBarThumbTexture(frame)
-	if scrollBar then 
-		scrollBar:SetScale(scale)
-	end
-
 end
 
 Module.UpdateChatWindowScales = function(self)
@@ -277,11 +159,6 @@ Module.UpdateMainWindowButtonDisplay = function(self)
 		if menuButton then 
 			menuButton:Hide()
 		end 
-	end 
-
-	-- Post update button alignment in case changes to visible ones
-	if frame then 
-		self:UpdateChatWindowButtons(frame)
 	end 
 end
 
@@ -398,7 +275,6 @@ Module.PostCreateChatWindow = function(self, frame)
 		end)
 	end
 
-
 	-- EditBox
 	------------------------------
 	-- strip away textures
@@ -466,7 +342,6 @@ Module.PostCreateChatWindow = function(self, frame)
 			if frame.isDocked then
 				self:UpdateMainWindowButtonDisplay(true)
 			end
-			self:UpdateChatWindowButtons(frame)
 			self:UpdateChatWindowAlpha(frame)
 
 			-- Hook all editbox chat sizes to the same as ChatFrame1
@@ -514,7 +389,6 @@ Module.PostCreateChatWindow = function(self, frame)
 			if frame.isDocked then
 				self:UpdateMainWindowButtonDisplay(false)
 			end
-			self:UpdateChatWindowButtons(frame)
 			self:UpdateChatWindowAlpha(frame)
 		end
 	end)
@@ -541,39 +415,31 @@ Module.PostCreateChatWindow = function(self, frame)
 	end)
 	buttonFrame:Hide()
 
-
 	-- Frame specific buttons
 	------------------------------
-	local scrollToBottomButton = self:GetChatWindowScrollToBottomButton(frame)
-	if scrollToBottomButton then 
-		self:SetUpButton(scrollToBottomButton, Layout.ButtonTextureScrollToBottom)
-		scrollToBottomButton:SetPoint("BOTTOMRIGHT", frame.ResizeButton, "TOPRIGHT", -9, -11)
-	end 
-
-	local scrollBar = self:GetChatWindowScrollBar(frame)
-	if scrollBar then 
-		scrollBar:SetWidth(Layout.ScrollBarWidth)
-	end
-
-	local scrollThumb = self:GetChatWindowScrollBarThumbTexture(frame)
-	if scrollThumb then 
-		scrollThumb:SetWidth(Layout.ScrollBarWidth)
-	end
-
 	local minimizeButton = self:GetChatWindowMinimizeButton(frame)
 	if minimizeButton then 
 		self:SetUpButton(minimizeButton, Layout.ButtonTextureMinimizeButton)
 	end 
 
+	local scrollUpButton = self:GetChatWindowScrollUpButton(frame)
+	if scrollUpButton then 
+		self:SetUpButton(scrollUpButton, Layout.ButtonTextureScrollUpButton)
+	end 
 
-	-- These will fire our own positioning callbacks
-	FCF_UpdateScrollbarAnchors(frame)
-	FCF_UpdateButtonSide(frame)
+	local scrollDownButton = self:GetChatWindowScrollDownButton(frame)
+	if scrollDownButton then 
+		self:SetUpButton(scrollDownButton, Layout.ButtonTextureScrollDownButton)
+	end 
+
+	local scrollToBottomButton = self:GetChatWindowScrollToBottomButton(frame)
+	if scrollToBottomButton then 
+		self:SetUpButton(scrollToBottomButton, Layout.ButtonTextureScrollToBottomButton)
+	end 
 
 end 
 
 Module.SetUpAlphaScripts = function(self)
-
 	_G.CHAT_FRAME_BUTTON_FRAME_MIN_ALPHA = 0
 
 	-- avoid mouseover alpha change, yet keep the background textures
@@ -582,7 +448,6 @@ Module.SetUpAlphaScripts = function(self)
 	hooksecurefunc("FCF_FadeInChatFrame", alphaProxy)
 	hooksecurefunc("FCF_FadeOutChatFrame", alphaProxy)
 	hooksecurefunc("FCF_SetWindowAlpha", alphaProxy)
-	
 end 
 
 Module.SetUpScrollScripts = function(self)
@@ -599,9 +464,6 @@ Module.SetUpScrollScripts = function(self)
 			end
 		end
 	end)
-
-	hooksecurefunc("FCF_UpdateButtonSide", function(frame) self:UpdateChatWindowButtons(frame) end)
-	hooksecurefunc("FCF_UpdateScrollbarAnchors", function(frame) self:UpdateChatWindowButtons(frame) end)
 
 end 
 
