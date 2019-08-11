@@ -70,7 +70,7 @@ Module.DisableMappy = function(object)
 end
 
 Module.StyleDurabilityFrame = function(self)
-	if (not Layout.StyleDurabilityFrame) or true then 
+	if (not Layout.StyleDurabilityFrame) then 
 		return 
 	end
 
