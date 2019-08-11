@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.14-RC] 2019-08-11
+### Changed
+- The durability frame is now placed more wisely. 
+
 ## [1.0.13-Alpha] 2019-08-11
 ### Changed
 - Removed the "_Classic" suffix from the UI name in options menu. It doesn't need a different display name, because it's not a different UI, just for a different client. 
