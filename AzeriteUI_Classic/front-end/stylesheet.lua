@@ -1014,8 +1014,10 @@ local BlizzardChatFrames = {
 		ButtonTextureSize = { 64, 64 }, 
 		ButtonTextureColor = { Colors.ui.stone[1], Colors.ui.stone[2], Colors.ui.stone[3] }, 
 		ButtonTextureNormal = GetMedia("point_block"),
-		ButtonTextureScrollToBottom = GetMedia("icon_chat_down"), 
 		ButtonTextureMinimizeButton = GetMedia("icon_chat_minus"),
+		ButtonTextureScrollUpButton = GetMedia("icon_chat_up"), 
+		ButtonTextureScrollDownButton = GetMedia("icon_chat_down"), 
+		ButtonTextureScrollToBottomButton = GetMedia("icon_chat_bottom"), 
 		ButtonTextureChatEmotes = GetMedia("config_button_emotes")
 }
 
