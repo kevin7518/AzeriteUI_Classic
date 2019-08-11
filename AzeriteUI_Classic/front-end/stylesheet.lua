@@ -1590,8 +1590,8 @@ local NamePlates = {
 		-- which the target nameplate will be kept away from. 
 		-- Used to avoid the target plate being overlapped 
 		-- by the target frame or actionbars and keep it in view.
-		nameplateLargeTopInset = .08, -- default .1
-		nameplateOtherTopInset = .08, -- default .08
+		nameplateLargeTopInset = .1, -- default .1
+		nameplateOtherTopInset = .1, -- default .08
 		nameplateLargeBottomInset = .02, -- default .15
 		nameplateOtherBottomInset = .02, -- default .1
 		nameplateClassResourceTopInset = 0,
@@ -1622,7 +1622,13 @@ local NamePlates = {
 		nameplateOtherAtBase = 0,
 
 		-- Scale and Alpha of the selected nameplate (current target,
-		nameplateSelectedScale = 1 -- default 1
+		nameplateSelectedScale = 1, -- default 1
+
+		-- The max distance to show nameplates.
+		nameplateMaxDistance = 30, -- 20 is classic default(?), 60 is BfA default
+
+		-- The max distance to show the target nameplate when the target is behind the camera.
+		nameplateTargetBehindMaxDistance = 15, -- default 15
 	}
 }
 
