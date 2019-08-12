@@ -1,4 +1,4 @@
-local LibSecureButton = CogWheel:Set("LibSecureButton", 59)
+local LibSecureButton = CogWheel:Set("LibSecureButton", 60)
 if (not LibSecureButton) then	
 	return
 end
@@ -332,7 +332,8 @@ local Update = function(self, event, ...)
 		self:UpdateUsable()
 
 	elseif 	(event == "ACTIONBAR_UPDATE_STATE") then
-		self:UpdateCheckedState()
+		self:UpdateFlash()
+		--self:UpdateCheckedState()
 
 	elseif (event == "CURSOR_UPDATE") 
 		or (event == "ACTIONBAR_SHOWGRID") or (event == "PET_BAR_SHOWGRID") 
@@ -358,7 +359,8 @@ local Update = function(self, event, ...)
 		self:Update() -- really? how often is this called?
 
 	elseif (event == "TRADE_SKILL_SHOW") or (event == "TRADE_SKILL_CLOSE") then
-		self:UpdateCheckedState()
+		self:UpdateFlash()
+		--self:UpdateCheckedState()
 
 	elseif (event == "UPDATE_BINDINGS") then
 		self:UpdateBinding()
@@ -539,11 +541,21 @@ ActionButton.UpdateBinding = function(self)
 end 
 
 ActionButton.UpdateCheckedState = function(self)
-	if IsCurrentAction(self.buttonAction) or IsAutoRepeatAction(self.buttonAction) then
-		self:SetChecked(true)
-	else
-		self:SetChecked(false)
-	end
+	-- Suppress the checked state if the button is currently flashing
+	local action = self.buttonAction
+	if self.Flash then 
+		if IsCurrentAction(action) and not((IsAttackAction(action) and IsCurrentAction(action)) or IsAutoRepeatAction(action)) then
+			self:SetChecked(true)
+		else
+			self:SetChecked(false)
+		end
+	else 
+		if (IsCurrentAction(action) or IsAutoRepeatAction(action)) then
+			self:SetChecked(true)
+		else
+			self:SetChecked(false)
+		end
+	end 
 end
 
 ActionButton.UpdateCooldown = function(self)
@@ -651,6 +663,7 @@ ActionButton.UpdateFlash = function(self)
 			end
 		end 
 	end 
+	self:UpdateCheckedState()
 end 
 
 ActionButton.UpdateFlyout = function(self)
