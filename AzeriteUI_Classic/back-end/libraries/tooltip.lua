@@ -1,4 +1,4 @@
-local LibTooltip = CogWheel:Set("LibTooltip", 54)
+local LibTooltip = CogWheel:Set("LibTooltip", 55)
 if (not LibTooltip) then	
 	return
 end
@@ -1096,6 +1096,20 @@ Tooltip.SetAction = function(self, slot)
 			self:AddDoubleLine(data.name, data.schoolType, colors.title[1], colors.title[2], colors.title[3], colors.quest.gray[1], colors.quest.gray[2], colors.quest.gray[3], true, true)
 		else 
 			self:AddLine(data.name, colors.title[1], colors.title[2], colors.title[3], true)
+		end 
+
+		if data.isAutoAttack then 
+			if (data.attackSpeed) then 
+				self:AddLine(INVTYPE_WEAPONMAINHAND, colors.offwhite[1], colors.offwhite[2], colors.offwhite[3], true)
+				self:AddDoubleLine(string_format(DAMAGE_TEMPLATE, data.attackMinDamage, data.attackMaxDamage), STAT_SPEED .. " " .. data.attackSpeed, colors.offwhite[1], colors.offwhite[2], colors.offwhite[3], colors.offwhite[1], colors.offwhite[2], colors.offwhite[3], true, true)
+				self:AddLine(string_format(DPS_TEMPLATE, data.attackDPS), colors.quest.green[1], colors.quest.green[2], colors.quest.green[3])
+			end 
+			if (data.attackDPSOffHand) then 
+				self:AddLine(" ")
+				self:AddLine(INVTYPE_WEAPONOFFHAND, colors.offwhite[1], colors.offwhite[2], colors.offwhite[3], true)
+				self:AddDoubleLine(string_format(DAMAGE_TEMPLATE, data.attackMinDamageOffHand, data.attackMaxDamageOffHand), STAT_SPEED .. " " .. data.attackSpeedOffHand, colors.offwhite[1], colors.offwhite[2], colors.offwhite[3], colors.offwhite[1], colors.offwhite[2], colors.offwhite[3], true, true)
+				self:AddLine(string_format(DPS_TEMPLATE, data.attackDPSOffHand), colors.quest.green[1], colors.quest.green[2], colors.quest.green[3])
+			end 
 		end 
 
 		-- Cost and range
