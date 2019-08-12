@@ -757,34 +757,23 @@ local Core = {
 	DisableUIWidgets = {
 		ActionBars = true, 
 		Auras = true,
-		BuffTimer = true, 
 		CaptureBar = true,
 		CastBars = true,
-		Chat = true,
-		LevelUpDisplay = true,
 		Minimap = true,
-		OrderHall = true,
-		PlayerPowerBarAlt = true, 
 		--QuestWatchFrame = true, 
-		TotemFrame = true, 
-		Tutorials = true,
-		
 		UnitFramePlayer = true,
 		UnitFramePet = true,
 		UnitFrameTarget = true,
 		UnitFrameToT = true,
-		UnitFramePet = true,
-		UnitFrameFocus = true,
 		UnitFrameParty = true,
+		--UnitFrameRaid = true,
 		UnitFrameBoss = true,
 		--Warnings = true,
-		WorldMap = true,
-		WorldState = true,
 		ZoneText = true
 	},
 	DisableUIMenuPages = {
 		{ ID = 5, Name = "InterfaceOptionsActionBarsPanel" },
-		{ ID = 10, Name = "CompactUnitFrameProfiles" }
+		--{ ID = 10, Name = "CompactUnitFrameProfiles" }
 	},
 	UseEasySwitch = true, 
 		EasySwitch = {

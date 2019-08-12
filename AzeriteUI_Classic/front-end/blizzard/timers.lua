@@ -14,15 +14,6 @@ local table_sort = table.sort
 local table_wipe = table.wipe
 local unpack = unpack
 
--- WoW API 
-local GetAlternatePowerInfoByID = _G.GetAlternatePowerInfoByID
-local GetTime = _G.GetTime
-local UnitAlternatePowerCounterInfo = _G.UnitAlternatePowerCounterInfo
-local UnitPowerBarTimerInfo = _G.UnitPowerBarTimerInfo
-
--- WoW Constants
-local ALT_POWER_TYPE_COUNTER = ALT_POWER_TYPE_COUNTER or 4
-
 -- Utility Functions
 -----------------------------------------------------------------
 local sort = function(a, b)
