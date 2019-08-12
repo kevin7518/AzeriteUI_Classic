@@ -167,7 +167,7 @@ local Angry = createColor(156/255, 116/255, 255/255)
 
 -- Crystal Power Colors
 colorDB.power.ENERGY_CRYSTAL = Fast -- Rogues, Druids, Monks
-colorDB.power.FOCUS_CRYSTAL = Slow -- Hunters and Hunter Pets
+colorDB.power.FOCUS_CRYSTAL = Slow -- Hunters Pets (?)
 colorDB.power.RAGE_CRYSTAL = Angry -- Druids, Warriors
 
 -- Orb Power Colors
