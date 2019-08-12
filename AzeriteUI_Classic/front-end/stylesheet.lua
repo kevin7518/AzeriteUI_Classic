@@ -1055,15 +1055,19 @@ local BlizzardMicroMenu = {
 local BlizzardObjectivesTracker = {
 	Colors = Colors,
 
-	Place = { "TOPRIGHT", -60, -260 },
-	Width = 235, -- 235 default
-	Scale = 1.1, 
+	--Place = { "TOPRIGHT", -60, -260 },
+	Place = { "BOTTOMRIGHT", -50, 380 },
+	Width = 235, -- 280 classic default
+	Scale = 1.0, 
 	SpaceTop = 260, 
-	SpaceBottom = 330, 
-	MaxHeight = 480,
+	SpaceBottom = 380, 
+	MaxHeight = 1080 - (260 + 380),
 	HideInCombat = false, 
-	HideInBossFights = true, 
-	HideInArena = true
+	HideInBossFights = true,
+
+	FontObject = GetFont(13, true),
+	FontObjectTitle = GetFont(15, true)
+
 }
 
 -- Blizzard Instance Countdown Timers
