@@ -140,8 +140,10 @@ Module.StyleTracker = function(self)
 							if (minCount and maxCount) then 
 								if (minCount == maxCount) then 
 									text = Colors.quest.green.colorCode .. minCount .. "/" .. maxCount .. "|r " .. objectiveText
-								elseif (minCount > 0) then 
+								elseif (maxCount > 0) and (minCount/maxCount > 1/3 ) then 
 									text = Colors.quest.yellow.colorCode .. minCount .. "/" .. maxCount .. "|r " .. objectiveText
+								elseif (minCount > 0) then 
+									text = Colors.quest.orange.colorCode .. minCount .. "/" .. maxCount .. "|r " .. objectiveText
 								else 
 									text = Colors.quest.red.colorCode .. minCount .. "/" .. maxCount .. "|r " .. objectiveText
 								end 
