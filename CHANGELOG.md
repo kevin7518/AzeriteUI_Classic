@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.16-RC] 2019-08-12
+### Changed
+- The quest tracker now looks far more awesome. 
+- The texture for active or checked abilities on the action buttons will now be hidden if the red auto-attack flash is currently flashing, making everything far easier to see and relate to. 
+- Made the tooltip for auto-attack much more interesting, as it now shows your main- and off hand damage, attack speed and damage per second. Just like the weapon tooltips in principle, but with actual damage modifiers from attack power and such taken into account. 
+
+### Fixed
+- Fixed some issues that would cause attacks on the next swing to have their tooltips displayed slightly wonky. 
+
 ## [1.0.15-RC] 2019-08-11
 ### Changed
 - The quest watcher is now visible again. We might write a prettier one later, this old one is kind of boring. 
