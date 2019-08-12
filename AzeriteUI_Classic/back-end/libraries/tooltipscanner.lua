@@ -1,4 +1,4 @@
-local LibTooltipScanner = CogWheel:Set("LibTooltipScanner", 29)
+local LibTooltipScanner = CogWheel:Set("LibTooltipScanner", 30)
 if (not LibTooltipScanner) then	
 	return
 end
@@ -77,6 +77,8 @@ local ScannerName = LibTooltipScanner.scannerName
 local Constants = {
 	CastChanneled = _G.SPELL_CAST_CHANNELED, 
 	CastInstant = _G.SPELL_RECAST_TIME_CHARGEUP_INSTANT,
+	CastNextMelee = _G.SPELL_ON_NEXT_SWING, 
+	CastNextRanged = _G.SPELL_ON_NEXT_RANGED, 
 	CastTimeMin = _G.SPELL_CAST_TIME_MIN,
 	CastTimeSec = _G.SPELL_CAST_TIME_SEC, 
 	ContainerSlots = _G.CONTAINER_SLOTS, 
@@ -211,6 +213,10 @@ local Patterns = {
 	CastTime2 = 				"^" .. string_gsub(Constants.CastTimeSec, "%%%.%dg", "(%.+)"),
 	CastTime3 = 				"^" .. string_gsub(Constants.CastTimeMin, "%%%.%dg", "(%.+)"),
 	CastTime4 = 				"^" .. Constants.CastChanneled, 
+
+	-- On next swing/attack
+	CastQueue1 = 				"^" .. Constants.CastNextMelee, 
+	CastQueue2 = 				"^" .. Constants.CastNextRanged, 
 
 	-- CooldownRemaining
 	CooldownTimeRemaining1 = 		   string_gsub(Constants.CooldownTimeRemaining1, "%%d", "(%%d+)"), 
@@ -399,6 +405,59 @@ LibTooltipScanner.GetTooltipDataForAction = function(self, actionSlot, tbl)
 			end 
 		end
 
+		if (tbl.name == ATTACK) then 
+			tbl.isAutoAttack = true 
+
+			local speed, offhandSpeed = UnitAttackSpeed("player")
+			local minDamage
+			local maxDamage
+			local minOffHandDamage
+			local maxOffHandDamage 
+			local physicalBonusPos
+			local physicalBonusNeg
+			local percent
+			minDamage, maxDamage, minOffHandDamage, maxOffHandDamage, physicalBonusPos, physicalBonusNeg, percent = UnitDamage("player")
+			local displayMin = max(floor(minDamage),1)
+			local displayMax = max(ceil(maxDamage),1)
+		
+			minDamage = (minDamage / percent) - physicalBonusPos - physicalBonusNeg
+			maxDamage = (maxDamage / percent) - physicalBonusPos - physicalBonusNeg
+		
+			local baseDamage = (minDamage + maxDamage) * 0.5
+			local fullDamage = (baseDamage + physicalBonusPos + physicalBonusNeg) * percent
+			local totalBonus = (fullDamage - baseDamage)
+			local damagePerSecond = (max(fullDamage,1) / speed)
+		
+			-- If there's an offhand speed then add the offhand info to the tooltip
+			local offhandAttackSpeed, offhandDps
+			if ( offhandSpeed ) then
+				minOffHandDamage = (minOffHandDamage / percent) - physicalBonusPos - physicalBonusNeg
+				maxOffHandDamage = (maxOffHandDamage / percent) - physicalBonusPos - physicalBonusNeg
+
+				local offhandBaseDamage = (minOffHandDamage + maxOffHandDamage) * 0.5
+				local offhandFullDamage = (offhandBaseDamage + physicalBonusPos + physicalBonusNeg) * percent
+				local offhandDamagePerSecond = (max(offhandFullDamage,1) / offhandSpeed)
+
+				offhandAttackSpeed = offhandSpeed
+				offhandDps = offhandDamagePerSecond
+			end 
+
+			-- INVTYPE_WEAPONMAINHAND
+			tbl.attackSpeed = string_format("%.2f", speed)
+			tbl.attackMinDamage = string_format("%.0f", minDamage)
+			tbl.attackMaxDamage = string_format("%.0f", maxDamage)
+			tbl.attackDPS = string_format("%.1f", damagePerSecond)
+
+			-- INVTYPE_WEAPONOFFHAND
+			if (offhandSpeed) then
+				tbl.attackSpeedOffHand = string_format("%.2f", offhandAttackSpeed)
+				tbl.attackMinDamageOffHand = string_format("%.0f", minOffHandDamage)
+				tbl.attackMaxDamageOffHand = string_format("%.0f", maxOffHandDamage)
+				tbl.attackDPSOffHand = string_format("%.1f", offhandDps)
+			end
+
+			return tbl
+		end 
 
 		-- Spell school / Spell Type (could be "Racial")
 		right = _G[ScannerName.."TextRight1"]
@@ -480,11 +539,44 @@ LibTooltipScanner.GetTooltipDataForAction = function(self, actionSlot, tbl)
 						end 
 					end 
 
-					--if (string_find(msg, Patterns.CooldownRemaining)) then 
-					--end 
+					-- search for attacks on next swing
+					if (not foundCastTime) then 
+						local id = 1
+						while Patterns["CastQueue"..id] do 
+							if (string_find(leftMsg, Patterns["CastQueue"..id])) then 
 
-					--if (string_find(msg, SPELL_RECHARGE_TIME)) then 
-					--end 
+								-- found the range line
+								foundCastTime = lineIndex
+								tbl.castTime = leftMsg
+
+								if (lastInfoLine < foundCastTime) then 
+									lastInfoLine = foundCastTime
+								end 
+
+								-- if there is something on the right side, it's the total cooldown
+								if (rightMsg and (rightMsg ~= "")) then 
+									foundCooldownTime = foundCooldownTime
+									tbl.cooldownTime = rightMsg
+								end  
+
+								-- The cost is usually listed on the line before these
+								if (not foundCost) then 
+									local costLineID = lineIndex - 1
+									local costLine = _G[ScannerName.."TextLeft"..costLineID]
+									if costLine then 
+										local costLineMsg = costLine and costLine:GetText()
+										if (costLineMsg and (costLineMsg ~= "")) then 
+											foundCost = costLineID
+											tbl.spellCost = costLineMsg
+										end 
+									end 
+								end 
+
+								break
+							end 
+							id = id + 1
+						end 
+					end 
 
 					if not(foundUnmetRequirement or foundRequirement) and string_find(leftMsg, Patterns.SpellRequiresForm) then 
 						local r, g, b = left:GetTextColor()
@@ -551,7 +643,7 @@ LibTooltipScanner.GetTooltipDataForAction = function(self, actionSlot, tbl)
 						local id = 1
 						while Patterns["Range"..id] do 
 							if (string_find(rightMsg, Patterns["Range"..id])) then 
-							
+						
 								-- found the range line
 								foundRange = lineIndex
 								tbl.spellRange = rightMsg
@@ -561,10 +653,12 @@ LibTooltipScanner.GetTooltipDataForAction = function(self, actionSlot, tbl)
 								end 
 	
 								-- if there is something on the left side, it's the cost
-								if (leftMsg and (leftMsg ~= "")) then 
-									foundCost = lineIndex
-									tbl.spellCost = leftMsg
-								end  
+								if (not foundCost) then 
+									if (leftMsg and (leftMsg ~= "")) then 
+										foundCost = lineIndex
+										tbl.spellCost = leftMsg
+									end  
+								end 
 
 								break
 							end 
