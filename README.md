@@ -1,19 +1,8 @@
 [ ![Become a Patreon](http://azeriteui.com/img/social-media-buttons-patreon-small.jpg) ](https://www.patreon.com/AzeriteUI) 
 
-This is a Classic port of our custom user interface originally made for World of Warcraft: Battle For Azeroth! Designed by Daniel "Blakmane" Troko & coded by Lars "Goldpaw" Norberg. 
-
-It's a work in progress as we never was in the Classic beta. I'll update it as much as I can during the pre-launch, and continue work the instant Classic goes live. And I've opened up for [issue reports](https://github.com/AzeriteTeam/AzeriteUI_Classic/issues) now! 
+This is a Classic port of our custom user interface originally made for World of Warcraft: Battle For Azeroth! It's a work in progress as we never was in the Classic beta. I'll update it as much as I can during the pre-launch, and continue work the instant Classic goes live. And I've opened up for [issue reports](https://github.com/AzeriteTeam/AzeriteUI_Classic/issues) now! 
 
 ## **Classic Progress Report:**  
-### **Stuff that works:**  
-* Player-, pet-, target- and tot unit frames
-* Minimap, clock, latency, XP
-* The main actionbar should work. Stances and forms need testing.
-* AzeriteUI `/bind` hover keybinding system
-* Game menu (Esc) is styled and awesome!
-* Blizzard micro menu 
-* AzeriteUI options menu 
-
 ### **Stuff not supported in Classic:**  
 * **Focus**
   * Neither the focus frame, the focus unit or focus as a target in macros are supported or exist at all in Classic. Any addons adding this functionality is "faking" it, and most likely won't allow you to change the focus target during combat. 
