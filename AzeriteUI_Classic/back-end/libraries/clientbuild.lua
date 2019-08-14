@@ -1,4 +1,4 @@
-local LibClientBuild = CogWheel:Set("LibClientBuild", 31)
+local LibClientBuild = CogWheel:Set("LibClientBuild", 32)
 if (not LibClientBuild) then
 	return
 end
@@ -13,20 +13,21 @@ local tostring = tostring
 
 LibClientBuild.embeds = LibClientBuild.embeds or {}
 
-local clientPatch, clientBuild = _G.GetBuildInfo() 
-clientBuild = tonumber(clientBuild)
+local currentClientPatch, currentClientBuild = _G.GetBuildInfo() 
+currentClientBuild = tonumber(currentClientBuild)
 
-local clientIsAtLeast = {}
 local builds = {
-	["Classic"] = 31407, 
-		["1.13.2"] = 31407, -- August 8th 2019 Pre-Launch build
+	["Classic"] = 31446,
+		-- 31407 August 8th 2019 pre-launch
+		-- 31446 August 12th 2019 name reservation
+		["1.13.2"] = 31446
 }
-local patchExceptions = {
-	["1.13.2"] = "1.13.2" -- Classic!
+local clientPatchRequirements = {
+	["1.13.2"] = "1.13.2" 
 }
-
+local clientIsAtLeast = {}
 for version, build in pairs(builds) do
-	if (clientBuild >= build) then
+	if (currentClientBuild >= build) then
 		clientIsAtLeast[version] = true 
 		clientIsAtLeast[build] = true 
 		clientIsAtLeast[tostring(build)] = true 
@@ -36,20 +37,20 @@ end
 -- Return the build number for a given patch.
 -- Return current build if the given patch is the current. EXPERIMENTAL! 
 LibClientBuild.GetBuildForPatch = function(self, version)
-	return (clientPatch == version) and clientBuild or builds[version]
+	return (currentClientPatch == version) and currentClientBuild or builds[version]
 end 
 
 -- Return the current WoW client build
 LibClientBuild.GetBuild = function(self)
-	return clientBuild
+	return currentClientBuild
 end 
 
 -- Check if the current client is 
 -- at least the requested version.
 LibClientBuild.IsBuild = function(self, version)
-	local patchException = patchExceptions[version]
-	if patchException then 
-		return (patchException == clientPatch) and clientIsAtLeast[version]
+	local clientPatchRequirement = clientPatchRequirements[version]
+	if clientPatchRequirement then 
+		return (clientPatchRequirement == currentClientPatch) and clientIsAtLeast[version]
 	else 
 		return clientIsAtLeast[version]
 	end 
