@@ -36,6 +36,9 @@ local S_AFK = _G.AFK
 local S_DEAD = _G.DEAD
 local S_PLAYER_OFFLINE = _G.PLAYER_OFFLINE
 
+-- Constants
+local _,CLASS = UnitClass("player")
+
 -- Utility Functions
 ---------------------------------------------------------------------	
 -- Calculate a RGB gradient from a minimum of 2 sets of RGB values
@@ -148,7 +151,9 @@ local UpdateColors = function(health, unit, min, max)
 
 	local self = health._owner
 	local color, r, g, b
-	if (health.colorTapped and health.tapped) then
+	if (health.colorPlayer and UnitIsUnit(unit, "player")) then 
+		color = self.colors.class[CLASS]
+	elseif (health.colorTapped and health.tapped) then
 		color = self.colors.tapped
 	elseif (health.colorDisconnected and health.disconnected) then
 		color = self.colors.disconnected
@@ -369,5 +374,5 @@ end
 
 -- Register it with compatible libraries
 for _,Lib in ipairs({ (CogWheel("LibUnitFrame", true)), (CogWheel("LibNamePlate", true)) }) do 
-	Lib:RegisterElement("Health", Enable, Disable, Proxy, 35)
+	Lib:RegisterElement("Health", Enable, Disable, Proxy, 36)
 end 

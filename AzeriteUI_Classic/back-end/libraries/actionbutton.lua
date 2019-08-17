@@ -1220,7 +1220,6 @@ LibSecureButton.SpawnActionButton = function(self, buttonType, parent, buttonTem
 	button._owner = visibility
 	button._pager = page
 
-
 	button:SetScript("OnEnter", ActionButton.OnEnter)
 	button:SetScript("OnLeave", ActionButton.OnLeave)
 	button:SetScript("PreClick", ActionButton.PreClick)

@@ -35,6 +35,6 @@
 <Script file='libraries\chatframe.lua'/>
 <Script file='libraries\minimap.lua'/>
 <Script file='libraries\nameplates.lua'/>
-<Script file='libraries\taint.lua'/> 
+<!--<Script file='libraries\taint.lua'/> -->
 
 </Ui>
