@@ -555,7 +555,8 @@ local NamePlate_CastBar_PostUpdate = function(cast, unit)
 			cast.Bg:SetSize(68, 9)
 			cast.Bg:SetTexture(GetMedia("cast_bar"))
 			cast.Bg:SetVertexColor(.15, .15, .15, 1)
-
+			cast.Name:ClearAllPoints()
+			cast.Name:SetPoint("TOP",0,-20)
 			cast.currentStyle = "protected"
 		end 
 
@@ -572,19 +573,18 @@ local NamePlate_CastBar_PostUpdate = function(cast, unit)
 			cast:SetStatusBarColor(Colors.quest.green[1], Colors.quest.green[2], Colors.quest.green[3]) 
 		end 
 	else 
-
 		-- Return to standard castbar styling and position 
 		if (cast.currentStyle == "protected") then 
 			cast:SetSize(84, 14)
 			cast:ClearAllPoints()
-			cast:SetPoint("TOP", 0, -22)
+			cast:SetPoint("TOP", 0, -20)
 			cast:SetStatusBarTexture(GetMedia("nameplate_bar"))
 			cast:SetTexCoord(14/256, 242/256, 14/64, 50/64)
-
 			cast.Bg:SetSize(84*256/228, 14*64/36)
 			cast.Bg:SetTexture(GetMedia("nameplate_backdrop"))
 			cast.Bg:SetVertexColor(1, 1, 1, 1)
-
+			cast.Name:ClearAllPoints()
+			cast.Name:SetPoint("TOP",0,-18)
 			cast.currentStyle = nil 
 		end 
 
@@ -1441,6 +1441,7 @@ local NamePlates = {
 		HealthColorCivilian = true, -- color friendly players as civilians
 		HealthColorReaction = true,
 		HealthColorHealth = true,
+		HealthColorPlayer = true, 
 		HealthFrequent = true,
 
 	UseHealthBackdrop = true, 
@@ -1460,7 +1461,7 @@ local NamePlates = {
 		HealthPreviewOnTexCoordChanged = HealthPreview_OnTexCoordChanged, 
 
 	UseCast = true, 
-		CastPlace = { "TOP", 0, -22 },
+		CastPlace = { "TOP", 0, -20 },
 		CastSize = { 84, 14 }, 
 		CastOrientation = "LEFT", 
 		CastColor = { Colors.cast[1], Colors.cast[2], Colors.cast[3], 1 },
@@ -1492,7 +1493,7 @@ local NamePlates = {
 			CastBackdropColor = { 1, 1, 1, 1 },
 
 		UseCastName = true, 
-			CastNamePlace = { "TOP", 0, -20 },
+			CastNamePlace = { "TOP", 0, -18 },
 			CastNameFont = GetFont(12, true),
 			CastNameColor = { Colors.highlight[1], Colors.highlight[2], Colors.highlight[3], .5 },
 			CastNameDrawLayer = { "OVERLAY", 1 }, 
@@ -1583,46 +1584,45 @@ local NamePlates = {
 		-- which the target nameplate will be kept away from. 
 		-- Used to avoid the target plate being overlapped 
 		-- by the target frame or actionbars and keep it in view.
-		nameplateLargeTopInset = .1, -- default .1
+		nameplateLargeTopInset = false, -- default .1
 		nameplateOtherTopInset = .1, -- default .08
 		nameplateLargeBottomInset = .02, -- default .15
 		nameplateOtherBottomInset = .02, -- default .1
 		nameplateClassResourceTopInset = 0,
-
+	
 		-- Nameplate scale
-		nameplateMinScale = 1, 
+		nameplateMinScale = false, -- .8
 		nameplateMaxScale = 1, 
 		nameplateLargerScale = 1, -- Scale modifier for large plates, used for important monsters
 		nameplateGlobalScale = 1,
 		NamePlateHorizontalScale = 1,
 		NamePlateVerticalScale = 1,
-
+	
 		-- Alpha defaults (these are enforced to other values by the back-end now)
-		nameplateMaxAlpha = GetCVarDefault("nameplateMaxAlpha"), 
-		nameplateMinAlphaDistance = GetCVarDefault("nameplateMinAlphaDistance"), 
-		nameplateMinAlpha = GetCVarDefault("nameplateMinAlpha"),
-		nameplateMaxAlphaDistance = GetCVarDefault("nameplateMaxAlphaDistance"),
-		nameplateOccludedAlphaMult = GetCVarDefault("nameplateOccludedAlphaMult"), 
-		nameplateSelectedAlpha = GetCVarDefault("nameplateSelectedAlpha"), 
-
+		nameplateMaxAlpha = false, 
+		nameplateMinAlphaDistance = false, 
+		nameplateMinAlpha = false,
+		nameplateMaxAlphaDistance = false,
+		nameplateOccludedAlphaMult = false, 
+		nameplateSelectedAlpha = false, 
+	
 		-- The minimum distance from the camera plates will reach their minimum scale and alpha
-		nameplateMinScaleDistance = GetCVarDefault("nameplateMinScaleDistance"), 
+		nameplateMinScaleDistance = false, 
 		
 		-- The maximum distance from the camera where plates will still have max scale and alpha
-		nameplateMaxScaleDistance = GetCVarDefault("nameplateMaxScaleDistance"),
-
+		nameplateMaxScaleDistance = 20, -- 10
+	
 		-- Show nameplates above heads or at the base (0 or 2,
 		nameplateOtherAtBase = 0,
-
+	
 		-- Scale and Alpha of the selected nameplate (current target,
-		nameplateSelectedScale = 1, -- default 1
-
+		nameplateSelectedScale = 1, -- default 1.2
+	
 		-- The max distance to show nameplates.
-		-- *DOES NOT GO BEYOND 20 IN CLASSIC!
-		nameplateMaxDistance = 20, -- 20 is classic limit (tested), 60 is BfA default
-
+		nameplateMaxDistance = false, -- 20 is classic upper limit, 60 is BfA default
+	
 		-- The max distance to show the target nameplate when the target is behind the camera.
-		nameplateTargetBehindMaxDistance = 15, -- default 15
+		nameplateTargetBehindMaxDistance = 15 -- default 15
 	}
 }
 
