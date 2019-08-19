@@ -2,6 +2,8 @@
 
 This is a Classic port of our custom user interface originally made for World of Warcraft: Battle For Azeroth! It's a work in progress as we never was in the Classic beta. I'll update it as much as I can during the pre-launch, and continue work the instant Classic goes live. And I've opened up for [issue reports](https://github.com/AzeriteTeam/AzeriteUI_Classic/issues) now! 
 
+Looking for AzeriteUI for WoW Retail? Get it [here](https://www.curseforge.com/wow/addons/azeriteui)!
+
 ## **Classic Progress Report:**  
 ### **Stuff not supported in Classic:**  
 * **Focus**
@@ -18,6 +20,11 @@ This is a Classic port of our custom user interface originally made for World of
   * Not an actual API in classic to track this, so I have to rewrite this the "old" way. I'm sure I can dig through some of my old UIs to simplify this part, so it's coming! Not giving this a high priority, though, since Reputation grinds in Classic won't really be that big of a thing before endgame. So I got a little time.  
 * **Nameplate castbars**  
   * Same as above. No API for this, but we _can_ fake it by studying the combat log, and unlike threat, castbars doesn't require info from any other group members. So this we can to a certain degree do. It wasn't something I had time to dig into during the August 8th-13th stresstest, though, so I'll drycode it in the upcoming days and hopefully get it live one of the first days of Classic, if I have a running subscription at that time. Since it's combat log based and not 100% guaranteed to be accurate, _this feature will be optional!_
+
+## **Other downloads:**
+* AzeriteUI for WoW Retail: [www.curseforge.com/wow/addons/azeriteui](https://www.curseforge.com/wow/addons/azeriteui)
+* AzeriteUI Masque Theme: [www.curseforge.com/wow/addons/masque-azerite](https://www.curseforge.com/wow/addons/masque-azerite)
+* AzeriteUI KuiNameplates theme: [www.curseforge.com/wow/addons/kuinameplates-azeriteui](https://www.curseforge.com/wow/addons/kuinameplates-azeriteui)
 
 ## **Frequently Asked Questions:**  
 ### **It's so big, how can I scale it down?**  
